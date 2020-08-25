@@ -36,8 +36,14 @@ void UCubeSideComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UCubeSideComponent::InitComponent(ECubeSide sideType)
+void UCubeSideComponent::InitComponent(ECubeSide sideType, FVector position, FQuat rotation)
 {
 	m_CubeType = sideType;
+
+	UE_LOG(LogTemp, Warning, TEXT("Creating Eye Component %d"), position.X);
+
+	BaseMesh->SetRelativeLocation(position);
+	BaseMesh->SetRelativeRotation(rotation);
+	BaseMesh->SetRelativeScale3D(FVector(0.25f, 0.25f, 0.0f));
 }
 

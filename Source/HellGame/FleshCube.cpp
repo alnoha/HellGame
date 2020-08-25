@@ -16,7 +16,7 @@ AFleshCube::AFleshCube()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> BaseMeshAsset(TEXT("StaticMesh'/Game/StarterContent/Props/MaterialSphere.MaterialSphere'"));
 
 	leftSideComponent = CreateDefaultSubobject<UCubeSideComponent>(TEXT("Left side component"));
-	leftSideComponent->InitComponent();
+	leftSideComponent->InitComponent(leftSide, FVector(-50,-50,50), FQuat(90,0,0,0));
 
 	CreateEyeComponentQueue();
 }

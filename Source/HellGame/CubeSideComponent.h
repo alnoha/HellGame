@@ -31,5 +31,5 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	virtual void InitComponent(ECubeSide sideType);
+	virtual void InitComponent(ECubeSide sideType, FVector position, FQuat rotation);
 };
