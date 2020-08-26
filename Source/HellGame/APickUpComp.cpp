@@ -18,7 +18,7 @@ UAPickUpComp::UAPickUpComp()
 void UAPickUpComp::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// ...
 	
 }
@@ -28,7 +28,31 @@ void UAPickUpComp::BeginPlay()
 void UAPickUpComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	UpdateHoldItemPosition();
 	// ...
+}
+
+void UAPickUpComp::PickUp(AActor* actor)
+{
+	this->SetComponentTickEnabled(true);
+	HoldItem = actor;
+	primitive = actor->FindComponentByClass<UPrimitiveComponent>();
+	test->GrabComponentAtLocationWithRotation(primitive,"None",actor->GetActorLocation(),actor->GetActorRotation());
+}
+
+void UAPickUpComp::Drop()
+{
+	test->ReleaseComponent();
+	HoldItem = nullptr;
+	this->SetComponentTickEnabled(false);
+}
+
+void UAPickUpComp::UpdateHoldItemPosition()
+{
+	if (HoldItem != nullptr)
+	{
+		test->SetTargetLocationAndRotation(HoldPosition->GetComponentLocation(),HoldPosition->GetComponentRotation());
+		
+	}
 }
 
