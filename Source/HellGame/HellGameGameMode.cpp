@@ -12,6 +12,7 @@ AHellGameGameMode::AHellGameGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPersonCPP/Blueprints/FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
+	PlayerControllerClass = APlayerController::StaticClass();
 	// use our custom HUD class
 	HUDClass = AHellGameHUD::StaticClass();
 }
