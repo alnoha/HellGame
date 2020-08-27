@@ -40,4 +40,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Interactable")
 		bool bIsFocused;
+
+	UPROPERTY(EditAnywhere, Category = "Interactable")
+		TSubclassOf<UUserWidget> PromptWidget;
 };
