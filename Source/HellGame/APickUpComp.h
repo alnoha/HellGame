@@ -4,39 +4,67 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "APickUpComp.generated.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "APickUpComp.generated.h"
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+
+UCLASS(Blueprintable,ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HELLGAME_API UAPickUpComp : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UAPickUpComp();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
-		void PickUp(AActor* actor);
-
+		void PickUp(UPrimitiveComponent* actor);
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 		void Drop();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USceneComponent* HoldPosition;
-		
-private:
-	UPhysicsHandleComponent* test;
-	UPrimitiveComponent* primitive;
-	AActor* HoldItem;
-	void UpdateHoldItemPosition();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPhysicsHandleComponent* test;
 
+	UFUNCTION(BlueprintCallable, Category = "PickUp")
+		void RotateLeft();
+	UFUNCTION(BlueprintCallable, Category = "PickUp")
+		void RotateRight();
+	UFUNCTION(BlueprintCallable, Category = "PickUp")
+		void RotateUp();
+	UFUNCTION(BlueprintCallable, Category = "PickUp")
+		void RotateDown();
+	UFUNCTION(BlueprintCallable, Category = "PickUp")
+		void AltRotateLeft();
+	UFUNCTION(BlueprintCallable, Category = "PickUp")
+		void AltRotateRight();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float RotateAmount = 90;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float AltRotateAmount = 2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float lerpSpeed = 5;
+
+private:
+	UPrimitiveComponent* HoldItem;
+	AActor* Owner;
+	void RotateSetup();
+	FRotator AltRotateSetup();
+	void Rotate(float deltaTime);
+	void ResetHoldingPoint();
+	void UpdateHoldItemPosition();
+	
+	FRotator OldRotation;
+	FRotator NewRotation;
+	float lerpTimer = 0.0f;
+	bool RotatingObject = false;
+
+	FVector startPosition;
+	FRotator startRotation;
+	
 };

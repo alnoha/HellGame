@@ -18,8 +18,10 @@ UAPickUpComp::UAPickUpComp()
 void UAPickUpComp::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// ...
+	Owner = GetOwner();
+	startPosition = HoldPosition->GetRelativeLocation();
+	startRotation = HoldPosition->GetRelativeRotation();
+	this->SetComponentTickEnabled(false);	
 	
 }
 
@@ -29,30 +31,124 @@ void UAPickUpComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	UpdateHoldItemPosition();
-	// ...
+	if (RotatingObject)
+	{
+		Rotate(DeltaTime);
+	}
 }
 
-void UAPickUpComp::PickUp(AActor* actor)
-{
-	this->SetComponentTickEnabled(true);
+void UAPickUpComp::PickUp(UPrimitiveComponent* actor)
+{	
 	HoldItem = actor;
-	primitive = actor->FindComponentByClass<UPrimitiveComponent>();
-	test->GrabComponentAtLocationWithRotation(primitive,"None",actor->GetActorLocation(),actor->GetActorRotation());
+	HoldItem->SetWorldRotation(HoldPosition->GetComponentRotation());
+	test->GrabComponentAtLocationWithRotation(HoldItem, NAME_None, HoldItem->GetComponentLocation(), HoldItem->GetComponentRotation());
+	this->SetComponentTickEnabled(true);
 }
 
 void UAPickUpComp::Drop()
 {
 	test->ReleaseComponent();
 	HoldItem = nullptr;
+	ResetHoldingPoint();
 	this->SetComponentTickEnabled(false);
+}
+
+void UAPickUpComp::RotateSetup()
+{
+	NewRotation = OldRotation = HoldPosition->GetRelativeRotation();
+	RotatingObject = true;
+}
+
+FRotator UAPickUpComp::AltRotateSetup()
+{
+	
+	return HoldPosition->GetRelativeRotation();
+}
+
+void UAPickUpComp::RotateLeft()
+{
+	if (HoldItem != nullptr && RotatingObject == false)
+	{
+		RotateSetup();
+		NewRotation.Yaw += RotateAmount;
+	}
+
+}
+
+void UAPickUpComp::RotateRight()
+{
+	if (HoldItem != nullptr && RotatingObject == false)
+	{
+		RotateSetup();
+		NewRotation.Yaw -= RotateAmount;
+	}
+}
+
+void UAPickUpComp::RotateUp()
+{
+	if (HoldItem != nullptr && RotatingObject == false)
+	{
+		RotateSetup();
+		NewRotation.Pitch += RotateAmount;
+	}
+}
+
+void UAPickUpComp::RotateDown()
+{
+	if (HoldItem != nullptr && RotatingObject == false)
+	{
+		RotateSetup();
+		NewRotation.Pitch -= RotateAmount;
+	}
+}
+
+void UAPickUpComp::AltRotateLeft()
+{
+	if (HoldItem != nullptr && RotatingObject == false)
+	{
+		FRotator TempRotation = HoldPosition->GetRelativeRotation();
+		TempRotation.Yaw += AltRotateAmount;		
+		HoldPosition->SetRelativeRotation(TempRotation);
+	}
+}
+
+void UAPickUpComp::AltRotateRight()
+{
+	if (HoldItem != nullptr && RotatingObject == false)
+	{
+		FRotator TempRotation = HoldPosition->GetRelativeRotation();
+		TempRotation.Yaw -= AltRotateAmount;
+		HoldPosition->SetRelativeRotation(TempRotation);
+	}
+}
+
+void UAPickUpComp::Rotate(float deltaTime)
+{	
+	HoldPosition->SetRelativeRotation(FMath::Lerp(OldRotation, NewRotation, lerpTimer));
+	lerpTimer += deltaTime * lerpSpeed;
+
+	if (lerpTimer >= 0.95f)
+	{
+	 lerpTimer = 0;
+	 HoldPosition->SetRelativeRotation(NewRotation);
+	 RotatingObject = false;
+	}
+	
+}
+
+void UAPickUpComp::ResetHoldingPoint()
+{
+	HoldPosition->SetRelativeRotation(startRotation);
+	HoldPosition->SetRelativeLocation(startPosition);
 }
 
 void UAPickUpComp::UpdateHoldItemPosition()
 {
-	if (HoldItem != nullptr)
-	{
+	
 		test->SetTargetLocationAndRotation(HoldPosition->GetComponentLocation(),HoldPosition->GetComponentRotation());
 		
-	}
 }
+
+
+
 
