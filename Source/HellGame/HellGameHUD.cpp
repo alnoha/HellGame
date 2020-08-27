@@ -6,6 +6,9 @@
 #include "TextureResource.h"
 #include "CanvasItem.h"
 #include "UObject/ConstructorHelpers.h"
+#include "SPromptPopup.h"
+#include "Widgets/SWeakWidget.h"
+#include "Engine/Engine.h"
 
 AHellGameHUD::AHellGameHUD()
 {
@@ -32,4 +35,21 @@ void AHellGameHUD::DrawHUD()
 	FCanvasTileItem TileItem( CrosshairDrawPosition, CrosshairTex->Resource, FLinearColor::White);
 	TileItem.BlendMode = SE_BLEND_Translucent;
 	Canvas->DrawItem( TileItem );
+}
+
+void AHellGameHUD::ShowPrompt()
+{
+	if (GEngine && GEngine->GameViewport)
+	{
+		PromptWidget = SNew(SPromptPopup).OwningHUD(this);
+		GEngine->GameViewport->AddViewportWidgetContent(SAssignNew(PromptWidgetContainer, SWeakWidget).PossiblyNullContent(PromptWidget.ToSharedRef()));
+	}
+}
+
+void AHellGameHUD::HidePrompt()
+{
+	if (GEngine && GEngine->GameViewport && PromptWidgetContainer.IsValid())
+	{
+		GEngine->GameViewport->RemoveViewportWidgetContent(PromptWidgetContainer.ToSharedRef());
+	}
 }
