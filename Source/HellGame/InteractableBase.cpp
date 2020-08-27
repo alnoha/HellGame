@@ -15,15 +15,13 @@ AInteractableBase::AInteractableBase()
 void AInteractableBase::BeginPlay()
 {
 	Super::BeginPlay();
-	OnBeginFocus_Implementation();
-
+	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 // Called every frame
 void AInteractableBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AInteractableBase::OnInteract_Implementation(AActor* Caller)
@@ -32,11 +30,22 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 
 void AInteractableBase::OnBeginFocus_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnBeginFocus_Implementation"));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnBeginFocus_Implementation"));
+	if (!bIsFocused)
+	{
+		HUD->ShowPrompt();
+		bIsFocused = true;
+	}
+	//TODO: ADD UI Prompt functionality
 }
 
 void AInteractableBase::OnEndFocus_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnEndFocus_Implementation"));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnEndFocus_Implementation"));
+	if (bIsFocused)
+	{
+		HUD->HidePrompt();
+		bIsFocused = false;
+	}
 }
 
