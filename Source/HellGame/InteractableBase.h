@@ -43,4 +43,5 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Interactable")
 		TSubclassOf<UUserWidget> PromptWidget;
+	//Sync
 };
