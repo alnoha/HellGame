@@ -7,7 +7,7 @@
 AInteractableBase::AInteractableBase()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -33,10 +33,9 @@ void AInteractableBase::OnBeginFocus_Implementation()
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnBeginFocus_Implementation"));
 	if (!bIsFocused)
 	{
-		HUD->ShowPrompt();
+		HUD->ShowWidget(PromptWidget);
 		bIsFocused = true;
 	}
-	//TODO: ADD UI Prompt functionality
 }
 
 void AInteractableBase::OnEndFocus_Implementation()
@@ -44,8 +43,9 @@ void AInteractableBase::OnEndFocus_Implementation()
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnEndFocus_Implementation"));
 	if (bIsFocused)
 	{
-		HUD->HidePrompt();
+		HUD->HideWidget();
 		bIsFocused = false;
 	}
 }
+//Sync
 

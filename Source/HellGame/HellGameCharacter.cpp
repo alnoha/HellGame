@@ -151,16 +151,17 @@ void AHellGameCharacter::InteractTrace_Implementation()
 
 	if (bHit)
 	{
-		if (Hit.GetActor()->Implements<UInteractable>())
+		AActor* HitActor = Hit.GetActor();
+		if (HitActor->Implements<UInteractable>())
 		{
-			const auto& Interface = Cast<IInteractable>(Hit.GetActor());
+			Interactable = HitActor;
+			IInteractable* Interface = Cast<IInteractable>(Interactable);
 			if (Interface)
 			{
 				Interface->OnBeginFocus_Implementation();
 			}
 			else
-				Interface->OnBeginFocus();
-			Interactable = Hit.GetActor();
+				IInteractable::Execute_OnBeginFocus(Interactable);
 		}
 		else
 		{
@@ -168,13 +169,13 @@ void AHellGameCharacter::InteractTrace_Implementation()
 			{
 				if (Interactable->Implements<UInteractable>())
 				{
-					const auto& Interface = Cast<IInteractable>(Interactable);
+					IInteractable* Interface = Cast<IInteractable>(Interactable);
 					if (Interface)
 					{
 						Interface->OnEndFocus_Implementation();
 					}
 					else
-						Interface->OnEndFocus();
+						IInteractable::Execute_OnEndFocus(Interactable);
 				}
 				Interactable = nullptr;
 			}
@@ -193,7 +194,8 @@ void AHellGameCharacter::InteractTrace_Implementation()
 					Interface->OnEndFocus_Implementation();
 				}
 				else
-					Interface->OnEndFocus();
+					IInteractable::Execute_OnEndFocus(Interactable);
+				//Interface->OnEndFocus();
 			}
 			Interactable = nullptr;
 		}

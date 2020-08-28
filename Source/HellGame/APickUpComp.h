@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Misc/MessageDialog.h"
 #include "APickUpComp.generated.h"
 
 
@@ -22,46 +23,71 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
-		void PickUp(UPrimitiveComponent* actor);
+		void PickUp(AActor* actor);
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 		void Drop();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY( BlueprintReadWrite)
 		USceneComponent* HoldPosition;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPhysicsHandleComponent* test;
+	UPROPERTY( BlueprintReadWrite)
+		UPhysicsHandleComponent* PhysicsHandle;
 
-	UFUNCTION(BlueprintCallable, Category = "PickUp")
+	UFUNCTION(BlueprintCallable, Category = "Move")
+		void MoveForward();
+	UFUNCTION(BlueprintCallable, Category = "Move")
+		void MoveBack();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
+		float MoveAmount = 20;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
+		float MoveMaxLimit = 300;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Move")
+		float MoveMinLimit = 200;
+
+
+	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void RotateLeft();
-	UFUNCTION(BlueprintCallable, Category = "PickUp")
+	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void RotateRight();
-	UFUNCTION(BlueprintCallable, Category = "PickUp")
+	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void RotateUp();
-	UFUNCTION(BlueprintCallable, Category = "PickUp")
+	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void RotateDown();
-	UFUNCTION(BlueprintCallable, Category = "PickUp")
+	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void AltRotateLeft();
-	UFUNCTION(BlueprintCallable, Category = "PickUp")
+	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void AltRotateRight();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Rotation")
 		float RotateAmount = 90;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
 		float AltRotateAmount = 2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float lerpSpeed = 5;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
+		float LerpSpeed = 5;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool IsHolding = false;
 
 private:
+
+	AActor* HoldActor;
 	UPrimitiveComponent* HoldItem;
+	UStaticMesh* ItemMesh;
+	UStaticMeshComponent* temp;
+
+
 	AActor* Owner;
+
 	void RotateSetup();
 	FRotator AltRotateSetup();
 	void Rotate(float deltaTime);
 	void ResetHoldingPoint();
 	void UpdateHoldItemPosition();
 	
+
+	void StartCheck(); 
+	void WriteErrorMessage(FString message);
 	FRotator OldRotation;
 	FRotator NewRotation;
-	float lerpTimer = 0.0f;
+	float LerpTimer = 0.0f;
 	bool RotatingObject = false;
 
 	FVector startPosition;
