@@ -6,7 +6,6 @@
 #include "TextureResource.h"
 #include "CanvasItem.h"
 #include "UObject/ConstructorHelpers.h"
-#include "SPromptPopup.h"
 #include "Widgets/SWeakWidget.h"
 #include "Engine/Engine.h"
 #include "Blueprint/UserWidget.h"
