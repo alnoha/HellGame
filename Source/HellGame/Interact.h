@@ -24,4 +24,8 @@ class HELLGAME_API IInteract
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interact")
 		void OnInteract(AActor* Actor);
+<<<<<<< HEAD
+=======
+	virtual void OnInteract_Implementation(AActor* Actor);
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 };

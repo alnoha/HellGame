@@ -26,12 +26,15 @@ void AInteractableBase::Tick(float DeltaTime)
 
 void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 {
+<<<<<<< HEAD
 	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, Caller->GetName() + TEXT(" Called AInteractableBase::OnInteract_Implementation"));
 	if (this->Implements<UPickupAble>())
 	{
 		//IPickupAble::OnPickUp();
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, TEXT("Implements PickupInterface"));
 	}
+=======
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 }
 
 void AInteractableBase::OnBeginFocus_Implementation()
@@ -53,4 +56,8 @@ void AInteractableBase::OnEndFocus_Implementation()
 		bIsFocused = false;
 	}
 }
+<<<<<<< HEAD
+=======
+//Sync
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 

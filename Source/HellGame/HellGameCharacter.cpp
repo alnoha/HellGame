@@ -139,7 +139,11 @@ void AHellGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AHellGameCharacter::LookUpAtRate);
 }
 
+<<<<<<< HEAD
 void AHellGameCharacter::InteractTrace()
+=======
+void AHellGameCharacter::InteractTrace_Implementation()
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 {
 	FVector Pos;
 	FRotator Rot;
@@ -175,9 +179,13 @@ void AHellGameCharacter::InteractTrace()
 						Interface->OnEndFocus_Implementation();
 					}
 					else
+<<<<<<< HEAD
 					{
 						IInteractable::Execute_OnEndFocus(Interactable);
 					}
+=======
+						IInteractable::Execute_OnEndFocus(Interactable);
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 				}
 				Interactable = nullptr;
 			}
@@ -190,21 +198,31 @@ void AHellGameCharacter::InteractTrace()
 		{
 			if (Interactable->Implements<UInteractable>())
 			{
+<<<<<<< HEAD
 				IInteractable* Interface = Cast<IInteractable>(Interactable);
+=======
+				const auto& Interface = Cast<IInteractable>(Interactable);
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 				if (Interface)
 				{
 					Interface->OnEndFocus_Implementation();
 				}
 				else
+<<<<<<< HEAD
 				{
 					IInteractable::Execute_OnEndFocus(Interactable);
 				}
+=======
+					IInteractable::Execute_OnEndFocus(Interactable);
+				//Interface->OnEndFocus();
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 			}
 			Interactable = nullptr;
 		}
 	}
 }
 
+<<<<<<< HEAD
 void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
 {
 	// Check if we have something to interact whit, else just return.
@@ -235,6 +253,11 @@ void AHellGameCharacter::Tick(float DeltaTime)
 	{
 		InteractTrace();
 	}
+=======
+void AHellGameCharacter::Tick(float DeltaTime)
+{
+	InteractTrace_Implementation();
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 }
 
 void AHellGameCharacter::OnFire()

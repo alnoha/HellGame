@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interactable.h"
+<<<<<<< HEAD
 #include "PickupAble.h"
+=======
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 #include "HellGameHUD.h"
 #include "InteractableBase.generated.h"
 
@@ -44,4 +47,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Interactable")
 		TSubclassOf<UUserWidget> PromptWidget;
+<<<<<<< HEAD
+=======
+	//Sync
+>>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 };
