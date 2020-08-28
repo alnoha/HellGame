@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "Interactable.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -136,6 +137,74 @@ void AHellGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("TurnRate", this, &AHellGameCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AHellGameCharacter::LookUpAtRate);
+}
+
+void AHellGameCharacter::InteractTrace_Implementation()
+{
+	FVector Pos;
+	FRotator Rot;
+	GetController()->GetPlayerViewPoint(Pos, Rot);
+
+	FCollisionQueryParams TraceParams;
+	FHitResult Hit;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Pos, Pos + (Rot.Vector() * TraceDistance), ECC_Visibility, TraceParams);
+
+	if (bHit)
+	{
+		AActor* HitActor = Hit.GetActor();
+		if (HitActor->Implements<UInteractable>())
+		{
+			Interactable = HitActor;
+			IInteractable* Interface = Cast<IInteractable>(Interactable);
+			if (Interface)
+			{
+				Interface->OnBeginFocus_Implementation();
+			}
+			else
+				IInteractable::Execute_OnBeginFocus(Interactable);
+		}
+		else
+		{
+			if (Interactable)
+			{
+				if (Interactable->Implements<UInteractable>())
+				{
+					IInteractable* Interface = Cast<IInteractable>(Interactable);
+					if (Interface)
+					{
+						Interface->OnEndFocus_Implementation();
+					}
+					else
+						IInteractable::Execute_OnEndFocus(Interactable);
+				}
+				Interactable = nullptr;
+			}
+		}
+	}
+	else
+	{
+		// Not focusing on the object any more
+		if (Interactable)
+		{
+			if (Interactable->Implements<UInteractable>())
+			{
+				const auto& Interface = Cast<IInteractable>(Interactable);
+				if (Interface)
+				{
+					Interface->OnEndFocus_Implementation();
+				}
+				else
+					IInteractable::Execute_OnEndFocus(Interactable);
+				//Interface->OnEndFocus();
+			}
+			Interactable = nullptr;
+		}
+	}
+}
+
+void AHellGameCharacter::Tick(float DeltaTime)
+{
+	InteractTrace_Implementation();
 }
 
 void AHellGameCharacter::OnFire()
@@ -295,6 +364,6 @@ bool AHellGameCharacter::EnableTouchscreenMovement(class UInputComponent* Player
 		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AHellGameCharacter::TouchUpdate);
 		return true;
 	}
-	
+
 	return false;
 }
