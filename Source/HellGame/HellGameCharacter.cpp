@@ -139,7 +139,7 @@ void AHellGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AHellGameCharacter::LookUpAtRate);
 }
 
-void AHellGameCharacter::InteractTrace_Implementation()
+void AHellGameCharacter::InteractTrace()
 {
 	FVector Pos;
 	FRotator Rot;
@@ -175,7 +175,9 @@ void AHellGameCharacter::InteractTrace_Implementation()
 						Interface->OnEndFocus_Implementation();
 					}
 					else
+					{
 						IInteractable::Execute_OnEndFocus(Interactable);
+					}
 				}
 				Interactable = nullptr;
 			}
@@ -188,23 +190,51 @@ void AHellGameCharacter::InteractTrace_Implementation()
 		{
 			if (Interactable->Implements<UInteractable>())
 			{
-				const auto& Interface = Cast<IInteractable>(Interactable);
+				IInteractable* Interface = Cast<IInteractable>(Interactable);
 				if (Interface)
 				{
 					Interface->OnEndFocus_Implementation();
 				}
 				else
+				{
 					IInteractable::Execute_OnEndFocus(Interactable);
-				//Interface->OnEndFocus();
+				}
 			}
 			Interactable = nullptr;
 		}
 	}
 }
 
+void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
+{
+	// Check if we have something to interact whit, else just return.
+	if (Actor == nullptr)
+	{
+		if (Interactable)
+		{
+			Actor = Interactable;
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	//Failsafe if an actor from a blueprint doesn't implements the interacteable interface
+	if (Actor->Implements<UInteractable>())
+	{
+		AActor* Caller = Cast<AActor>(this);
+		IInteractable::Execute_OnInteract(Interactable, Caller);
+	}
+
+}
+
 void AHellGameCharacter::Tick(float DeltaTime)
 {
-	InteractTrace_Implementation();
+	if (bIsHoldingObject == false)
+	{
+		InteractTrace();
+	}
 }
 
 void AHellGameCharacter::OnFire()
