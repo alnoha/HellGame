@@ -32,14 +32,10 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 		Interactor = Cast<AHellGameCharacter>(Caller);
 		if (Interactor->bIsHoldingObject)
 		{
-			/*IPickupAble* Pickup = Cast<IPickupAble>(this);
-			Pickup->Execute_OnPickUp(this, Caller);*/
 			IPickupAble::Execute_OnDropPickUp(Actor, Caller);
 		}
 		else
 		{
-			/*IPickupAble* Pickup = Cast<IPickupAble>(this);
-			Pickup->Execute_OnPickUp(this, Caller);*/
 			IPickupAble::Execute_OnPickUp(Actor, Caller);
 		}
 	}
@@ -47,7 +43,6 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 
 void AInteractableBase::OnBeginFocus_Implementation()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnBeginFocus_Implementation"));
 	if (!bIsFocused)
 	{
 		HUD->ShowWidget(PromptWidget);
@@ -57,7 +52,6 @@ void AInteractableBase::OnBeginFocus_Implementation()
 
 void AInteractableBase::OnEndFocus_Implementation()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("AInteractableBase::OnEndFocus_Implementation"));
 	if (bIsFocused)
 	{
 		HUD->HideWidget();
