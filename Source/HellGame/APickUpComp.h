@@ -6,6 +6,11 @@
 #include "Components/ActorComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Misc/MessageDialog.h"
+#include "Math/Quat.h"	
+#include < cmath >
+#include "Kismet/KismetMathLibrary.h"
+#include <string> 
+#include "Math/UnrealMathUtility.h"
 #include "APickUpComp.generated.h"
 
 
@@ -26,6 +31,8 @@ public:
 		void PickUp(AActor* actor);
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 		void Drop();
+
+
 
 	UPROPERTY( BlueprintReadWrite)
 		USceneComponent* HoldPosition;
@@ -76,12 +83,14 @@ private:
 
 	AActor* Owner;
 
-	void RotateSetup();
+	void RotateSetup(FRotator DeltaRotation);
 	FRotator AltRotateSetup();
 	void Rotate(float deltaTime);
 	void ResetHoldingPoint();
 	void UpdateHoldItemPosition();
-	
+	float AngelsBetweenVectors(FVector Vector1, FVector Vector2, FRotator Rotation);
+
+	float DotProduct();
 
 	void StartCheck(); 
 	void WriteErrorMessage(FString message);
@@ -90,7 +99,14 @@ private:
 	float LerpTimer = 0.0f;
 	bool RotatingObject = false;
 
+
+	FQuat oldRotationTest;
+	FQuat rotationTest;
 	FVector startPosition;
 	FRotator startRotation;
-	
+	FQuat CurrentForward;
+
+
+
+	float AngelsBetween2DVectors(FVector Vector1, FVector Vector2,FVector ForwardVector);
 };
