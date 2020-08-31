@@ -17,6 +17,7 @@ class HELLGAME_API AFleshCube : public AInteractableBase
 
 private:
 	UDataTable* FaceBlueprintTable;
+	bool bStartSidesGenerated = false;
 
 public:	
 
@@ -67,7 +68,7 @@ private:
 	void SetupBaseMesh();
 	void SetupSideMeshes();
 	void SetupSides();
-	void SetupTopBottomSides();
+	void SetupStartSides();
 	void SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide);
 	void TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference);
 

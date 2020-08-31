@@ -117,26 +117,43 @@ void AFleshCube::OnConstruction(const FTransform& Transform)
 
 void AFleshCube::SetupSides()
 {
+	if (!bStartSidesGenerated)
+	{
+		SetupStartSides();
+	}
 	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
 	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
 	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
 	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
-
-	SetupTopBottomSides();
 }
 
-void AFleshCube::SetupTopBottomSides()
+void AFleshCube::SetupStartSides()
 {
+	// Create a reference to none sidetype
 	auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(ESideType::None));
 
+	// Make sure the blueprint for no face can be found
 	if (x == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("x is nullptr"));
+		UE_LOG(LogTemp, Warning, TEXT("Could not find a blueprint to sidetype None"));
 		return;
 	}
 
+	// Set top and bottom meshes
 	TopSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
 	BottomSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
+
+	// Set side meshes
+	LeftSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
+	FrontSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
+	RightSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
+	BackSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
+	
+	// Destroy this now unused component
+	x->DestroyComponent(false);
+
+	// Make sure we only do this once since it's in the OnConstruction method
+	bStartSidesGenerated = true;
 }
 
 void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide)
@@ -193,9 +210,5 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 		}
 
 		PreviousType = SideType;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Same type"));
 	}
 }
