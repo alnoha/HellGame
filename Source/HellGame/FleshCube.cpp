@@ -2,64 +2,200 @@
 
 
 #include "FleshCube.h"
-#include "CubeSideComponent.h"
-#include "EyeSideComponent.h"
 
 // Sets default values
 AFleshCube::AFleshCube()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	SetupBaseMesh();
+	SetupSideMeshes();
 
-	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
-	BaseMesh->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> BaseMeshAsset(TEXT("StaticMesh'/Game/StarterContent/Props/MaterialSphere.MaterialSphere'"));
+	// Temporary holders until I get help regarding data tables
 
-	leftSideComponent = CreateDefaultSubobject<UCubeSideComponent>(TEXT("Left side component"));
-	leftSideComponent->InitComponent(leftSide, FVector(-50,-50,50), FQuat(90,0,0,0));
+	// Mouth:
+	TemporaryReferenceFiller(ESideType::Mouth, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_MouthFace.BP_MouthFace'"));
+	TemporaryReferenceFiller(ESideType::None, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_NoneFace.BP_NoneFace'"));
+	TemporaryReferenceFiller(ESideType::Nose, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_NoseFace.BP_NoseFace'"));
+	TemporaryReferenceFiller(ESideType::Butt, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_ButtFace.BP_ButtFace'"));
+	TemporaryReferenceFiller(ESideType::Eye, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_EyeFace.BP_EyeFace'"));
+	TemporaryReferenceFiller(ESideType::Hair, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_HairFace.BP_HairFace'"));
+	TemporaryReferenceFiller(ESideType::Ear, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_EarFace.BP_EarFace'"));
 
-	CreateEyeComponentQueue();
+	// End temporary holders
 }
 
-UCubeSideComponent* AFleshCube::PopulateSideSlot(ECubeSide cubeSide)
+void AFleshCube::TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference)
 {
-	UCubeSideComponent* sideComponent = nullptr;
-
-	switch (cubeSide)
+	ConstructorHelpers::FObjectFinder<UBlueprint> CubeSideBase(Reference);
+	if (CubeSideBase.Succeeded())
 	{
-	case ECubeSide::Eye:
-		UE_LOG(LogTemp, Warning, TEXT("Creating Eye Component"));
-
-		/*if (eyeComponents.Dequeue(sideComponent))
-		{
-			this->AddOwnedComponent(sideComponent);
-		}*/
+		BlueprintFaces.Add(SideType, (UClass*)CubeSideBase.Object->GeneratedClass);
 	}
-
-	return sideComponent;
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could not find reference: %i"), Reference);
+	}
 }
 
-void AFleshCube::CreateEyeComponentQueue()
+void AFleshCube::SetupBaseMesh()
 {
+	// Create base cube mesh
+	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxBase"));
+	BaseMesh->RegisterComponent();
+
+	this->SetRootComponent(BaseMesh);
+
+	// Setup Physics
+	BaseMesh->SetSimulatePhysics(true);
+	BaseMesh->SetMassOverrideInKg(FName("None"), 900.0f, true);
+}
+
+void AFleshCube::SetupSideMeshes()
+{
+	LeftSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Left Side Mesh");
+	LeftSideMeshComponent->AttachTo(BaseMesh);
+	LeftSideMeshComponent->RegisterComponent();
+	LeftSideMeshComponent->bEditableWhenInherited = true;
+	LeftSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	LeftSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+
+	FrontSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Front Side Mesh");
+	FrontSideMeshComponent->AttachTo(BaseMesh);
+	FrontSideMeshComponent->RegisterComponent();
+	FrontSideMeshComponent->bEditableWhenInherited = true;
+	FrontSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	FrontSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+
+	RightSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Right Side Mesh");
+	RightSideMeshComponent->AttachTo(BaseMesh);
+	RightSideMeshComponent->RegisterComponent();
+	RightSideMeshComponent->bEditableWhenInherited = true;
+	RightSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	RightSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+
+	BackSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Back Side Mesh");
+	BackSideMeshComponent->AttachTo(BaseMesh);
+	BackSideMeshComponent->bEditableWhenInherited = true;
+	BackSideMeshComponent->RegisterComponent();
+	BackSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+
+	TopSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Top Side Mesh");
+	TopSideMeshComponent->AttachTo(BaseMesh);
+	TopSideMeshComponent->bEditableWhenInherited = true;
+	TopSideMeshComponent->RegisterComponent();
+	TopSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	TopSideMeshComponent->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+
+	BottomSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Bottom Side Mesh");
+	BottomSideMeshComponent->AttachTo(BaseMesh);
+	BottomSideMeshComponent->bEditableWhenInherited = true;
+	BottomSideMeshComponent->RegisterComponent();
+	BottomSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	BottomSideMeshComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
 }
 
 // Called when the game starts or when spawned
 void AFleshCube::BeginPlay()
 {
 	Super::BeginPlay();
-
-	leftSideComponent = PopulateSideSlot(leftSide);
-	rightSideComponent = PopulateSideSlot(rightSide);
-	frontSideComponent = PopulateSideSlot(frontSide);
-	backSideComponent = PopulateSideSlot(backSide);
-	topSideComponent = PopulateSideSlot(topSide);
-	bottomSideComponent = PopulateSideSlot(bottomSide);
+	
 }
 
 // Called every frame
 void AFleshCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+void AFleshCube::OnConstruction(const FTransform& Transform)
+{
+	SetupSides();
+
+	Super::OnConstruction(Transform);
+}
+
+void AFleshCube::SetupSides()
+{
+	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
+	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
+	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
+	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
+
+	SetupTopBottomSides();
+}
+
+void AFleshCube::SetupTopBottomSides()
+{
+	auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(ESideType::None));
+
+	if (x == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("x is nullptr"));
+		return;
+	}
+
+	TopSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
+	BottomSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
+}
+
+void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide)
+{
+	if (SideType != PreviousType)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
+
+		auto MyObject = BlueprintFaces.Find(SideType);
+
+		if (CubeSide != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cube side is nullptr"));
+			SideMeshComponent->SetStaticMesh(nullptr);
+			CubeSide->bEditableWhenInherited = false;
+			CubeSide->UnregisterComponent();
+			CubeSide->DestroyComponent(false);
+		}
+
+		if (MyObject == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MyObject is nullptr"));
+			SideMeshComponent->SetStaticMesh(nullptr);
+			CubeSide = nullptr;
+		}
+		else
+		{
+			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(SideType));
+
+			if (x == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("x is nullptr"));
+				return;
+			}
+
+			CubeSide = x;
+			CubeSide->RegisterComponent();
+			CubeSide->bEditableWhenInherited = false;
+
+			UStaticMesh* MeshToUse = CubeSide->GetFaceMesh();
+
+			if (MeshToUse == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No mesh from leftside"));
+			}
+
+			if (SideMeshComponent == nullptr || CubeSide == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("SideMesh or cubeside is nullptr"));
+				return;
+			}
+
+			SideMeshComponent->SetStaticMesh(CubeSide->GetFaceMesh());
+		}
+
+		PreviousType = SideType;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Same type"));
+	}
+}
