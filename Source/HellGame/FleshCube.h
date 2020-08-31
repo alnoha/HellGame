@@ -28,8 +28,14 @@ class HELLGAME_API AFleshCube : public AInteractableBase
 	GENERATED_BODY()
 
 private:
+	ESideType PreviousLeftSide;
+	ESideType PreviousFrontSide;
+	ESideType PreviousRightSide;
+	ESideType PreviousBackSide;
 	UDataTable* FaceBlueprintTable;
 	bool bStartSidesGenerated = false;
+	bool bCurrentlyCarried = false;
+	bool bCanSendStartSignal = false;
 
 public:	
 
@@ -73,13 +79,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 	UBoxComponent* BackSideBoxCollider;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* LeftSide;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* FrontSide;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* RightSide;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* BackSide;
 
 	ConnectedCubeInfo LeftConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
@@ -95,11 +101,6 @@ public:
 	UFUNCTION()
 	void SendActivationSignal(UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType);
 
-private:
-	ESideType PreviousLeftSide;
-	ESideType PreviousFrontSide;
-	ESideType PreviousRightSide;
-	ESideType PreviousBackSide;
 
 private:
 	void SetupBaseMesh();
@@ -108,13 +109,19 @@ private:
 	void SetupStartSides();
 	void SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide);
 	void TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference);
+	bool HasConnectedNeighbour();
 
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void OnPickUp_Implementation(AActor* Caller) override;
+	virtual void OnDropPickUp_Implementation(AActor* Caller) override;
 
 public:
 	AFleshCube();
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	UFleshCubeSideBase* GetCubeSideByCollider(FString ColliderName);
 };
