@@ -36,6 +36,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blueprint Faces")
 	TMap<ESideType, TSubclassOf<UFleshCubeSideBase>> BlueprintFaces;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
+	AActor* CubeRespawnPoint;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
 	ESideType LeftSideType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
@@ -48,35 +51,35 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* BaseMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
 	UStaticMeshComponent* LeftSideMeshComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
 	UStaticMeshComponent* RightSideMeshComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
 	UStaticMeshComponent* FrontSideMeshComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
 	UStaticMeshComponent* BackSideMeshComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
 	UStaticMeshComponent* TopSideMeshComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
 	UStaticMeshComponent* BottomSideMeshComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 	UBoxComponent* LeftSideBoxCollider;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 	UBoxComponent* FrontSideBoxCollider;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 	UBoxComponent* RightSideBoxCollider;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 	UBoxComponent* BackSideBoxCollider;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* LeftSide;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* FrontSide;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* RightSide;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* BackSide;
 
 	ConnectedCubeInfo LeftConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
