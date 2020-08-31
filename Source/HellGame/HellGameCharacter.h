@@ -5,16 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interact.h"
+#include "APickUpComp.h"
 #include "HellGameCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(config = Game)
-<<<<<<< HEAD
 class AHellGameCharacter : public ACharacter, public IInteract
-=======
-class AHellGameCharacter : public ACharacter
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 {
 	GENERATED_BODY()
 
@@ -89,30 +86,23 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 		float TraceDistance = 250.0f;
 
-<<<<<<< HEAD
 	/** Is the character holding an object? */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
 	bool bIsHoldingObject;
 
 	void InteractTrace();
 
+	void HidePrompt();
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interact")
 		void OnInteract(AActor* Actor);
 	virtual void OnInteract_Implementation(AActor* Actor);
 
-=======
-	UFUNCTION(BlueprintNativeEvent)
-		void InteractTrace();
-	void InteractTrace_Implementation();
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	AActor* Interactable;
-<<<<<<< HEAD
-
-=======
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 
 protected:
 
@@ -171,6 +161,8 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UAPickUpComp* PickupComponent;
 
 };
 

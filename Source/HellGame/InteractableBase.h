@@ -5,15 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interactable.h"
-<<<<<<< HEAD
 #include "PickupAble.h"
-=======
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 #include "HellGameHUD.h"
+#include "HellGameCharacter.h"
 #include "InteractableBase.generated.h"
 
 UCLASS()
-class HELLGAME_API AInteractableBase : public AActor, public IInteractable
+class HELLGAME_API AInteractableBase : public AActor, public IInteractable, public IPickupAble
 {
 	GENERATED_BODY()
 
@@ -47,8 +45,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Interactable")
 		TSubclassOf<UUserWidget> PromptWidget;
-<<<<<<< HEAD
-=======
-	//Sync
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
+		void OnPickUp(AActor* Caller);
+	virtual void OnPickUp_Implementation(AActor* Caller);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
+		void OnDropPickUp(AActor* Caller);
+	virtual void OnDropPickUp_Implementation(AActor* Caller);
+
+	/*Can the player pickup this object, if false = stationary*/
+	UPROPERTY(EditAnywhere, Category = "Interactable")
+		bool bCanPickup;
+
+	AHellGameCharacter* Interactor;
 };

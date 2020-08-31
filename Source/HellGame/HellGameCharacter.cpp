@@ -83,6 +83,7 @@ AHellGameCharacter::AHellGameCharacter()
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
+
 }
 
 void AHellGameCharacter::BeginPlay()
@@ -104,6 +105,8 @@ void AHellGameCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
+
+	PickupComponent = Cast<AActor>(this)->FindComponentByClass<UAPickUpComp>();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -139,11 +142,7 @@ void AHellGameCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AHellGameCharacter::LookUpAtRate);
 }
 
-<<<<<<< HEAD
 void AHellGameCharacter::InteractTrace()
-=======
-void AHellGameCharacter::InteractTrace_Implementation()
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 {
 	FVector Pos;
 	FRotator Rot;
@@ -169,60 +168,37 @@ void AHellGameCharacter::InteractTrace_Implementation()
 		}
 		else
 		{
-			if (Interactable)
-			{
-				if (Interactable->Implements<UInteractable>())
-				{
-					IInteractable* Interface = Cast<IInteractable>(Interactable);
-					if (Interface)
-					{
-						Interface->OnEndFocus_Implementation();
-					}
-					else
-<<<<<<< HEAD
-					{
-						IInteractable::Execute_OnEndFocus(Interactable);
-					}
-=======
-						IInteractable::Execute_OnEndFocus(Interactable);
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
-				}
-				Interactable = nullptr;
-			}
+			HidePrompt();
+			Interactable = nullptr;
 		}
 	}
 	else
 	{
 		// Not focusing on the object any more
-		if (Interactable)
+		HidePrompt();
+		Interactable = nullptr;
+	}
+}
+
+void AHellGameCharacter::HidePrompt()
+{
+	if (Interactable)
+	{
+		if (Interactable->Implements<UInteractable>())
 		{
-			if (Interactable->Implements<UInteractable>())
+			IInteractable* Interface = Cast<IInteractable>(Interactable);
+			if (Interface)
 			{
-<<<<<<< HEAD
-				IInteractable* Interface = Cast<IInteractable>(Interactable);
-=======
-				const auto& Interface = Cast<IInteractable>(Interactable);
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
-				if (Interface)
-				{
-					Interface->OnEndFocus_Implementation();
-				}
-				else
-<<<<<<< HEAD
-				{
-					IInteractable::Execute_OnEndFocus(Interactable);
-				}
-=======
-					IInteractable::Execute_OnEndFocus(Interactable);
-				//Interface->OnEndFocus();
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
+				Interface->OnEndFocus_Implementation();
 			}
-			Interactable = nullptr;
+			else
+			{
+				IInteractable::Execute_OnEndFocus(Interactable);
+			}
 		}
 	}
 }
 
-<<<<<<< HEAD
 void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
 {
 	// Check if we have something to interact whit, else just return.
@@ -241,8 +217,7 @@ void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
 	//Failsafe if an actor from a blueprint doesn't implements the interacteable interface
 	if (Actor->Implements<UInteractable>())
 	{
-		AActor* Caller = Cast<AActor>(this);
-		IInteractable::Execute_OnInteract(Interactable, Caller);
+		IInteractable::Execute_OnInteract(Interactable, this);
 	}
 
 }
@@ -253,11 +228,6 @@ void AHellGameCharacter::Tick(float DeltaTime)
 	{
 		InteractTrace();
 	}
-=======
-void AHellGameCharacter::Tick(float DeltaTime)
-{
-	InteractTrace_Implementation();
->>>>>>> 18c2901ea4f3458dc84c81898a1762afe4de4e45
 }
 
 void AHellGameCharacter::OnFire()

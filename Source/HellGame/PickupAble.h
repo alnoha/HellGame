@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "APickUpComp.h"
 #include "PickupAble.generated.h"
 
 // This class does not need to be modified.
@@ -23,8 +24,8 @@ class HELLGAME_API IPickupAble
 		// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
-		void OnPickUp(AActor* Actor);
+		void OnPickUp(AActor* Caller);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
-		void OnDropPickUp(AActor* Actor);
+		void OnDropPickUp(AActor* Caller);
 };
