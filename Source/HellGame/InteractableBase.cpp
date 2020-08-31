@@ -26,6 +26,23 @@ void AInteractableBase::Tick(float DeltaTime)
 
 void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 {
+	AActor* Actor = Cast<AActor>(this);
+	if (Actor->Implements<UPickupAble>())
+	{
+		Interactor = Cast<AHellGameCharacter>(Caller);
+		if (Interactor->bIsHoldingObject)
+		{
+			/*IPickupAble* Pickup = Cast<IPickupAble>(this);
+			Pickup->Execute_OnPickUp(this, Caller);*/
+			IPickupAble::Execute_OnDropPickUp(Actor, Caller);
+		}
+		else
+		{
+			/*IPickupAble* Pickup = Cast<IPickupAble>(this);
+			Pickup->Execute_OnPickUp(this, Caller);*/
+			IPickupAble::Execute_OnPickUp(Actor, Caller);
+		}
+	}
 }
 
 void AInteractableBase::OnBeginFocus_Implementation()
@@ -47,5 +64,29 @@ void AInteractableBase::OnEndFocus_Implementation()
 		bIsFocused = false;
 	}
 }
-//Sync
+
+void AInteractableBase::OnPickUp_Implementation(AActor* Caller)
+{
+	if (bCanPickup)
+	{
+		if (Interactor->PickupComponent)
+		{
+			Interactor->PickupComponent->PickUp(this);
+			Interactor->HidePrompt();
+			Interactor->bIsHoldingObject = true;
+		}
+	}
+}
+
+void AInteractableBase::OnDropPickUp_Implementation(AActor* Caller)
+{
+	if (bCanPickup)
+	{
+		if (Interactor->PickupComponent)
+		{
+			Interactor->PickupComponent->Drop();
+			Interactor->bIsHoldingObject = false;
+		}
+	}
+}
 
