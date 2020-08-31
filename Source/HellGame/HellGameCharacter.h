@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interact.h"
+#include "APickUpComp.h"
 #include "HellGameCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(config = Game)
-class AHellGameCharacter : public ACharacter
+class AHellGameCharacter : public ACharacter, public IInteract
 {
 	GENERATED_BODY()
 
@@ -84,9 +86,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 		float TraceDistance = 250.0f;
 
-	UFUNCTION(BlueprintNativeEvent)
-		void InteractTrace();
-	void InteractTrace_Implementation();
+	/** Is the character holding an object? */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
+	bool bIsHoldingObject;
+
+	void InteractTrace();
+
+	void HidePrompt();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interact")
+		void OnInteract(AActor* Actor);
+	virtual void OnInteract_Implementation(AActor* Actor);
+
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -149,6 +161,8 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UAPickUpComp* PickupComponent;
 
 };
 
