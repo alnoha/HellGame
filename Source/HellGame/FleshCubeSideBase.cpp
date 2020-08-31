@@ -9,7 +9,7 @@ UFleshCubeSideBase::UFleshCubeSideBase()
 
 	UE_LOG(LogTemp, Warning, TEXT("Getting spawned! :D"));
 
-	SetupBaseMesh();
+	// SetupBaseMesh();
 }
 
 void UFleshCubeSideBase::SetupBaseMesh()

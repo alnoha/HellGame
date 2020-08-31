@@ -8,6 +8,7 @@ AFleshCube::AFleshCube()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
 	SetupBaseMesh();
 	SetupSideMeshes();
 
@@ -38,6 +39,65 @@ void AFleshCube::TemporaryReferenceFiller(ESideType SideType, const TCHAR* Refer
 	}
 }
 
+void AFleshCube::OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA<AFleshCube>())
+	{
+		AFleshCube* OtherCube = Cast<AFleshCube>(OtherActor);
+		UFleshCubeSideBase* OtherCubeSide = Cast<UFleshCubeSideBase>(OtherComp->GetAttachParent());
+
+		if (OverlappedComp == LeftSideBoxCollider)
+		{
+			LeftConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
+			OtherCube->SendActivationSignal(LeftSide, OtherCubeSide, LeftSideType);
+		}
+		else if (OverlappedComp == FrontSideBoxCollider)
+		{
+			FrontConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
+			OtherCube->SendActivationSignal(FrontSide, OtherCubeSide, FrontSideType);
+		}
+		else if (OverlappedComp == RightSideBoxCollider)
+		{
+			RightConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
+			OtherCube->SendActivationSignal(RightSide, OtherCubeSide, RightSideType);
+		}
+		else if (OverlappedComp == BackSideBoxCollider)
+		{
+			BackConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
+			OtherCube->SendActivationSignal(BackSide, OtherCubeSide, BackSideType);
+		}
+	}
+}
+
+void AFleshCube::OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
+{
+	if (OtherActor->IsA<AFleshCube>())
+	{
+		if (OverlappedComp == LeftSideBoxCollider)
+		{
+			LeftConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+		}
+		else if (OverlappedComp == FrontSideBoxCollider)
+		{
+			FrontConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+		}
+		else if (OverlappedComp == RightSideBoxCollider)
+		{
+			RightConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+		}
+		else if (OverlappedComp == BackSideBoxCollider)
+		{
+			BackConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+		}
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Cleared Connected cube"));
+	}
+}
+
+void AFleshCube::SendActivationSignal(UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Received Activation Signal!!"));
+}
+
 void AFleshCube::SetupBaseMesh()
 {
 	// Create base cube mesh
@@ -54,41 +114,65 @@ void AFleshCube::SetupBaseMesh()
 void AFleshCube::SetupSideMeshes()
 {
 	LeftSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Left Side Mesh");
-	LeftSideMeshComponent->AttachTo(BaseMesh);
+	LeftSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftSideMeshComponent->RegisterComponent();
 	LeftSideMeshComponent->bEditableWhenInherited = true;
 	LeftSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	LeftSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 
+	LeftSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Left Box collider");
+	LeftSideBoxCollider->bEditableWhenInherited = true;
+	LeftSideBoxCollider->AttachToComponent(LeftSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftSideBoxCollider->RegisterComponent();
+	LeftSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
+
 	FrontSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Front Side Mesh");
-	FrontSideMeshComponent->AttachTo(BaseMesh);
+	FrontSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	FrontSideMeshComponent->RegisterComponent();
 	FrontSideMeshComponent->bEditableWhenInherited = true;
 	FrontSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	FrontSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
+	FrontSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Front Box collider");
+	FrontSideBoxCollider->bEditableWhenInherited = true;
+	FrontSideBoxCollider->AttachToComponent(FrontSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	FrontSideBoxCollider->RegisterComponent();
+	FrontSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
+
 	RightSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Right Side Mesh");
-	RightSideMeshComponent->AttachTo(BaseMesh);
+	RightSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	RightSideMeshComponent->RegisterComponent();
 	RightSideMeshComponent->bEditableWhenInherited = true;
 	RightSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	RightSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 
+	RightSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Right Box collider");
+	RightSideBoxCollider->bEditableWhenInherited = true;
+	RightSideBoxCollider->AttachToComponent(RightSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	RightSideBoxCollider->RegisterComponent();
+	RightSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
+
 	BackSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Back Side Mesh");
-	BackSideMeshComponent->AttachTo(BaseMesh);
+	BackSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	BackSideMeshComponent->bEditableWhenInherited = true;
 	BackSideMeshComponent->RegisterComponent();
 	BackSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
+	BackSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Back Box collider");
+	BackSideBoxCollider->bEditableWhenInherited = true;
+	BackSideBoxCollider->AttachToComponent(BackSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	BackSideBoxCollider->RegisterComponent();
+	BackSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
+
 	TopSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Top Side Mesh");
-	TopSideMeshComponent->AttachTo(BaseMesh);
+	TopSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	TopSideMeshComponent->bEditableWhenInherited = true;
 	TopSideMeshComponent->RegisterComponent();
 	TopSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	TopSideMeshComponent->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
 	BottomSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Bottom Side Mesh");
-	BottomSideMeshComponent->AttachTo(BaseMesh);
+	BottomSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	BottomSideMeshComponent->bEditableWhenInherited = true;
 	BottomSideMeshComponent->RegisterComponent();
 	BottomSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
@@ -111,6 +195,17 @@ void AFleshCube::Tick(float DeltaTime)
 void AFleshCube::OnConstruction(const FTransform& Transform)
 {
 	SetupSides();
+
+	LeftSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
+	FrontSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
+	RightSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
+	BackSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
+
+
+	LeftSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
+	FrontSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
+	RightSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
+	BackSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
 
 	Super::OnConstruction(Transform);
 }

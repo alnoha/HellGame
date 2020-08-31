@@ -8,7 +8,19 @@
 #include "SideTypes.h"
 #include "InteractableBase.h"
 #include "Engine/DataTable.h"
+#include "Components/BoxComponent.h"
 #include "FleshCube.generated.h"
+
+
+struct ConnectedCubeInfo
+{
+public:
+	AFleshCube* ConnectedCube;
+	UFleshCubeSideBase* ConnectedFace;
+
+public:
+	ConnectedCubeInfo(AFleshCube* ConnectedCube, UFleshCubeSideBase* ConnectedFace) : ConnectedCube(ConnectedCube), ConnectedFace(ConnectedFace) {}
+};
 
 UCLASS()
 class HELLGAME_API AFleshCube : public AInteractableBase
@@ -49,6 +61,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
 	UStaticMeshComponent* BottomSideMeshComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UBoxComponent* LeftSideBoxCollider;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UBoxComponent* FrontSideBoxCollider;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UBoxComponent* RightSideBoxCollider;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+	UBoxComponent* BackSideBoxCollider;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* LeftSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
@@ -57,6 +78,19 @@ public:
 	UFleshCubeSideBase* RightSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* BackSide;
+
+	ConnectedCubeInfo LeftConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+	ConnectedCubeInfo FrontConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+	ConnectedCubeInfo RightConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+	ConnectedCubeInfo BackConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+
+	UFUNCTION()
+	void OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void SendActivationSignal(UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType);
 
 private:
 	ESideType PreviousLeftSide;
