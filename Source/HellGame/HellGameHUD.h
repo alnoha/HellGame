@@ -9,6 +9,15 @@
 #include "EngineUtils.h"
 #include "HellGameHUD.generated.h"
 
+UENUM()
+enum class CrosshairTypes
+{
+	DEFAULT,
+	PICKUP,
+	ROTATE,
+	DOOR
+};
+
 UCLASS()
 class AHellGameHUD : public AHUD
 {
@@ -24,7 +33,11 @@ public:
 	void HideWidget();
 
 	void UpdateCrosshair(UTexture2D* Texture);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UTexture2D*> CrosshairTextures;
+
+	
 
 protected:
 	virtual void BeginPlay();

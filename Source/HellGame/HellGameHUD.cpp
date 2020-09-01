@@ -10,6 +10,9 @@
 #include "Engine/Engine.h"
 #include "Blueprint/UserWidget.h"
 
+#include "HAL/FileManager.h"
+
+
 AHellGameHUD::AHellGameHUD()
 {
 
@@ -19,28 +22,22 @@ void AHellGameHUD::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-	InitCrosshairTextures();
 	FStringClassReference CrosshairWidgetClassRef(TEXT("/Game/FirstPersonCPP/UserInterface/WBP_HUD.WBP_HUD_C"));
 	if (UClass* Widget = CrosshairWidgetClassRef.TryLoadClass<UUserWidget>())
 	{
 		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), Widget);
 		CrosshairWidget->AddToViewport();
 	}
+	InitCrosshairTextures();
 }
 
 void AHellGameHUD::InitCrosshairTextures()
 {
-	TArray<UObject*> Assets;
-	FindOrLoadAssetsByPath(FString("/Game/Textures/UI/Crosshair/"), Assets, EngineUtils::ATL_Regular);
-	for (auto Asset : Assets)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Asset->GetName());
-		UTexture2D* Texture = Cast<UTexture2D>(Asset);
-		if (Texture)
-		{
-			CrosshairTextures.Add(Texture);
-		}
-	}
+	//TODO: Change this to load from a directory instead of hardcoded Path
+	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_01.T_Cross_01"))));
+	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_02.T_Cross_02"))));
+	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_03.T_Cross_03"))));
+	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_04.T_Cross_04"))));
 }
 
 void AHellGameHUD::DrawHUD()
