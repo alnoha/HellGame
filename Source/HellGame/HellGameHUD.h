@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Components/CanvasPanel.h"
+#include "Components/Image.h"
+#include "EngineUtils.h"
 #include "HellGameHUD.generated.h"
 
 UCLASS()
@@ -20,8 +23,15 @@ public:
 	void ShowWidget(TSubclassOf<UUserWidget> Widget);
 	void HideWidget();
 
+	void UpdateCrosshair(UTexture2D* Texture);
+	TArray<UTexture2D*> CrosshairTextures;
 
 protected:
+	virtual void BeginPlay();
 	UUserWidget* PromptWidget;
+	UUserWidget* CrosshairWidget;
+
+private:
+	void InitCrosshairTextures();
 };
 

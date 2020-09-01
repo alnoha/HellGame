@@ -12,8 +12,36 @@
 
 AHellGameHUD::AHellGameHUD()
 {
+
 }
 
+void AHellGameHUD::BeginPlay()
+{
+	// Call the base class  
+	Super::BeginPlay();
+	InitCrosshairTextures();
+	FStringClassReference CrosshairWidgetClassRef(TEXT("/Game/FirstPersonCPP/UserInterface/WBP_HUD.WBP_HUD_C"));
+	if (UClass* Widget = CrosshairWidgetClassRef.TryLoadClass<UUserWidget>())
+	{
+		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), Widget);
+		CrosshairWidget->AddToViewport();
+	}
+}
+
+void AHellGameHUD::InitCrosshairTextures()
+{
+	TArray<UObject*> Assets;
+	FindOrLoadAssetsByPath(FString("/Game/Textures/UI/Crosshair/"), Assets, EngineUtils::ATL_Regular);
+	for (auto Asset : Assets)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Asset->GetName());
+		UTexture2D* Texture = Cast<UTexture2D>(Asset);
+		if (Texture)
+		{
+			CrosshairTextures.Add(Texture);
+		}
+	}
+}
 
 void AHellGameHUD::DrawHUD()
 {
@@ -36,4 +64,12 @@ void AHellGameHUD::HideWidget()
 		PromptWidget->RemoveFromViewport();
 		PromptWidget = nullptr;
 	}
+}
+
+void AHellGameHUD::UpdateCrosshair(UTexture2D* Texture)
+{
+	UCanvasPanel* CanvasPanel = Cast<UCanvasPanel>(CrosshairWidget->GetRootWidget());
+	// Crosshair image got index 0
+	UImage* Image = Cast<UImage>(CanvasPanel->GetChildAt(0));
+	Image->SetBrushFromTexture(Texture);
 }
