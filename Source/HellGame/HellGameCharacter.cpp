@@ -174,7 +174,7 @@ void AHellGameCharacter::InteractTrace()
 	}
 	else
 	{
-		// Not focusing on the object anymore
+		// Not focusing on the object any more
 		HidePrompt();
 		Interactable = nullptr;
 	}
