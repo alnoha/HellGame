@@ -20,9 +20,6 @@ public:
 	void ShowWidget(TSubclassOf<UUserWidget> Widget);
 	void HideWidget();
 
-private:
-	/** Crosshair asset pointer */
-	class UTexture2D* CrosshairTex;
 
 protected:
 	UUserWidget* PromptWidget;
