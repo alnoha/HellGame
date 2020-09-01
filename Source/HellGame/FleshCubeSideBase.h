@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "SideTypes.h"
 #include "FleshCubeSideBase.generated.h"
 
 
@@ -31,9 +30,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
-	void ReceivedActivationSignal(UFleshCubeSideBase* SendingSide, ESideType SendingType);
-	virtual void ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType);
+	// Called every frame
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Testes")
+	void TextPrinter();
+	void TextPrinter_Implementation();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
