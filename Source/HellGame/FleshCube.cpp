@@ -143,27 +143,27 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("FaceMatch"));
 		if (ReceivingSide->GetName() == LeftSide->GetName())
 		{
-			FrontSide->ReceivedActivationSignal(SendingSide, SendingType);
-			RightSide->ReceivedActivationSignal(SendingSide, SendingType);
-			BackSide->ReceivedActivationSignal(SendingSide, SendingType);
+			FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
+			RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
+			BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
 		}
 		else if (ReceivingSide->GetName() == FrontSide->GetName())
 		{
-			RightSide->ReceivedActivationSignal(SendingSide, SendingType);
-			BackSide->ReceivedActivationSignal(SendingSide, SendingType);
-			LeftSide->ReceivedActivationSignal(SendingSide, SendingType);
+			RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
+			BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
+			LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
 		}
 		else if (ReceivingSide->GetName() == RightSide->GetName())
 		{
-			BackSide->ReceivedActivationSignal(SendingSide, SendingType);
-			LeftSide->ReceivedActivationSignal(SendingSide, SendingType);
-			FrontSide->ReceivedActivationSignal(SendingSide, SendingType);
+			BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
+			LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
+			FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
 		}
 		else if (ReceivingSide->GetName() == BackSide->GetName())
 		{
-			LeftSide->ReceivedActivationSignal(SendingSide, SendingType);
-			FrontSide->ReceivedActivationSignal(SendingSide, SendingType);
-			RightSide->ReceivedActivationSignal(SendingSide, SendingType);
+			LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
+			FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
+			RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
 		}
 	}
 	else
