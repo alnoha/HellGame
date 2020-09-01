@@ -27,7 +27,7 @@ void UFleshCubeSideBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType)
+void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, TEXT("impl"));
 }
@@ -61,4 +61,14 @@ void UFleshCubeSideBase::SetupMesh(UStaticMeshComponent* parent)
 UStaticMesh* UFleshCubeSideBase::GetFaceMesh()
 {
 	return FaceMesh;
+}
+
+void UFleshCubeSideBase::SetCurrentSideType(ESideType NewSideType)
+{
+	CurrentSideType = NewSideType;
+}
+
+ESideType UFleshCubeSideBase::GetCurrentSideType()
+{
+	return CurrentSideType;
 }
