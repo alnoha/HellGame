@@ -9,7 +9,7 @@ UFleshCubeSideBase::UFleshCubeSideBase()
 
 	UE_LOG(LogTemp, Warning, TEXT("Getting spawned! :D"));
 
-	SetupBaseMesh();
+	// SetupBaseMesh();
 }
 
 void UFleshCubeSideBase::SetupBaseMesh()
@@ -27,8 +27,9 @@ void UFleshCubeSideBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UFleshCubeSideBase::TextPrinter_Implementation()
+void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, TEXT("impl"));
 }
 
 void UFleshCubeSideBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
