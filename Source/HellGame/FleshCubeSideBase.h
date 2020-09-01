@@ -23,7 +23,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
 	UStaticMesh* FaceMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "A <- Sidetype")
+	ESideType CurrentSideType;
 private:
+
+private:
+
 	void SetupBaseMesh();
 
 protected:
@@ -34,10 +39,10 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
 	void ReceivedActivationSignal(UFleshCubeSideBase* SendingSide, ESideType SendingType);
 	virtual void ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType);
-
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-public:
 	void SetupMesh(UStaticMeshComponent* parent);
 	UStaticMesh* GetFaceMesh();
+
+	void SetCurrentSideType(ESideType NewSideType);
+	ESideType GetCurrentSideType();
 };
