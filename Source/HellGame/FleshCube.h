@@ -12,14 +12,19 @@
 #include "FleshCube.generated.h"
 
 
-struct ConnectedCubeInfo
+USTRUCT(BlueprintType)
+struct FConnectedCubeInfo
 {
+	GENERATED_BODY()
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
 	AFleshCube* ConnectedCube;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
 	UFleshCubeSideBase* ConnectedFace;
 
 public:
-	ConnectedCubeInfo(AFleshCube* ConnectedCube, UFleshCubeSideBase* ConnectedFace) : ConnectedCube(ConnectedCube), ConnectedFace(ConnectedFace) {}
+	FConnectedCubeInfo(AFleshCube* ConnectedCube, UFleshCubeSideBase* ConnectedFace) : ConnectedCube(ConnectedCube), ConnectedFace(ConnectedFace) {}
+	FConnectedCubeInfo() : ConnectedCube(nullptr), ConnectedFace(nullptr) {}
 };
 
 UCLASS()
@@ -88,10 +93,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* BackSide;
 
-	ConnectedCubeInfo LeftConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
-	ConnectedCubeInfo FrontConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
-	ConnectedCubeInfo RightConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
-	ConnectedCubeInfo BackConnectedCube = ConnectedCubeInfo(nullptr, nullptr);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	FConnectedCubeInfo LeftConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	FConnectedCubeInfo FrontConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	FConnectedCubeInfo RightConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	FConnectedCubeInfo BackConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
 
 	UFUNCTION()
 	void OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -127,5 +136,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	UFleshCubeSideBase* GetCubeSideByCollider(FString ColliderName);
+	UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
 };
