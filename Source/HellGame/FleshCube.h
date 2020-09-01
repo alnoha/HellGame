@@ -108,6 +108,10 @@ private:
 	void SetupSides();
 	void SetupStartSides();
 	void SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide);
+	void SetupLeftSide();
+	void SetupFrontSide();
+	void SetupRightSide();
+	void SetupBackSide();
 	void TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference);
 	bool HasConnectedNeighbour();
 

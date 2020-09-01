@@ -64,22 +64,18 @@ void AFleshCube::OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActo
 
 		if (OverlappedComp->GetName().Equals(LeftSideBoxCollider->GetName()))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("its keft comp"));
 			LeftConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
 		}
 		else if (OverlappedComp->GetName().Equals(FrontSideBoxCollider->GetName()))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("its frint comp"));
 			FrontConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
 		}
 		else if (OverlappedComp->GetName().Equals(RightSideBoxCollider->GetName()))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("its right comp"));
 			RightConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
 		}
 		else if (OverlappedComp->GetName().Equals(BackSideBoxCollider->GetName()))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("its bakc comp"));
 			BackConnectedCube = ConnectedCubeInfo(OtherCube, OtherCubeSide);
 		}
 	}
@@ -145,8 +141,8 @@ void AFleshCube::SetupSideMeshes()
 	LeftSideBoxCollider->bEditableWhenInherited = true;
 	LeftSideBoxCollider->AttachToComponent(LeftSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftSideBoxCollider->RegisterComponent();
-	LeftSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	LeftSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	LeftSideBoxCollider->SetBoxExtent(FVector(40.0f, 50.0f, 50.0f));
+	LeftSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
 
 	FrontSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Front Side Mesh");
 	FrontSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -159,8 +155,8 @@ void AFleshCube::SetupSideMeshes()
 	FrontSideBoxCollider->bEditableWhenInherited = true;
 	FrontSideBoxCollider->AttachToComponent(FrontSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	FrontSideBoxCollider->RegisterComponent();
-	FrontSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	FrontSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	FrontSideBoxCollider->SetBoxExtent(FVector(40.0f, 50.0f, 50.0f));
+	FrontSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
 
 	RightSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Right Side Mesh");
 	RightSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -173,8 +169,8 @@ void AFleshCube::SetupSideMeshes()
 	RightSideBoxCollider->bEditableWhenInherited = true;
 	RightSideBoxCollider->AttachToComponent(RightSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	RightSideBoxCollider->RegisterComponent();
-	RightSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	RightSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	RightSideBoxCollider->SetBoxExtent(FVector(40.0f, 50.0f, 50.0f));
+	RightSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
 
 	BackSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Back Side Mesh");
 	BackSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -186,8 +182,8 @@ void AFleshCube::SetupSideMeshes()
 	BackSideBoxCollider->bEditableWhenInherited = true;
 	BackSideBoxCollider->AttachToComponent(BackSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	BackSideBoxCollider->RegisterComponent();
-	BackSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	BackSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	BackSideBoxCollider->SetBoxExtent(FVector(40.0f, 50.0f, 50.0f));
+	BackSideBoxCollider->SetRelativeLocation(FVector(-120.0f, 0.0f, 0.0f));
 
 	TopSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Top Side Mesh");
 	TopSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -322,7 +318,6 @@ UFleshCubeSideBase* AFleshCube::GetCubeSideByCollider(FString ColliderName)
 {
 	if (ColliderName.Equals(LeftSideBoxCollider->GetName()))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("its left but its null"));
 		return LeftSide;
 	}
 	else if (ColliderName.Equals(FrontSideBoxCollider->GetName()))
@@ -335,10 +330,6 @@ UFleshCubeSideBase* AFleshCube::GetCubeSideByCollider(FString ColliderName)
 	}
 	else if (ColliderName.Equals(BackSideBoxCollider->GetName()))
 	{
-		if (BackSide == nullptr)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("its back but its null"));
-		}
 		return BackSide;
 	}
 	else
@@ -353,10 +344,14 @@ void AFleshCube::SetupSides()
 	{
 		SetupStartSides();
 	}
-	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
-	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
-	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
-	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
+	// SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
+	// SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
+	// SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
+	// SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
+	SetupLeftSide();
+	SetupFrontSide();
+	SetupRightSide();
+	SetupBackSide();
 }
 
 void AFleshCube::SetupStartSides()
@@ -442,5 +437,233 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 		}
 
 		PreviousType = SideType;
+	}
+}
+
+void AFleshCube::SetupLeftSide()
+{
+	if (LeftSideType != PreviousLeftSide)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
+
+		auto MyObject = BlueprintFaces.Find(LeftSideType);
+
+		if (LeftSide != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cube side is nullptr"));
+			LeftSideMeshComponent->SetStaticMesh(nullptr);
+			LeftSide->bEditableWhenInherited = false;
+			LeftSide->UnregisterComponent();
+			LeftSide->DestroyComponent(false);
+		}
+
+		if (MyObject == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MyObject is nullptr"));
+			LeftSideMeshComponent->SetStaticMesh(nullptr);
+			LeftSide = nullptr;
+		}
+		else
+		{
+			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(LeftSideType));
+
+			if (x == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("x is nullptr"));
+				return;
+			}
+
+			LeftSide = x;
+			LeftSide->RegisterComponent();
+			LeftSide->bEditableWhenInherited = false;
+
+			UStaticMesh* MeshToUse = LeftSide->GetFaceMesh();
+
+			if (MeshToUse == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No mesh from leftside"));
+			}
+
+			if (LeftSideMeshComponent == nullptr || LeftSide == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("SideMesh or cubeside is nullptr"));
+				return;
+			}
+
+			LeftSideMeshComponent->SetStaticMesh(LeftSide->GetFaceMesh());
+		}
+
+		PreviousLeftSide = LeftSideType;
+	}
+}
+
+void AFleshCube::SetupFrontSide()
+{
+	if (FrontSideType != PreviousFrontSide)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
+
+		auto MyObject = BlueprintFaces.Find(FrontSideType);
+
+		if (FrontSide != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cube side is nullptr"));
+			FrontSideMeshComponent->SetStaticMesh(nullptr);
+			FrontSide->bEditableWhenInherited = false;
+			FrontSide->UnregisterComponent();
+			FrontSide->DestroyComponent(false);
+		}
+
+		if (MyObject == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MyObject is nullptr"));
+			FrontSideMeshComponent->SetStaticMesh(nullptr);
+			FrontSide = nullptr;
+		}
+		else
+		{
+			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(FrontSideType));
+
+			if (x == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("x is nullptr"));
+				return;
+			}
+
+			FrontSide = x;
+			FrontSide->RegisterComponent();
+			FrontSide->bEditableWhenInherited = false;
+
+			UStaticMesh* MeshToUse = FrontSide->GetFaceMesh();
+
+			if (MeshToUse == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No mesh from leftside"));
+			}
+
+			if (FrontSideMeshComponent == nullptr || FrontSide == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("SideMesh or cubeside is nullptr"));
+				return;
+			}
+
+			FrontSideMeshComponent->SetStaticMesh(FrontSide->GetFaceMesh());
+		}
+
+		PreviousFrontSide = FrontSideType;
+	}
+}
+
+void AFleshCube::SetupRightSide()
+{
+	if (RightSideType != PreviousRightSide)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
+
+		auto MyObject = BlueprintFaces.Find(RightSideType);
+
+		if (RightSide != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cube side is nullptr"));
+			RightSideMeshComponent->SetStaticMesh(nullptr);
+			RightSide->bEditableWhenInherited = false;
+			RightSide->UnregisterComponent();
+			RightSide->DestroyComponent(false);
+		}
+
+		if (MyObject == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MyObject is nullptr"));
+			RightSideMeshComponent->SetStaticMesh(nullptr);
+			RightSide = nullptr;
+		}
+		else
+		{
+			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(RightSideType));
+
+			if (x == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("x is nullptr"));
+				return;
+			}
+
+			RightSide = x;
+			RightSide->RegisterComponent();
+			RightSide->bEditableWhenInherited = false;
+
+			UStaticMesh* MeshToUse = RightSide->GetFaceMesh();
+
+			if (MeshToUse == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No mesh from leftside"));
+			}
+
+			if (RightSideMeshComponent == nullptr || RightSide == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("SideMesh or cubeside is nullptr"));
+				return;
+			}
+
+			RightSideMeshComponent->SetStaticMesh(RightSide->GetFaceMesh());
+		}
+
+		PreviousRightSide = RightSideType;
+	}
+}
+
+void AFleshCube::SetupBackSide()
+{
+	if (BackSideType != PreviousBackSide)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
+
+		auto MyObject = BlueprintFaces.Find(BackSideType);
+
+		if (BackSide != nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cube side is nullptr"));
+			BackSideMeshComponent->SetStaticMesh(nullptr);
+			BackSide->bEditableWhenInherited = false;
+			BackSide->UnregisterComponent();
+			BackSide->DestroyComponent(false);
+		}
+
+		if (MyObject == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MyObject is nullptr"));
+			BackSideMeshComponent->SetStaticMesh(nullptr);
+			BackSide = nullptr;
+		}
+		else
+		{
+			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(BackSideType));
+
+			if (x == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("x is nullptr"));
+				return;
+			}
+
+			BackSide = x;
+			BackSide->RegisterComponent();
+			BackSide->bEditableWhenInherited = false;
+
+			UStaticMesh* MeshToUse = BackSide->GetFaceMesh();
+
+			if (MeshToUse == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No mesh from leftside"));
+			}
+
+			if (BackSideMeshComponent == nullptr || BackSide == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("SideMesh or cubeside is nullptr"));
+				return;
+			}
+
+			BackSideMeshComponent->SetStaticMesh(BackSide->GetFaceMesh());
+		}
+
+		PreviousBackSide = BackSideType;
 	}
 }
