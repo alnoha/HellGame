@@ -4,58 +4,79 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "CubeSideComponent.h"
-#include "SideComponent.h"
+#include "FleshCubeSideBase.h"
+#include "SideTypes.h"
+#include "InteractableBase.h"
+#include "Engine/DataTable.h"
 #include "FleshCube.generated.h"
 
-class UEyeSideComponent;
-
 UCLASS()
-class HELLGAME_API AFleshCube : public AActor
+class HELLGAME_API AFleshCube : public AInteractableBase
 {
 	GENERATED_BODY()
 
 private:
-	TQueue<UEyeSideComponent*> eyeComponents;
-
-	UPROPERTY(EditAnywhere, Category = "Cube Sides")
-	UCubeSideComponent* leftSideComponent;
-	UCubeSideComponent* frontSideComponent;
-	UCubeSideComponent* rightSideComponent;
-	UCubeSideComponent* backSideComponent;
-	UCubeSideComponent* topSideComponent;
-	UCubeSideComponent* bottomSideComponent;
-
-public:
-
-	// Sets default values for this actor's properties
-	AFleshCube();
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* BaseMesh;
-
-	UPROPERTY(EditAnywhere, Category = "Flesh Sides")
-	TEnumAsByte<ECubeSide> leftSide;
-	UPROPERTY(EditAnywhere, Category = "Flesh Sides")
-	TEnumAsByte<ECubeSide> frontSide;
-	UPROPERTY(EditAnywhere, Category = "Flesh Sides")
-	TEnumAsByte<ECubeSide> rightSide;
-	UPROPERTY(EditAnywhere, Category = "Flesh Sides")
-	TEnumAsByte<ECubeSide> backSide;
-	UPROPERTY(EditAnywhere, Category = "Flesh Sides")
-	TEnumAsByte<ECubeSide> topSide;
-	UPROPERTY(EditAnywhere, Category = "Flesh Sides")
-	TEnumAsByte<ECubeSide> bottomSide;
-
-private:
-	UCubeSideComponent* PopulateSideSlot(ECubeSide cubeSide);
-	void CreateEyeComponentQueue();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UDataTable* FaceBlueprintTable;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blueprint Faces")
+	TMap<ESideType, TSubclassOf<UFleshCubeSideBase>> BlueprintFaces;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	ESideType LeftSideType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	ESideType FrontSideType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	ESideType RightSideType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	ESideType BackSideType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UStaticMeshComponent* BaseMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UStaticMeshComponent* LeftSideMeshComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UStaticMeshComponent* RightSideMeshComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UStaticMeshComponent* FrontSideMeshComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UStaticMeshComponent* BackSideMeshComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UStaticMeshComponent* TopSideMeshComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SideMeshes")
+	UStaticMeshComponent* BottomSideMeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UFleshCubeSideBase* LeftSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UFleshCubeSideBase* FrontSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UFleshCubeSideBase* RightSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
+	UFleshCubeSideBase* BackSide;
+
+private:
+	ESideType PreviousLeftSide;
+	ESideType PreviousFrontSide;
+	ESideType PreviousRightSide;
+	ESideType PreviousBackSide;
+
+private:
+	void SetupBaseMesh();
+	void SetupSideMeshes();
+	void SetupSides();
+	void SetupTopBottomSides();
+	void SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide);
+	void TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference);
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
+	AFleshCube();
+
+	virtual void Tick(float DeltaTime) override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 };
