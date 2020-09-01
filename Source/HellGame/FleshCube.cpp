@@ -104,15 +104,77 @@ void AFleshCube::OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor
 	}
 }
 
-void AFleshCube::SendActivationSignal(UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType)
+void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Received Activation Signal!!"));
+	bool FaceMatch = false;
+	if (SendingType == ESideType::Butt)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("ButtSender"));
+		if (ReceivingSide->GetCurrentSideType() == ESideType::Nose)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("NoseOK"));
+			FaceMatch = true;
+		}
+	}
+	else if(SendingType == ESideType::Nose)
+	{
+		if (ReceivingSide->GetCurrentSideType() == ESideType::Eye)
+		{
+			FaceMatch = true;
+		}
+	}
+	else if (SendingType == ESideType::Eye)
+	{
+		if (ReceivingSide->GetCurrentSideType() == ESideType::Mouth)
+		{
+			FaceMatch = true;
+		}
+	}
+	else if (SendingType == ESideType::Mouth)
+	{
+		if (ReceivingSide->GetCurrentSideType() == ESideType::Butt)
+		{
+			FaceMatch = true;
+		}
+	}
 
-	ReceivingSide->ReceivedActivationSignal(SendingSide, SendingType);
-	
-	/*ReceivingSide->CallFunctionByNameWithArguments(TEXT("ReceivedActivationSignal"), SendingSide, SendingType);*/
-	
-	//ExecReceivedActivationSignal(SendingSide, SendingType);
+	if (FaceMatch)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("FaceMatch"));
+		if (ReceivingSide->GetName() == LeftSide->GetName())
+		{
+			FrontSide->ReceivedActivationSignal(SendingSide, SendingType);
+			RightSide->ReceivedActivationSignal(SendingSide, SendingType);
+			BackSide->ReceivedActivationSignal(SendingSide, SendingType);
+		}
+		else if (ReceivingSide->GetName() == FrontSide->GetName())
+		{
+			RightSide->ReceivedActivationSignal(SendingSide, SendingType);
+			BackSide->ReceivedActivationSignal(SendingSide, SendingType);
+			LeftSide->ReceivedActivationSignal(SendingSide, SendingType);
+		}
+		else if (ReceivingSide->GetName() == RightSide->GetName())
+		{
+			BackSide->ReceivedActivationSignal(SendingSide, SendingType);
+			LeftSide->ReceivedActivationSignal(SendingSide, SendingType);
+			FrontSide->ReceivedActivationSignal(SendingSide, SendingType);
+		}
+		else if (ReceivingSide->GetName() == BackSide->GetName())
+		{
+			LeftSide->ReceivedActivationSignal(SendingSide, SendingType);
+			FrontSide->ReceivedActivationSignal(SendingSide, SendingType);
+			RightSide->ReceivedActivationSignal(SendingSide, SendingType);
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("No FaceMatch"));
+		if (!ReturnSignal)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("No Returnsignal"));
+			SendingCube->SendActivationSignal(this, ReceivingSide, SendingSide, ReceivingSide->GetCurrentSideType(), true);
+		}
+	}
 }
 
 void AFleshCube::SetupBaseMesh()
@@ -245,7 +307,7 @@ void AFleshCube::Tick(float DeltaTime)
 				else
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("left != null"));
-					LeftConnectedCube.ConnectedCube->SendActivationSignal(LeftSide, LeftConnectedCube.ConnectedFace, LeftSideType);
+					LeftConnectedCube.ConnectedCube->SendActivationSignal(this, LeftSide, LeftConnectedCube.ConnectedFace, LeftSideType);
 				}
 			}
 
@@ -258,7 +320,7 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 				else
 				{
-					FrontConnectedCube.ConnectedCube->SendActivationSignal(FrontSide, FrontConnectedCube.ConnectedFace, FrontSideType);
+					FrontConnectedCube.ConnectedCube->SendActivationSignal(this, FrontSide, FrontConnectedCube.ConnectedFace, FrontSideType);
 				}
 			}
 
@@ -271,7 +333,7 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 				else
 				{
-					RightConnectedCube.ConnectedCube->SendActivationSignal(RightSide, RightConnectedCube.ConnectedFace, RightSideType);
+					RightConnectedCube.ConnectedCube->SendActivationSignal(this, RightSide, RightConnectedCube.ConnectedFace, RightSideType);
 				}
 			}
 
@@ -285,7 +347,7 @@ void AFleshCube::Tick(float DeltaTime)
 				else
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("back != null"));
-					BackConnectedCube.ConnectedCube->SendActivationSignal(BackSide, BackConnectedCube.ConnectedFace, BackSideType);
+					BackConnectedCube.ConnectedCube->SendActivationSignal(this, BackSide, BackConnectedCube.ConnectedFace, BackSideType);
 				}
 			}
 
@@ -493,6 +555,7 @@ void AFleshCube::SetupLeftSide()
 			LeftSideMeshComponent->SetStaticMesh(LeftSide->GetFaceMesh());
 		}
 
+		LeftSide->SetCurrentSideType(LeftSideType);
 		PreviousLeftSide = LeftSideType;
 	}
 }
@@ -550,6 +613,7 @@ void AFleshCube::SetupFrontSide()
 			FrontSideMeshComponent->SetStaticMesh(FrontSide->GetFaceMesh());
 		}
 
+		FrontSide->SetCurrentSideType(FrontSideType);
 		PreviousFrontSide = FrontSideType;
 	}
 }
@@ -607,6 +671,7 @@ void AFleshCube::SetupRightSide()
 			RightSideMeshComponent->SetStaticMesh(RightSide->GetFaceMesh());
 		}
 
+		RightSide->SetCurrentSideType(RightSideType);
 		PreviousRightSide = RightSideType;
 	}
 }
@@ -664,6 +729,7 @@ void AFleshCube::SetupBackSide()
 			BackSideMeshComponent->SetStaticMesh(BackSide->GetFaceMesh());
 		}
 
+		BackSide->SetCurrentSideType(BackSideType);
 		PreviousBackSide = BackSideType;
 	}
 }
