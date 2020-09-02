@@ -149,5 +149,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Cube sides")
 	UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
+
+	UFleshCubeSideBase* GetCubeSideByMesh(FString MeshName);
 };
