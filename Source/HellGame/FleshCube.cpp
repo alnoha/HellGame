@@ -315,7 +315,18 @@ void AFleshCube::OnPickUp_Implementation(AActor* Caller)
 {
 	AInteractableBase::OnPickUp_Implementation(Caller);
 	bCurrentlyCarried = true;
+	
+	for (UFleshCubeSideBase* Side : ActivatedSides)
+	{
+		Side->ReceivedStopSignal();
+	}
 
+	ActivatedSides.Empty();
+
+	LeftSide->ReceivedStopSignal();
+	FrontSide->ReceivedStopSignal();
+	RightSide->ReceivedStopSignal();
+	BackSide->ReceivedStopSignal();
 }
 
 void AFleshCube::OnDropPickUp_Implementation(AActor* Caller)
@@ -358,7 +369,7 @@ void AFleshCube::Tick(float DeltaTime)
 					if (CurrentSide != nullptr)
 					{
 						OtherCube->SendActivationSignal(this, LeftSide, CurrentSide, LeftSideType);
-						GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Found side"));
+						ActivatedSides.Add(CurrentSide);
 					}
 				}
 			}
@@ -373,7 +384,7 @@ void AFleshCube::Tick(float DeltaTime)
 					if (CurrentSide != nullptr)
 					{
 						OtherCube->SendActivationSignal(this, FrontSide, CurrentSide, FrontSideType);
-						GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Found side"));
+						ActivatedSides.Add(CurrentSide);
 					}
 				}
 			}
@@ -388,7 +399,7 @@ void AFleshCube::Tick(float DeltaTime)
 					if (CurrentSide != nullptr)
 					{
 						OtherCube->SendActivationSignal(this, RightSide, CurrentSide, RightSideType);
-						GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Found side"));
+						ActivatedSides.Add(CurrentSide);
 					}
 				}
 			}
@@ -403,7 +414,7 @@ void AFleshCube::Tick(float DeltaTime)
 					if (CurrentSide != nullptr)
 					{
 						OtherCube->SendActivationSignal(this, BackSide, CurrentSide, BackSideType);
-						GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, CurrentSide->GetName());
+						ActivatedSides.Add(CurrentSide);
 					}
 				}
 			}

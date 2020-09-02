@@ -42,6 +42,8 @@ private:
 	bool bCurrentlyCarried = false;
 	bool bCanSendStartSignal = false;
 
+	TArray<UFleshCubeSideBase*> ActivatedSides;
+
 public:	
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blueprint Faces")
