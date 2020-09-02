@@ -102,6 +102,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	FConnectedCubeInfo BackConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
 
+	///////////////////////////////
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
+	UBoxComponent* LeftConnectedC;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
+	UBoxComponent* FrontConnectedC;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
+	UBoxComponent* RightConnectedC;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
+	UBoxComponent* BackConnectedC;
+
+	/// ///////////////////////////
+
 	UFUNCTION()
 	void OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()

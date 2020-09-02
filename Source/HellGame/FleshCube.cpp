@@ -195,6 +195,9 @@ void AFleshCube::SetupBaseMesh()
 
 void AFleshCube::SetupSideMeshes()
 {
+	FVector BoxExtent = FVector(50.0f, 70.0f, 70.0f);
+	FVector BoxLocation = FVector(-130.0f, 0.0f, 0.0f);
+
 	LeftSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Left Side Mesh");
 	LeftSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftSideMeshComponent->RegisterComponent();
@@ -206,8 +209,8 @@ void AFleshCube::SetupSideMeshes()
 	LeftSideBoxCollider->bEditableWhenInherited = true;
 	LeftSideBoxCollider->AttachToComponent(LeftSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftSideBoxCollider->RegisterComponent();
-	LeftSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	LeftSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	LeftSideBoxCollider->SetBoxExtent(BoxExtent);
+	LeftSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	FrontSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Front Side Mesh");
 	FrontSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -220,8 +223,8 @@ void AFleshCube::SetupSideMeshes()
 	FrontSideBoxCollider->bEditableWhenInherited = true;
 	FrontSideBoxCollider->AttachToComponent(FrontSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	FrontSideBoxCollider->RegisterComponent();
-	FrontSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	FrontSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	FrontSideBoxCollider->SetBoxExtent(BoxExtent);
+	FrontSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	RightSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Right Side Mesh");
 	RightSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -234,8 +237,8 @@ void AFleshCube::SetupSideMeshes()
 	RightSideBoxCollider->bEditableWhenInherited = true;
 	RightSideBoxCollider->AttachToComponent(RightSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	RightSideBoxCollider->RegisterComponent();
-	RightSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	RightSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	RightSideBoxCollider->SetBoxExtent(BoxExtent);
+	RightSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	BackSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Back Side Mesh");
 	BackSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -247,8 +250,8 @@ void AFleshCube::SetupSideMeshes()
 	BackSideBoxCollider->bEditableWhenInherited = true;
 	BackSideBoxCollider->AttachToComponent(BackSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	BackSideBoxCollider->RegisterComponent();
-	BackSideBoxCollider->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
-	BackSideBoxCollider->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	BackSideBoxCollider->SetBoxExtent(BoxExtent);
+	BackSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	TopSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Top Side Mesh");
 	TopSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -304,6 +307,24 @@ void AFleshCube::Tick(float DeltaTime)
 		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < 77.0f) 
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Found ground"));
+
+			if (LeftConnectedC != nullptr)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw left line"));
+			}
+			if (FrontConnectedC != nullptr)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw front line"));
+			}
+			if (RightConnectedC != nullptr)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw right line"));
+			}
+			if (BackConnectedC != nullptr)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw back line"));
+			}
+
 			if (LeftConnectedCube.ConnectedCube != nullptr)
 			{
 				if (LeftConnectedCube.ConnectedFace == nullptr)
