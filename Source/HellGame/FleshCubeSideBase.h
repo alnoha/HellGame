@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "SideTypes.h"
 #include "FleshCubeSideBase.generated.h"
 
 
@@ -22,7 +23,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
 	UStaticMesh* FaceMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "A <- Sidetype")
+	ESideType CurrentSideType;
 private:
+
+private:
+
 	void SetupBaseMesh();
 
 protected:
@@ -30,14 +36,18 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Testes")
-	void TextPrinter();
-	void TextPrinter_Implementation();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
+	void ReceivedActivationSignal(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
+	virtual void ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
+	void ReceivedStopSignal();
+	virtual void ReceivedStopSignal_Implementation();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-public:
 	void SetupMesh(UStaticMeshComponent* parent);
 	UStaticMesh* GetFaceMesh();
+
+	void SetCurrentSideType(ESideType NewSideType);
+	ESideType GetCurrentSideType();
 };
