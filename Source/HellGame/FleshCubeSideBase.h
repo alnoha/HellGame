@@ -39,6 +39,11 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
 	void ReceivedActivationSignal(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
 	virtual void ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
+	void ReceivedStopSignal();
+	virtual void ReceivedStopSignal_Implementation();
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SetupMesh(UStaticMeshComponent* parent);
 	UStaticMesh* GetFaceMesh();
