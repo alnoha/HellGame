@@ -81,26 +81,16 @@ void AHellGameCharacter::InteractTrace()
 	if (bHit)
 	{
 		AActor* HitActor = Hit.GetActor();
+		HidePrompt();
+		Interactable = nullptr;
 		if (HitActor->Implements<UInteractable>())
 		{
 			Interactable = HitActor;
-			IInteractable* Interface = Cast<IInteractable>(Interactable);
-			if (Interface)
-			{
-				Interface->OnBeginFocus_Implementation();
-			}
-			else
-				IInteractable::Execute_OnBeginFocus(Interactable);
-		}
-		else
-		{
-			HidePrompt();
-			Interactable = nullptr;
+			IInteractable::Execute_OnBeginFocus(Interactable);
 		}
 	}
 	else
 	{
-		// Not focusing on the object anymore
 		HidePrompt();
 		Interactable = nullptr;
 	}
@@ -112,15 +102,7 @@ void AHellGameCharacter::HidePrompt()
 	{
 		if (Interactable->Implements<UInteractable>())
 		{
-			IInteractable* Interface = Cast<IInteractable>(Interactable);
-			if (Interface)
-			{
-				Interface->OnEndFocus_Implementation();
-			}
-			else
-			{
-				IInteractable::Execute_OnEndFocus(Interactable);
-			}
+			IInteractable::Execute_OnEndFocus(Interactable);
 		}
 	}
 }
@@ -143,7 +125,7 @@ void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
 	//Failsafe if an actor from a blueprint doesn't implements the interacteable interface
 	if (Actor->Implements<UInteractable>())
 	{
-		IInteractable::Execute_OnInteract(Interactable, this);
+		IInteractable::Execute_OnInteract(Actor, this);
 	}
 
 }

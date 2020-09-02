@@ -10,7 +10,7 @@
 #include "HellGameHUD.generated.h"
 
 UENUM()
-enum class CrosshairTypes
+enum class ECrosshairTypes
 {
 	DEFAULT,
 	PICKUP,
