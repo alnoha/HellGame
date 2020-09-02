@@ -4,19 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "Components/CanvasPanel.h"
-#include "Components/Image.h"
-#include "EngineUtils.h"
 #include "HellGameHUD.generated.h"
-
-UENUM()
-enum class ECrosshairTypes
-{
-	DEFAULT,
-	PICKUP,
-	ROTATE,
-	DOOR
-};
 
 UCLASS()
 class AHellGameHUD : public AHUD
@@ -32,17 +20,11 @@ public:
 	void ShowWidget(TSubclassOf<UUserWidget> Widget);
 	void HideWidget();
 
-	void UpdateCrosshair(UTexture2D* Texture);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TMap<ECrosshairTypes, UTexture2D*> CrosshairTextureMap;
+private:
+	/** Crosshair asset pointer */
+	class UTexture2D* CrosshairTex;
 
 protected:
-	virtual void BeginPlay();
 	UUserWidget* PromptWidget;
-	UUserWidget* CrosshairWidget;
-
-private:
-	void InitCrosshairTextures();
 };
 

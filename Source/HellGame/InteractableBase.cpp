@@ -40,14 +40,11 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 		}
 	}
 }
+
 void AInteractableBase::OnBeginFocus_Implementation()
 {
 	if (!bIsFocused)
 	{
-		if (bCanPickup)
-		{
-			HUD->UpdateCrosshair(HUD->CrosshairTextureMap[ECrosshairTypes::PICKUP]);
-		}
 		HUD->ShowWidget(PromptWidget);
 		bIsFocused = true;
 	}
@@ -57,7 +54,6 @@ void AInteractableBase::OnEndFocus_Implementation()
 {
 	if (bIsFocused)
 	{
-		HUD->UpdateCrosshair(HUD->CrosshairTextureMap[ECrosshairTypes::DEFAULT]);
 		HUD->HideWidget();
 		bIsFocused = false;
 	}
@@ -72,7 +68,6 @@ void AInteractableBase::OnPickUp_Implementation(AActor* Caller)
 			Interactor->PickupComponent->PickUp(this);
 			Interactor->HidePrompt();
 			Interactor->bIsHoldingObject = true;
-			HUD->UpdateCrosshair(HUD->CrosshairTextureMap[ECrosshairTypes::ROTATE]);
 		}
 	}
 }
@@ -85,7 +80,6 @@ void AInteractableBase::OnDropPickUp_Implementation(AActor* Caller)
 		{
 			Interactor->PickupComponent->Drop();
 			Interactor->bIsHoldingObject = false;
-			HUD->UpdateCrosshair(HUD->CrosshairTextureMap[ECrosshairTypes::DEFAULT]);
 		}
 	}
 }
