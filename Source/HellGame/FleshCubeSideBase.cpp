@@ -31,6 +31,10 @@ void UFleshCubeSideBase::TextPrinter_Implementation()
 {
 }
 
+void UFleshCubeSideBase::ReceivedStopSignal_Implementation()
+{
+}
+
 void UFleshCubeSideBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
