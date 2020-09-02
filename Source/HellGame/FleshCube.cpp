@@ -358,30 +358,22 @@ void AFleshCube::Tick(float DeltaTime)
 			// Send out traces from every side
 
 			FHitResult CubeHitResult;
-			DrawDebugLine(GetWorld(), LeftSideMeshComponent->GetComponentLocation(), (LeftSideMeshComponent->GetComponentLocation() + (LeftSideMeshComponent->GetForwardVector() * 200)), FColor::Red, false, 5.0f);
 			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, LeftSideMeshComponent->GetComponentLocation(), (LeftSideMeshComponent->GetComponentLocation() + (LeftSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Left ground"));
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Found fleshcube"));
 					AFleshCube* OtherCube = Cast<AFleshCube>(CubeHitResult.Actor);
 					UFleshCubeSideBase* CurrentSide = OtherCube->GetCubeSideByMesh(CubeHitResult.Component->GetName());
 
 					if (CurrentSide != nullptr)
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Found CurrentSide"));
 						OtherCube->SendActivationSignal(this, LeftSide, CurrentSide, LeftSideType);
 						ActivatedSides.Add(CurrentSide);
-					}
-					else
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, CubeHitResult.Component->GetName());
 					}
 				}
 			}
 
-			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, FrontSideMeshComponent->GetComponentLocation(), (FrontSideMeshComponent->GetComponentLocation() + (FrontSideMeshComponent->GetForwardVector() * 100)), ECC_Visibility, CollisionParams))
+			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, FrontSideMeshComponent->GetComponentLocation(), (FrontSideMeshComponent->GetComponentLocation() + (FrontSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
 			{
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
@@ -396,7 +388,7 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 			}
 
-			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, RightSideMeshComponent->GetComponentLocation(), (RightSideMeshComponent->GetComponentLocation() + (RightSideMeshComponent->GetForwardVector() * 100)), ECC_Visibility, CollisionParams))
+			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, RightSideMeshComponent->GetComponentLocation(), (RightSideMeshComponent->GetComponentLocation() + (RightSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
 			{
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
@@ -411,7 +403,7 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 			}
 
-			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, BackSideMeshComponent->GetComponentLocation(), (BackSideMeshComponent->GetComponentLocation() + (BackSideMeshComponent->GetForwardVector() * 100)), ECC_Visibility, CollisionParams))
+			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, BackSideMeshComponent->GetComponentLocation(), (BackSideMeshComponent->GetComponentLocation() + (BackSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
 			{
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
