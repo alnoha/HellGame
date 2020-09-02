@@ -58,9 +58,9 @@ public:
 		void OnInteract(AActor* Actor);
 	virtual void OnInteract_Implementation(AActor* Actor);
 
-
-
 	AActor* Interactable;
+
+	bool bIsDrawingPrompt;
 
 protected:
 

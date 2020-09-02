@@ -81,12 +81,25 @@ void AHellGameCharacter::InteractTrace()
 	if (bHit)
 	{
 		AActor* HitActor = Hit.GetActor();
-		HidePrompt();
-		Interactable = nullptr;
+		//if (bIsDrawingPrompt == false)
+		//{
+		//	HidePrompt();
+		//	Interactable = nullptr;
+		//}
 		if (HitActor->Implements<UInteractable>())
 		{
+			if (HitActor != Interactable)
+			{
+				HidePrompt();
+			}
 			Interactable = HitActor;
 			IInteractable::Execute_OnBeginFocus(Interactable);
+			bIsDrawingPrompt = true;
+		}
+		else
+		{
+			HidePrompt();
+			Interactable = nullptr;
 		}
 	}
 	else
@@ -103,6 +116,7 @@ void AHellGameCharacter::HidePrompt()
 		if (Interactable->Implements<UInteractable>())
 		{
 			IInteractable::Execute_OnEndFocus(Interactable);
+			bIsDrawingPrompt = false;
 		}
 	}
 }

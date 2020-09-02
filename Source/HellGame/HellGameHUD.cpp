@@ -31,10 +31,10 @@ void AHellGameHUD::BeginPlay()
 void AHellGameHUD::InitCrosshairTextures()
 {
 	//TODO: Change this to load from a directory instead of hardcoded Path
-	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_01.T_Cross_01"))));
-	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_02.T_Cross_02"))));
-	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_03.T_Cross_03"))));
-	CrosshairTextures.Add(Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_04.T_Cross_04"))));
+	CrosshairTextureMap.Add(ECrosshairTypes::DEFAULT, Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_01.T_Cross_01"))));
+	CrosshairTextureMap.Add(ECrosshairTypes::PICKUP, Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_02.T_Cross_02"))));
+	CrosshairTextureMap.Add(ECrosshairTypes::ROTATE, Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_03.T_Cross_03"))));
+	CrosshairTextureMap.Add(ECrosshairTypes::DOOR, Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *FString("/Game/FirstPerson/Textures/UI/Crosshair/T_Cross_04.T_Cross_04"))));
 }
 
 void AHellGameHUD::DrawHUD()

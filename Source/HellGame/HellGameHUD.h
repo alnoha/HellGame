@@ -35,9 +35,7 @@ public:
 	void UpdateCrosshair(UTexture2D* Texture);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<UTexture2D*> CrosshairTextures;
-
-	
+		TMap<ECrosshairTypes, UTexture2D*> CrosshairTextureMap;
 
 protected:
 	virtual void BeginPlay();
