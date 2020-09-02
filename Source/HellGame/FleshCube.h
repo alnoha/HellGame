@@ -7,13 +7,13 @@
 #include "FleshCubeSideBase.h"
 #include "SideTypes.h"
 #include "InteractableBase.h"
-#include "Engine/DataTable.h"
+#include "CubeFaceData.h"
 #include "Components/BoxComponent.h"
 #include "FleshCube.generated.h"
 
 
-USTRUCT(BlueprintType)
-struct FConnectedCubeInfo
+UCLASS(BlueprintType)
+class UCubeFaseData : public UDataAsset
 {
 	GENERATED_BODY()
 public:
@@ -21,10 +21,6 @@ public:
 	AFleshCube* ConnectedCube;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
 	UFleshCubeSideBase* ConnectedFace;
-
-public:
-	FConnectedCubeInfo(AFleshCube* ConnectedCube, UFleshCubeSideBase* ConnectedFace) : ConnectedCube(ConnectedCube), ConnectedFace(ConnectedFace) {}
-	FConnectedCubeInfo() : ConnectedCube(nullptr), ConnectedFace(nullptr) {}
 };
 
 UCLASS()
@@ -33,16 +29,19 @@ class HELLGAME_API AFleshCube : public AInteractableBase
 	GENERATED_BODY()
 
 private:
+	TArray<UFleshCubeSideBase*> ActivatedSides;
+
+	UCubeFaceData* FaceData;
+
 	ESideType PreviousLeftSide;
 	ESideType PreviousFrontSide;
 	ESideType PreviousRightSide;
 	ESideType PreviousBackSide;
-	UDataTable* FaceBlueprintTable;
+
 	bool bStartSidesGenerated = false;
 	bool bCurrentlyCarried = false;
 	bool bCanSendStartSignal = false;
 
-	TArray<UFleshCubeSideBase*> ActivatedSides;
 
 public:	
 
@@ -95,27 +94,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* BackSide;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	FConnectedCubeInfo LeftConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	FConnectedCubeInfo FrontConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	FConnectedCubeInfo RightConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	FConnectedCubeInfo BackConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-
-	///////////////////////////////
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
-	UBoxComponent* LeftConnectedC;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
-	UBoxComponent* FrontConnectedC;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
-	UBoxComponent* RightConnectedC;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Connected Cubes")
-	UBoxComponent* BackConnectedC;
-
-	/// ///////////////////////////
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
+	float CubeSideTraceDistance = 200.0f;
 
 	UFUNCTION()
 	void OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -127,6 +107,7 @@ public:
 
 
 private:
+	void ReadFaceData();
 	void SetupBaseMesh();
 	void SetupSideMeshes();
 	void SetupSides();
@@ -137,7 +118,6 @@ private:
 	void SetupRightSide();
 	void SetupBackSide();
 	void TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference);
-	bool HasConnectedNeighbour();
 
 protected:
 	virtual void BeginPlay() override;
