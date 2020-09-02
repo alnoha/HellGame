@@ -231,13 +231,13 @@ void AFleshCube::SetupBaseMesh()
 void AFleshCube::SetupSideMeshes()
 {
 	FVector BoxExtent = FVector(50.0f, 70.0f, 70.0f);
-	FVector BoxLocation = FVector(00.0f, 0.0f, 0.0f);
+	FVector BoxLocation = FVector(120.0f, 0.0f, 0.0f);
 
 	LeftSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Left Side Mesh");
 	LeftSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftSideMeshComponent->RegisterComponent();
 	LeftSideMeshComponent->bEditableWhenInherited = true;
-	LeftSideMeshComponent->SetRelativeLocation(FVector(0.0f, -130.0f, 0.0f));
+	LeftSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	LeftSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 
 	LeftSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Left Box collider");
@@ -251,7 +251,7 @@ void AFleshCube::SetupSideMeshes()
 	FrontSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	FrontSideMeshComponent->RegisterComponent();
 	FrontSideMeshComponent->bEditableWhenInherited = true;
-	FrontSideMeshComponent->SetRelativeLocation(FVector(130.0f, 0.0f, 0.0f));
+	FrontSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	FrontSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 
 	FrontSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Front Box collider");
@@ -265,7 +265,7 @@ void AFleshCube::SetupSideMeshes()
 	RightSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	RightSideMeshComponent->RegisterComponent();
 	RightSideMeshComponent->bEditableWhenInherited = true;
-	RightSideMeshComponent->SetRelativeLocation(FVector(0.0f, 130.0f, 0.0f));
+	RightSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	RightSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 
 	RightSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Right Box collider");
@@ -279,7 +279,7 @@ void AFleshCube::SetupSideMeshes()
 	BackSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	BackSideMeshComponent->bEditableWhenInherited = true;
 	BackSideMeshComponent->RegisterComponent();
-	BackSideMeshComponent->SetRelativeLocation(FVector(-130.0f, 0.0f, 0.0f));
+	BackSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	BackSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
 	BackSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Back Box collider");
