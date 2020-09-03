@@ -229,6 +229,8 @@ void UAPickUpComp::StartCheck()
 
 void UAPickUpComp::WriteErrorMessage(FString message)
 {
+	
+	
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("APickUpComp: " + message));
 	UE_LOG(LogTemp, Error, TEXT("APickUpComp: %s"), *message);
 }
