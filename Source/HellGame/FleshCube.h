@@ -115,6 +115,7 @@ private:
 	void SetupFrontSide();
 	void SetupRightSide();
 	void SetupBackSide();
+	void LatchCube(AFleshCube* Cube);
 
 protected:
 	virtual void BeginPlay() override;

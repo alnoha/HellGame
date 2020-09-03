@@ -235,6 +235,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, LeftSide, CurrentSide, LeftSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
+					LatchCube(OtherCube);
 				}
 			}
 
@@ -250,6 +251,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, FrontSide, CurrentSide, FrontSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
+					LatchCube(OtherCube);
 				}
 			}
 
@@ -265,6 +267,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, RightSide, CurrentSide, RightSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
+					LatchCube(OtherCube);
 				}
 			}
 
@@ -280,6 +283,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, BackSide, CurrentSide, BackSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
+					LatchCube(OtherCube);
 				}
 			}
 
@@ -707,4 +711,10 @@ void AFleshCube::SetupBackSide()
 		BackSide->SetCurrentSideType(BackSideType);
 		PreviousBackSide = BackSideType;
 	}
+}
+
+void AFleshCube::LatchCube(AFleshCube* Cube)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Should latch to ") + Cube->GetName());
+	this->SetActorRotation(Cube->GetActorRotation());
 }
