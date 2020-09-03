@@ -31,7 +31,6 @@ class HELLGAME_API AFleshCube : public AInteractableBase
 private:
 	TArray<UFleshCubeSideBase*> ActivatedSides;
 
-	UCubeFaceData* FaceData;
 
 	ESideType PreviousLeftSide;
 	ESideType PreviousFrontSide;
@@ -42,11 +41,10 @@ private:
 	bool bCurrentlyCarried = false;
 	bool bCanSendStartSignal = false;
 
+	TSubclassOf<UCubeFaceData> FaceData;
 
-public:	
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blueprint Faces")
-	TMap<ESideType, TSubclassOf<UFleshCubeSideBase>> BlueprintFaces;
+public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
 	AActor* CubeRespawnPoint;
@@ -117,7 +115,6 @@ private:
 	void SetupFrontSide();
 	void SetupRightSide();
 	void SetupBackSide();
-	void TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference);
 
 protected:
 	virtual void BeginPlay() override;
