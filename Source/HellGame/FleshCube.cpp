@@ -377,10 +377,22 @@ void AFleshCube::SetupSides()
 
 void AFleshCube::SetupStartSides()
 {
-	LeftSideType = ESideType::None;
-	FrontSideType = ESideType::None;
-	RightSideType = ESideType::None;
-	BackSideType = ESideType::None;
+	if (LeftSideType == ESideType::NoUse)
+	{
+		LeftSideType = ESideType::None;
+	}
+	if (FrontSideType == ESideType::NoUse)
+	{
+		FrontSideType = ESideType::None;
+	}
+	if (RightSideType == ESideType::NoUse)
+	{
+		RightSideType = ESideType::None;
+	}
+	if (BackSideType == ESideType::NoUse)
+	{
+		BackSideType = ESideType::None;
+	}
 
 	// Create a reference to none sidetype
 	auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint);
