@@ -770,12 +770,6 @@ void AFleshCube::ReceiveRemoteActivationSignal(UStaticMeshComponent* SideMeshCom
 {
 	UFleshCubeSideBase* CubeSide = GetCubeSideByMesh(SideMeshComponent->GetName());
 
-	if (CubeSide == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cubeside is a nullptr"))
-		return;
-	}
-
 	if (!FaceData.GetDefaultObject()->SideData[CubeSide->CurrentSideType].CanBeActivatedByPoop)
 	{
 		return;
