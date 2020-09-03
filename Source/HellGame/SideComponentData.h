@@ -10,9 +10,7 @@ struct HELLGAME_API FSideComponentData
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UFleshCubeSideBase> Blueprint;
+		TSubclassOf<UFleshCubeSideBase> Blueprint;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ESideType> FaceMatches;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool CanBeActivatedByPoop;
 };
