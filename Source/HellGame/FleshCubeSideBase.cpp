@@ -36,7 +36,7 @@ void UFleshCubeSideBase::ReceivedStopSignal_Implementation()
 {
 }
 
-void UFleshCubeSideBase::ReceiveRemoteActivationSignal_Implementation(FTransform SideTransform)
+void UFleshCubeSideBase::ReceiveRemoteActivationSignal_Implementation()
 {
 }
 

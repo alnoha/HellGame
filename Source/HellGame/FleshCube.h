@@ -131,6 +131,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Cube sides")
 	UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
 
-	UFUNCTION(BlueprintCallable, Category = "Cube sides")
 	UFleshCubeSideBase* GetCubeSideByMesh(FString MeshName);
 };
