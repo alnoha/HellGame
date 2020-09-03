@@ -229,8 +229,8 @@ void AFleshCube::Tick(float DeltaTime)
 					{
 						OtherCube->SendActivationSignal(this, LeftSide, CurrentSide, LeftSideType);
 						ActivatedSides.Add(CurrentSide);
+						LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 					}
-					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -245,8 +245,8 @@ void AFleshCube::Tick(float DeltaTime)
 					{
 						OtherCube->SendActivationSignal(this, FrontSide, CurrentSide, FrontSideType);
 						ActivatedSides.Add(CurrentSide);
+						LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 					}
-					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -261,8 +261,8 @@ void AFleshCube::Tick(float DeltaTime)
 					{
 						OtherCube->SendActivationSignal(this, RightSide, CurrentSide, RightSideType);
 						ActivatedSides.Add(CurrentSide);
+						LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 					}
-					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -277,8 +277,8 @@ void AFleshCube::Tick(float DeltaTime)
 					{
 						OtherCube->SendActivationSignal(this, BackSide, CurrentSide, BackSideType);
 						ActivatedSides.Add(CurrentSide);
+						LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 					}
-					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -770,14 +770,16 @@ void AFleshCube::SetupBackSide()
 	}
 }
 
-void AFleshCube::LatchCube(FVector Start, AFleshCube* Cube)
+void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
 {
 	FVector StartForward = Start.ForwardVector;
-	FVector OtherForward = Cube->GetActorForwardVector();
+	FVector CubeSideForward = CubeSide->GetForwardVector();
 
-	FQuat Rotation = FQuat::FindBetweenVectors(StartForward, OtherForward);
-	this->SetActorRotation(Rotation);
+	FVector NewLocation = CubeSide->GetComponentLocation() + (CubeSideForward * CubeSnapDistance);
+	this->SetActorLocation(NewLocation);
 
-	FVector OtherLocation = Cube->GetActorLocation();
-	FVector MyLocation = this->GetActorLocation();
+	FQuat StartQuat = Start.ToOrientationRotator().Quaternion();
+	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
+	this->SetActorRotation(EndQuat * StartQuat);
+
 }

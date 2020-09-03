@@ -95,6 +95,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
 	float CubeSideTraceDistance = 200.0f;
 
+	/*How far the cube will snap to the other cube. (Default = 250)*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
+	float CubeSnapDistance = 250.0f;
+
 	UFUNCTION()
 	void OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
@@ -115,7 +119,7 @@ private:
 	void SetupFrontSide();
 	void SetupRightSide();
 	void SetupBackSide();
-	void LatchCube(FVector Start, AFleshCube* Cube);
+	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
 	virtual void BeginPlay() override;
