@@ -80,7 +80,9 @@ void AFleshCube::SetupBaseMesh()
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxBase"));
 	BaseMesh->RegisterComponent();
 
-	this->SetRootComponent(BaseMesh);
+	// this->SetRootComponent(BaseMesh);
+
+	BaseMesh->bEditableWhenInherited = true;
 
 	// Setup Physics
 	BaseMesh->SetSimulatePhysics(true);
