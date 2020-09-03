@@ -559,7 +559,7 @@ void AFleshCube::SetupFrontSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[FrontSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -617,7 +617,7 @@ void AFleshCube::SetupRightSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[RightSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -675,7 +675,7 @@ void AFleshCube::SetupBackSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[BackSideType].Blueprint);
 
 			if (x == nullptr)
 			{
