@@ -7,7 +7,7 @@
 // Sets default values
 AFleshCube::AFleshCube()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	ReadFaceData();
@@ -18,7 +18,7 @@ AFleshCube::AFleshCube()
 
 void AFleshCube::OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+
 }
 
 void AFleshCube::OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
@@ -174,7 +174,7 @@ void AFleshCube::OnPickUp_Implementation(AActor* Caller)
 {
 	AInteractableBase::OnPickUp_Implementation(Caller);
 	bCurrentlyCarried = true;
-	
+
 	for (UFleshCubeSideBase* Side : ActivatedSides)
 	{
 		Side->ReceivedStopSignal();
@@ -211,7 +211,7 @@ void AFleshCube::Tick(float DeltaTime)
 	if (GetWorld()->LineTraceSingleByChannel(GroundCheckHitResult, this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), ECC_Visibility, CollisionParams))
 	{
 		DrawDebugLine(GetWorld(), this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), FColor::Magenta);
-		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < 77.0f) 
+		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < 77.0f)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Found ground"));
 
@@ -230,7 +230,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, LeftSide, CurrentSide, LeftSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
-					LatchCube(OtherCube);
+					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -246,7 +246,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, FrontSide, CurrentSide, FrontSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
-					LatchCube(OtherCube);
+					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -262,7 +262,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, RightSide, CurrentSide, RightSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
-					LatchCube(OtherCube);
+					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -278,7 +278,7 @@ void AFleshCube::Tick(float DeltaTime)
 						OtherCube->SendActivationSignal(this, BackSide, CurrentSide, BackSideType);
 						ActivatedSides.Add(CurrentSide);
 					}
-					LatchCube(OtherCube);
+					LatchCube(CubeHitResult.TraceStart, OtherCube);
 				}
 			}
 
@@ -411,7 +411,7 @@ void AFleshCube::SetupStartSides()
 	// Set top and bottom meshes
 	TopSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
 	BottomSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
-	
+
 	// Destroy this now unused component
 	x->DestroyComponent(false);
 
@@ -712,8 +712,14 @@ void AFleshCube::SetupBackSide()
 	}
 }
 
-void AFleshCube::LatchCube(AFleshCube* Cube)
+void AFleshCube::LatchCube(FVector Start, AFleshCube* Cube)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Should latch to ") + Cube->GetName());
-	this->SetActorRotation(Cube->GetActorRotation());
+	FVector StartForward = Start.ForwardVector;
+	FVector OtherForward = Cube->GetActorForwardVector();
+
+	FQuat Rotation = FQuat::FindBetweenVectors(StartForward, OtherForward);
+	this->SetActorRotation(Rotation);
+
+	FVector OtherLocation = Cube->GetActorLocation();
+	FVector MyLocation = this->GetActorLocation();
 }
