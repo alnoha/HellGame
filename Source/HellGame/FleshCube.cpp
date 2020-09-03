@@ -203,11 +203,6 @@ void AFleshCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bStartSidesGenerated)
-	{
-		SetupSides();
-	}
-
 	FHitResult GroundCheckHitResult;
 
 	FCollisionQueryParams CollisionParams;
@@ -372,14 +367,7 @@ void AFleshCube::SetupSides()
 {
 	if (!bStartSidesGenerated)
 	{
-		if (FaceData.GetDefaultObject() != nullptr && FaceData.GetDefaultObject()->SideData.Contains(ESideType::None))
-		{
-			SetupStartSides();
-		}
-		else
-		{
-			this->SetActorTickEnabled(true);
-		}
+		SetupStartSides();
 	}
 	// SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
 	// SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
@@ -393,10 +381,22 @@ void AFleshCube::SetupSides()
 
 void AFleshCube::SetupStartSides()
 {
-	LeftSideType = ESideType::None;
-	FrontSideType = ESideType::None;
-	RightSideType = ESideType::None;
-	BackSideType = ESideType::None;
+	if (LeftSideType == ESideType::NoUse)
+	{
+		LeftSideType = ESideType::None;
+	}
+	if (FrontSideType == ESideType::NoUse)
+	{
+		FrontSideType = ESideType::None;
+	}
+	if (RightSideType == ESideType::NoUse)
+	{
+		RightSideType = ESideType::None;
+	}
+	if (BackSideType == ESideType::NoUse)
+	{
+		BackSideType = ESideType::None;
+	}
 
 	// Create a reference to none sidetype
 	auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint);
@@ -416,7 +416,6 @@ void AFleshCube::SetupStartSides()
 	x->DestroyComponent(false);
 
 	bStartSidesGenerated = true;
-	this->SetActorTickEnabled(false);
 }
 
 void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide)
