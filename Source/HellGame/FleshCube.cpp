@@ -422,7 +422,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 
 		TSubclassOf<UFleshCubeSideBase> MyObject = nullptr;
 
-		if (FaceData.GetDefaultObject()->SideData.Contains(SideType))
+		if (!FaceData.GetDefaultObject()->SideData.Contains(SideType))
 		{
 			FaceData.GetDefaultObject()->SideData[SideType].Blueprint;
 		}
@@ -494,14 +494,16 @@ void AFleshCube::SetupLeftSide()
 
 		TSubclassOf<UFleshCubeSideBase> MyObject = nullptr;
 
-		if (FaceData.GetDefaultObject()->SideData.Contains(LeftSideType))
+		if (!FaceData.GetDefaultObject()->SideData.Contains(LeftSideType))
 		{
-			FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint;
+			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
+			LeftSideType = ESideType::None;
+			SetupLeftSide();
+			return;
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
-			FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint;
+			MyObject = FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint;
 		}
 
 		if (LeftSide != nullptr)
@@ -562,14 +564,16 @@ void AFleshCube::SetupFrontSide()
 
 		TSubclassOf<UFleshCubeSideBase> MyObject = nullptr;
 
-		if (FaceData.GetDefaultObject()->SideData.Contains(FrontSideType))
+		if (!FaceData.GetDefaultObject()->SideData.Contains(FrontSideType))
 		{
-			FaceData.GetDefaultObject()->SideData[FrontSideType].Blueprint;
+			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
+			FrontSideType = ESideType::None;
+			SetupLeftSide();
+			return;
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
-			FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint;
+			MyObject = FaceData.GetDefaultObject()->SideData[FrontSideType].Blueprint;
 		}
 
 		if (FrontSide != nullptr)
@@ -630,14 +634,16 @@ void AFleshCube::SetupRightSide()
 
 		TSubclassOf<UFleshCubeSideBase> MyObject = nullptr;
 
-		if (FaceData.GetDefaultObject()->SideData.Contains(RightSideType))
+		if (!FaceData.GetDefaultObject()->SideData.Contains(RightSideType))
 		{
-			FaceData.GetDefaultObject()->SideData[RightSideType].Blueprint;
+			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
+			RightSideType = ESideType::None;
+			SetupLeftSide();
+			return;
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
-			FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint;
+			MyObject = FaceData.GetDefaultObject()->SideData[RightSideType].Blueprint;
 		}
 
 		if (RightSide != nullptr)
@@ -698,14 +704,16 @@ void AFleshCube::SetupBackSide()
 
 		TSubclassOf<UFleshCubeSideBase> MyObject = nullptr;
 
-		if (FaceData.GetDefaultObject()->SideData.Contains(BackSideType))
+		if (!FaceData.GetDefaultObject()->SideData.Contains(BackSideType))
 		{
-			FaceData.GetDefaultObject()->SideData[BackSideType].Blueprint;
+			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
+			BackSideType = ESideType::None;
+			SetupLeftSide();
+			return;
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
-			FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint;
+			MyObject = FaceData.GetDefaultObject()->SideData[BackSideType].Blueprint;
 		}
 
 		if (BackSide != nullptr)
