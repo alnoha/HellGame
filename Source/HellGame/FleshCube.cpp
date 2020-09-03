@@ -765,3 +765,36 @@ void AFleshCube::SetupBackSide()
 		PreviousBackSide = BackSideType;
 	}
 }
+
+void AFleshCube::ReceiveRemoteActivationSignal(UStaticMeshComponent* SideMeshComponent)
+{
+	UFleshCubeSideBase* CubeSide = GetCubeSideByMesh(SideMeshComponent->GetName());
+
+	if (!FaceData.GetDefaultObject()->SideData[CubeSide->CurrentSideType].CanBeActivatedByPoop)
+	{
+		return;
+	}
+
+	if (CubeSide != nullptr)
+	{
+		if (CubeSide != LeftSide)
+		{
+			LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+		}
+
+		if (CubeSide != FrontSide)
+		{
+			FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+		}
+
+		if (CubeSide != RightSide)
+		{
+			RightSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+		}
+
+		if (CubeSide != BackSide)
+		{
+			BackSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+		}
+	}
+}

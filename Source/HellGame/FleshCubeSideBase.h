@@ -37,8 +37,8 @@ protected:
 
 public:	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
-	void ReceivedActivationSignal(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
-	virtual void ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
+	void ReceivedActivationSignal(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform, bool RemoteSignal = false);
+	virtual void ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform, bool RemoteSignal = false);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
 	void ReceivedStopSignal();

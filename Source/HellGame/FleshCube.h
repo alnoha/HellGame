@@ -133,4 +133,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Cube sides")
 	UFleshCubeSideBase* GetCubeSideByMesh(FString MeshName);
+
+	UFUNCTION(BlueprintCallable, Category = "Remote Activation")
+	void ReceiveRemoteActivationSignal(UStaticMeshComponent* SideMeshComponent);
 };
