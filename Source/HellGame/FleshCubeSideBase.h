@@ -44,6 +44,10 @@ public:
 	void ReceivedStopSignal();
 	virtual void ReceivedStopSignal_Implementation();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
+	void ReceiveRemoteActivationSignal();
+	virtual void ReceiveRemoteActivationSignal_Implementation();
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SetupMesh(UStaticMeshComponent* parent);
 	UStaticMesh* GetFaceMesh();

@@ -10,171 +10,25 @@ AFleshCube::AFleshCube()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	ReadFaceData();
+
 	SetupBaseMesh();
 	SetupSideMeshes();
-
-	// Temporary holders until I get help regarding data tables
-
-	// Mouth:
-	TemporaryReferenceFiller(ESideType::Mouth, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_MouthFace.BP_MouthFace'"));
-	TemporaryReferenceFiller(ESideType::None, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_NoneFace.BP_NoneFace'"));
-	TemporaryReferenceFiller(ESideType::Nose, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_NoseFace.BP_NoseFace'"));
-	TemporaryReferenceFiller(ESideType::Butt, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_ButtFace.BP_ButtFace'"));
-	TemporaryReferenceFiller(ESideType::Eye, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_EyeFace.BP_EyeFace'"));
-	TemporaryReferenceFiller(ESideType::Hair, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_HairFace.BP_HairFace'"));
-	TemporaryReferenceFiller(ESideType::Ear, TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/BP_EarFace.BP_EarFace'"));
-
-	// End temporary holders
-}
-
-void AFleshCube::TemporaryReferenceFiller(ESideType SideType, const TCHAR* Reference)
-{
-	ConstructorHelpers::FObjectFinder<UBlueprint> CubeSideBase(Reference);
-	if (CubeSideBase.Succeeded())
-	{
-		BlueprintFaces.Add(SideType, (UClass*)CubeSideBase.Object->GeneratedClass);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not find reference: %i"), Reference);
-	}
-}
-
-bool AFleshCube::HasConnectedNeighbour()
-{
-	return LeftConnectedCube.ConnectedCube != nullptr
-		|| RightConnectedCube.ConnectedCube != nullptr
-		|| FrontConnectedCube.ConnectedCube != nullptr
-		|| BackConnectedCube.ConnectedCube != nullptr;
 }
 
 void AFleshCube::OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA<AFleshCube>())
-	{
-		AFleshCube* OtherCube = Cast<AFleshCube>(OtherActor);
-		UBoxComponent* OtherCollider = Cast<UBoxComponent>(OverlappedComp);
-
-		// UFleshCubeSideBase* OtherCubeSide = OtherCube->GetCubeSideByCollider(OtherComp->GetName());
-
-		FHitResult CubeHitResult;
-
-		FTransform ComponentTransform(OverlappedComp->GetComponentToWorld());
-
-		FVector TraceEnd = ComponentTransform.GetLocation() + (ComponentTransform.GetLocation() + (ComponentTransform.GetRotation().GetForwardVector() * 100));
-
-		//if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, ComponentTransform.GetLocation(), TraceEnd, ECollisionChannel::ECC_Visibility))
-		//{
-		//	// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, CubeHitResult.Component->GetName());
-		//	UFleshCubeSideBase* OtherCubeSide = OtherCube->GetCubeSideByMesh(CubeHitResult.Component->GetName());
-
-		//	if (OtherCubeSide == nullptr)
-		//	{
-		//		// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("False"));
-		//		// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, RightSideMeshComponent->GetName());
-		//	}
-
-		//	if (OverlappedComp->GetName().Contains("Left"))
-		//	{
-		//		LeftConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		//	}
-		//	else if (OverlappedComp->GetName().Contains("Front"))
-		//	{
-		//		FrontConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		//	}
-		//	else if (OverlappedComp->GetName().Contains("Back"))
-		//	{
-		//		RightConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		//	}
-		//	else if (OverlappedComp->GetName().Contains("Right"))
-		//	{
-		//		BackConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		//	}
-		//}
-
-		/*if (OtherCubeSide == nullptr)
-		{
-			return;
-		}*/
-
-		/*if (OverlappedComp->GetName().Equals(LeftSideBoxCollider->GetName()))
-		{
-			LeftConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		}
-		else if (OverlappedComp->GetName().Equals(FrontSideBoxCollider->GetName()))
-		{
-			FrontConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		}
-		else if (OverlappedComp->GetName().Equals(RightSideBoxCollider->GetName()))
-		{
-			RightConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		}
-		else if (OverlappedComp->GetName().Equals(BackSideBoxCollider->GetName()))
-		{
-			BackConnectedCube = FConnectedCubeInfo(OtherCube, OtherCubeSide);
-		}*/
-	}
+	
 }
 
 void AFleshCube::OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
 {
-	if (OtherActor->IsA<AFleshCube>())
-	{
-		/*if (OverlappedComp == LeftSideBoxCollider)
-		{
-			LeftConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-		}
-		else if (OverlappedComp == FrontSideBoxCollider)
-		{
-			FrontConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-		}
-		else if (OverlappedComp == RightSideBoxCollider)
-		{
-			RightConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-		}
-		else if (OverlappedComp == BackSideBoxCollider)
-		{
-			BackConnectedCube = FConnectedCubeInfo(nullptr, nullptr);
-		}*/
-	}
 }
 
 void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
-	bool FaceMatch = false;
-	if (SendingType == ESideType::Butt)
+	if (FaceData.GetDefaultObject()->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
 	{
-		if (ReceivingSide->GetCurrentSideType() == ESideType::Nose)
-		{
-			FaceMatch = true;
-		}
-	}
-	else if(SendingType == ESideType::Nose)
-	{
-		if (ReceivingSide->GetCurrentSideType() == ESideType::Eye)
-		{
-			FaceMatch = true;
-		}
-	}
-	else if (SendingType == ESideType::Eye)
-	{
-		if (ReceivingSide->GetCurrentSideType() == ESideType::Mouth)
-		{
-			FaceMatch = true;
-		}
-	}
-	else if (SendingType == ESideType::Mouth)
-	{
-		if (ReceivingSide->GetCurrentSideType() == ESideType::Butt)
-		{
-			FaceMatch = true;
-		}
-	}
-
-	if (FaceMatch)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("FaceMatch"));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, ReceivingSide->GetName());
 		if (ReceivingSide == LeftSide)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("LeftMatch"));
@@ -204,15 +58,20 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 			RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
 		}
 	}
-	/*else
+}
+
+void AFleshCube::ReadFaceData()
+{
+	ConstructorHelpers::FObjectFinder<UBlueprint> CubeSideBase(TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/CubeFaceData.CubeFaceData'"));
+
+	if (CubeSideBase.Succeeded())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("No FaceMatch"));
-		if (!ReturnSignal)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("No Returnsignal"));
-			SendingCube->SendActivationSignal(this, ReceivingSide, SendingSide, ReceivingSide->GetCurrentSideType(), true);
-		}
-	}*/
+		FaceData = CubeSideBase.Object->GeneratedClass;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could not find reference"));
+	}
 }
 
 void AFleshCube::SetupBaseMesh()
@@ -343,6 +202,12 @@ void AFleshCube::OnDropPickUp_Implementation(AActor* Caller)
 void AFleshCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!bStartSidesGenerated)
+	{
+		SetupSides();
+	}
+
 	FHitResult GroundCheckHitResult;
 
 	FCollisionQueryParams CollisionParams;
@@ -358,7 +223,7 @@ void AFleshCube::Tick(float DeltaTime)
 			// Send out traces from every side
 
 			FHitResult CubeHitResult;
-			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, LeftSideMeshComponent->GetComponentLocation(), (LeftSideMeshComponent->GetComponentLocation() + (LeftSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
+			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, LeftSideMeshComponent->GetComponentLocation(), (LeftSideMeshComponent->GetComponentLocation() + (LeftSideMeshComponent->GetForwardVector() * CubeSideTraceDistance)), ECC_Visibility, CollisionParams))
 			{
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
@@ -373,7 +238,7 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 			}
 
-			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, FrontSideMeshComponent->GetComponentLocation(), (FrontSideMeshComponent->GetComponentLocation() + (FrontSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
+			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, FrontSideMeshComponent->GetComponentLocation(), (FrontSideMeshComponent->GetComponentLocation() + (FrontSideMeshComponent->GetForwardVector() * CubeSideTraceDistance)), ECC_Visibility, CollisionParams))
 			{
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
@@ -388,7 +253,7 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 			}
 
-			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, RightSideMeshComponent->GetComponentLocation(), (RightSideMeshComponent->GetComponentLocation() + (RightSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
+			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, RightSideMeshComponent->GetComponentLocation(), (RightSideMeshComponent->GetComponentLocation() + (RightSideMeshComponent->GetForwardVector() * CubeSideTraceDistance)), ECC_Visibility, CollisionParams))
 			{
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
@@ -403,7 +268,7 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 			}
 
-			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, BackSideMeshComponent->GetComponentLocation(), (BackSideMeshComponent->GetComponentLocation() + (BackSideMeshComponent->GetForwardVector() * 200)), ECC_Visibility, CollisionParams))
+			if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, BackSideMeshComponent->GetComponentLocation(), (BackSideMeshComponent->GetComponentLocation() + (BackSideMeshComponent->GetForwardVector() * CubeSideTraceDistance)), ECC_Visibility, CollisionParams))
 			{
 				if (CubeHitResult.Actor->IsA<AFleshCube>())
 				{
@@ -418,83 +283,6 @@ void AFleshCube::Tick(float DeltaTime)
 				}
 			}
 
-			// Convert hits to cubesides
-
-			// activate said cubesides
-
-			/*
-			if (LeftConnectedC != nullptr)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw left line"));
-			}
-			if (FrontConnectedC != nullptr)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw front line"));
-			}
-			if (RightConnectedC != nullptr)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw right line"));
-			}
-			if (BackConnectedC != nullptr)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Draw back line"));
-			}
-
-			if (LeftConnectedCube.ConnectedCube != nullptr)
-			{
-				if (LeftConnectedCube.ConnectedFace == nullptr)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("left = null"));
-
-				}
-				else
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("left != null"));
-					LeftConnectedCube.ConnectedCube->SendActivationSignal(this, LeftSide, LeftConnectedCube.ConnectedFace, LeftSideType);
-				}
-			}
-
-			if (FrontConnectedCube.ConnectedCube != nullptr)
-			{
-				if (FrontConnectedCube.ConnectedFace == nullptr)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("front = null"));
-
-				}
-				else
-				{
-					FrontConnectedCube.ConnectedCube->SendActivationSignal(this, FrontSide, FrontConnectedCube.ConnectedFace, FrontSideType);
-				}
-			}
-
-			if (RightConnectedCube.ConnectedCube != nullptr)
-			{
-				if (RightConnectedCube.ConnectedFace == nullptr)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("right = null"));
-
-				}
-				else
-				{
-					RightConnectedCube.ConnectedCube->SendActivationSignal(this, RightSide, RightConnectedCube.ConnectedFace, RightSideType);
-				}
-			}
-
-			if (BackConnectedCube.ConnectedCube != nullptr)
-			{
-				if (BackConnectedCube.ConnectedFace == nullptr)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("back = null"));
-
-				}
-				else
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("back != null"));
-					BackConnectedCube.ConnectedCube->SendActivationSignal(this, BackSide, BackConnectedCube.ConnectedFace, BackSideType);
-				}
-			}
-
-			*/
 			bCanSendStartSignal = false;
 			this->SetActorTickEnabled(false);
 		}
@@ -580,7 +368,14 @@ void AFleshCube::SetupSides()
 {
 	if (!bStartSidesGenerated)
 	{
-		SetupStartSides();
+		if (FaceData.GetDefaultObject() != nullptr && FaceData.GetDefaultObject()->SideData.Contains(ESideType::None))
+		{
+			SetupStartSides();
+		}
+		else
+		{
+			this->SetActorTickEnabled(true);
+		}
 	}
 	// SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
 	// SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
@@ -594,8 +389,13 @@ void AFleshCube::SetupSides()
 
 void AFleshCube::SetupStartSides()
 {
+	LeftSideType = ESideType::None;
+	FrontSideType = ESideType::None;
+	RightSideType = ESideType::None;
+	BackSideType = ESideType::None;
+
 	// Create a reference to none sidetype
-	auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(ESideType::None));
+	auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint);
 
 	// Make sure the blueprint for no face can be found
 	if (x == nullptr)
@@ -607,18 +407,12 @@ void AFleshCube::SetupStartSides()
 	// Set top and bottom meshes
 	TopSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
 	BottomSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
-
-	// Set side meshes
-	LeftSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
-	FrontSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
-	RightSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
-	BackSideMeshComponent->SetStaticMesh(x->GetFaceMesh());
 	
 	// Destroy this now unused component
 	x->DestroyComponent(false);
 
-	// Make sure we only do this once since it's in the OnConstruction method
 	bStartSidesGenerated = true;
+	this->SetActorTickEnabled(false);
 }
 
 void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide)
@@ -627,7 +421,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = BlueprintFaces.Find(SideType);
+		auto MyObject = FaceData.GetDefaultObject()->SideData[SideType].Blueprint;
 
 		if (CubeSide != nullptr)
 		{
@@ -646,7 +440,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(SideType));
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -684,7 +478,12 @@ void AFleshCube::SetupLeftSide()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = BlueprintFaces.Find(LeftSideType);
+		if (FaceData == nullptr)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("facedata = nullptr"));
+		}
+
+		auto MyObject = FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint;
 
 		if (LeftSide != nullptr)
 		{
@@ -703,7 +502,7 @@ void AFleshCube::SetupLeftSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(LeftSideType));
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -742,7 +541,7 @@ void AFleshCube::SetupFrontSide()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = BlueprintFaces.Find(FrontSideType);
+		auto MyObject = FaceData.GetDefaultObject()->SideData[FrontSideType].Blueprint;
 
 		if (FrontSide != nullptr)
 		{
@@ -761,7 +560,7 @@ void AFleshCube::SetupFrontSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(FrontSideType));
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -800,7 +599,7 @@ void AFleshCube::SetupRightSide()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = BlueprintFaces.Find(RightSideType);
+		auto MyObject = FaceData.GetDefaultObject()->SideData[RightSideType].Blueprint;
 
 		if (RightSide != nullptr)
 		{
@@ -819,7 +618,7 @@ void AFleshCube::SetupRightSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(RightSideType));
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -858,7 +657,7 @@ void AFleshCube::SetupBackSide()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = BlueprintFaces.Find(BackSideType);
+		auto MyObject = FaceData.GetDefaultObject()->SideData[BackSideType].Blueprint;
 
 		if (BackSide != nullptr)
 		{
@@ -877,7 +676,7 @@ void AFleshCube::SetupBackSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, BlueprintFaces.FindRef(BackSideType));
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
 
 			if (x == nullptr)
 			{
