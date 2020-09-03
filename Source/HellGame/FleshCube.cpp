@@ -779,22 +779,22 @@ void AFleshCube::ReceiveRemoteActivationSignal(UStaticMeshComponent* SideMeshCom
 	{
 		if (CubeSide != LeftSide)
 		{
-			LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+			LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSide->GetMeshComponent()->GetComponentToWorld(), true);
 		}
 
 		if (CubeSide != FrontSide)
 		{
-			FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+			FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSide->GetMeshComponent()->GetComponentToWorld(), true);
 		}
 
 		if (CubeSide != RightSide)
 		{
-			RightSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+			RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSide->GetMeshComponent()->GetComponentToWorld(), true);
 		}
 
 		if (CubeSide != BackSide)
 		{
-			BackSide->ReceivedActivationSignal(nullptr, ESideType::None, SideMeshComponent->GetComponentToWorld(), true);
+			BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSide->GetMeshComponent()->GetComponentToWorld(), true);
 		}
 	}
 }

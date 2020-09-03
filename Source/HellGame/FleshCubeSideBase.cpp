@@ -71,6 +71,11 @@ UStaticMesh* UFleshCubeSideBase::GetFaceMesh()
 	return FaceMesh;
 }
 
+UStaticMeshComponent* UFleshCubeSideBase::GetMeshComponent()
+{
+	return BaseMesh;
+}
+
 void UFleshCubeSideBase::SetCurrentSideType(ESideType NewSideType)
 {
 	CurrentSideType = NewSideType;

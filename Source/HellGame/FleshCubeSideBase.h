@@ -51,6 +51,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SetupMesh(UStaticMeshComponent* parent);
 	UStaticMesh* GetFaceMesh();
+	UStaticMeshComponent* GetMeshComponent();
 
 	void SetCurrentSideType(ESideType NewSideType);
 	ESideType GetCurrentSideType();
