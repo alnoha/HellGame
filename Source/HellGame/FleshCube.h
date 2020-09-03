@@ -132,4 +132,7 @@ public:
 	UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
 
 	UFleshCubeSideBase* GetCubeSideByMesh(FString MeshName);
+
+	UFUNCTION(BlueprintCallable, Category = "Remote Activation")
+	void ReceiveRemoteActivationSignal(UStaticMeshComponent* SideMeshComponent);
 };
