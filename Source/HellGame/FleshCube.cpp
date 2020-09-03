@@ -203,11 +203,6 @@ void AFleshCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bStartSidesGenerated)
-	{
-		SetupSides();
-	}
-
 	FHitResult GroundCheckHitResult;
 
 	FCollisionQueryParams CollisionParams;
@@ -368,14 +363,7 @@ void AFleshCube::SetupSides()
 {
 	if (!bStartSidesGenerated)
 	{
-		if (FaceData.GetDefaultObject() != nullptr && FaceData.GetDefaultObject()->SideData.Contains(ESideType::None))
-		{
-			SetupStartSides();
-		}
-		else
-		{
-			this->SetActorTickEnabled(true);
-		}
+		SetupStartSides();
 	}
 	// SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
 	// SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
@@ -412,7 +400,6 @@ void AFleshCube::SetupStartSides()
 	x->DestroyComponent(false);
 
 	bStartSidesGenerated = true;
-	this->SetActorTickEnabled(false);
 }
 
 void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide)
