@@ -19,7 +19,7 @@ void UAPickUpComp::BeginPlay()
 {
 	Super::BeginPlay();
 	StartCheck();
-	this->SetComponentTickEnabled(false);	
+	this->SetComponentTickEnabled(false);
 }
 
 
@@ -35,17 +35,26 @@ void UAPickUpComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 }
 
 void UAPickUpComp::PickUp(AActor* actor)
-{	
-	
+{
+
 	HoldActor = actor;
 	UActorComponent* whatever = HoldActor->GetComponentByClass(UStaticMeshComponent::StaticClass());
+
 	temp = (UStaticMeshComponent*)whatever;
 	ItemMesh = temp->GetStaticMesh();
 	HoldItem = (UPrimitiveComponent*)temp;
-	
-	HoldItem->SetWorldRotation(HoldPosition->GetComponentRotation());	
-	PhysicsHandle->GrabComponentAtLocationWithRotation(HoldItem, NAME_None, HoldItem->GetComponentLocation(), HoldItem->GetComponentRotation());	
-	PhysicsHandle->SetAngularStiffness(10000);
+
+	float hello = AngelsBetween2DVectors(HoldItem->K2_GetComponentLocation(), HoldPosition->K2_GetComponentLocation(), HoldItem->GetForwardVector());
+
+	HoldPosition->GetForwardVector().Normalize();
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("APickUpComp: " + FString::SanitizeFloat(hello)));
+
+	HoldItem->SetWorldRotation(HoldPosition->GetComponentRotation());
+	CurrentForward = HoldPosition->GetComponentQuat();
+	PhysicsHandle->GrabComponentAtLocationWithRotation(HoldItem, NAME_None, HoldItem->GetComponentLocation(), HoldItem->GetComponentRotation());
+	//PhysicsHandle->SetAngularStiffness(10000);
+
 	IsHolding = true;
 	this->SetComponentTickEnabled(true);
 }
@@ -59,15 +68,17 @@ void UAPickUpComp::Drop()
 	this->SetComponentTickEnabled(false);
 }
 
-void UAPickUpComp::RotateSetup()
+
+void UAPickUpComp::RotateSetup(FRotator DeltaRotation)
 {
-	NewRotation = OldRotation = HoldPosition->GetComponentRotation();
+	oldRotationTest = HoldPosition->GetRelativeRotation().Quaternion();
+	rotationTest = HoldPosition->GetRelativeRotation().Quaternion() * DeltaRotation.Quaternion();
 	RotatingObject = true;
 }
 
 FRotator UAPickUpComp::AltRotateSetup()
 {
-	
+
 	return HoldPosition->GetRelativeRotation();
 }
 
@@ -77,7 +88,7 @@ void UAPickUpComp::MoveForward()
 	{
 		FVector NewVec = HoldPosition->GetRelativeLocation();
 		if (HoldPosition->GetRelativeLocation().X + MoveAmount > MoveMaxLimit)
-		{		
+		{
 			NewVec.X = MoveMaxLimit;
 			HoldPosition->SetRelativeLocation(NewVec);
 		}
@@ -96,16 +107,16 @@ void UAPickUpComp::MoveBack()
 	{
 		FVector NewVec = HoldPosition->GetRelativeLocation();
 		if (HoldPosition->GetRelativeLocation().X - MoveAmount < MoveMinLimit)
-		{			
+		{
 			NewVec.X = MoveMinLimit;
 			HoldPosition->SetRelativeLocation(NewVec);
 		}
 		else
-		{			
+		{
 			NewVec.X -= MoveAmount;
 			HoldPosition->SetRelativeLocation(NewVec);
 		}
-		
+
 	}
 }
 
@@ -113,12 +124,7 @@ void UAPickUpComp::RotateLeft()
 {
 	if (HoldItem != nullptr && RotatingObject == false)
 	{
-		RotateSetup();
-		/*temp->GetBodyInstance()->bLockXRotation = true;
-		temp->GetBodyInstance()->bLockYRotation = true;
-		temp->GetBodyInstance()->bLockZRotation = false;*/
-		
-		NewRotation.Yaw += RotateAmount;
+		RotateSetup({ 0,0 + RotateAmount,0 });
 	}
 
 }
@@ -127,8 +133,7 @@ void UAPickUpComp::RotateRight()
 {
 	if (HoldItem != nullptr && RotatingObject == false)
 	{
-		RotateSetup();		
-		NewRotation.Yaw -= RotateAmount;
+		RotateSetup({ 0,0 - RotateAmount,0 });
 	}
 }
 
@@ -136,9 +141,7 @@ void UAPickUpComp::RotateUp()
 {
 	if (HoldItem != nullptr && RotatingObject == false)
 	{
-		
-		RotateSetup();
-		NewRotation.Pitch += RotateAmount;
+		RotateSetup({ 0 - RotateAmount, 0,  0 });
 	}
 }
 
@@ -146,10 +149,7 @@ void UAPickUpComp::RotateDown()
 {
 	if (HoldItem != nullptr && RotatingObject == false)
 	{
-		RotateSetup();
-		temp->BodyInstance.bLockRotation = true;
-		temp->BodyInstance.bLockYRotation = false;
-		NewRotation.Pitch -= RotateAmount;
+		RotateSetup({ 0 + RotateAmount, 0, 0 });
 	}
 }
 
@@ -157,9 +157,10 @@ void UAPickUpComp::AltRotateLeft()
 {
 	if (HoldItem != nullptr && RotatingObject == false)
 	{
-		FRotator TempRotation = HoldPosition->GetRelativeRotation();
-		TempRotation.Yaw += AltRotateAmount;		
-		HoldPosition->SetRelativeRotation(TempRotation);
+		FRotator TempDeltaRotation = { 0,0 + AltRotateAmount,0 };
+		HoldPosition->AddRelativeRotation(TempDeltaRotation.Quaternion());
+		CurrentForward.AngularDistance(oldRotationTest);
+
 	}
 }
 
@@ -167,28 +168,30 @@ void UAPickUpComp::AltRotateRight()
 {
 	if (HoldItem != nullptr && RotatingObject == false)
 	{
-		FRotator TempRotation = HoldPosition->GetRelativeRotation();
-		TempRotation.Yaw -= AltRotateAmount;
-		HoldPosition->SetRelativeRotation(TempRotation);
+		FRotator TempDeltaRotation = { 0,0 - AltRotateAmount,0 };
+		HoldPosition->AddRelativeRotation(TempDeltaRotation.Quaternion());
 	}
 }
 
 void UAPickUpComp::Rotate(float deltaTime)
-{	
-	HoldPosition->SetWorldRotation(FMath::Lerp(OldRotation, NewRotation, LerpTimer));
+{
+
+	//HoldPosition->SetRelativeRotation(FMath::Lerp(OldRotation, NewRotation, LerpTimer));
+	HoldPosition->SetRelativeRotation(FMath::Lerp(oldRotationTest, rotationTest, LerpTimer));
+
 	LerpTimer += deltaTime * LerpSpeed;
 
 	if (LerpTimer >= 0.95f)
 	{
-	 LerpTimer = 0;
-	 HoldPosition->SetWorldRotation(NewRotation);
-	 RotatingObject = false;
+		LerpTimer = 0;
+		HoldPosition->SetRelativeRotation(rotationTest);
+		RotatingObject = false;
 
-	 temp->GetBodyInstance()->bLockXRotation = true;
-	 temp->GetBodyInstance()->bLockYRotation = true;
-	 temp->GetBodyInstance()->bLockZRotation = false;
+		// temp->GetBodyInstance()->bLockXRotation = true;
+		// temp->GetBodyInstance()->bLockYRotation = true;
+		// temp->GetBodyInstance()->bLockZRotation = false;
 	}
-	
+
 }
 
 void UAPickUpComp::ResetHoldingPoint()
@@ -198,9 +201,18 @@ void UAPickUpComp::ResetHoldingPoint()
 }
 
 void UAPickUpComp::UpdateHoldItemPosition()
-{	
-	PhysicsHandle->SetTargetLocationAndRotation(HoldPosition->GetComponentLocation(),HoldPosition->GetComponentRotation());		
+{
+	FRotator testRot = HoldPosition->K2_GetComponentRotation();
+	UE_LOG(LogTemp, Warning, TEXT("%f . %f . %f"), testRot.Yaw, testRot.Roll, testRot.Pitch);
+	//testRot.Pitch = 0;
+	FQuat TestQuat = testRot.Quaternion();
+
+	PhysicsHandle->SetTargetLocationAndRotation(HoldPosition->GetComponentLocation(), testRot);
+	//HoldActor->SetActorRotation(HoldItem->GetRelativeRotation());
+
 }
+
+
 
 void UAPickUpComp::StartCheck()
 {
@@ -223,7 +235,8 @@ void UAPickUpComp::StartCheck()
 	{
 		Owner = GetOwner();
 		startPosition = HoldPosition->GetRelativeLocation();
-		startRotation = HoldPosition->GetRelativeRotation();
+		NewRotation = startRotation = HoldPosition->GetRelativeRotation();
+
 	}
 }
 
@@ -233,4 +246,19 @@ void UAPickUpComp::WriteErrorMessage(FString message)
 	UE_LOG(LogTemp, Error, TEXT("APickUpComp: %s"), *message);
 }
 
+
+
+
+float UAPickUpComp::AngelsBetween2DVectors(FVector Vector1, FVector Vector2, FVector ForwardVector)
+{
+	FVector2D ConvertedVector1 = { Vector1.X,Vector1.Y };
+	FVector2D ConvertedVector2 = { Vector2.X,Vector2.Y };
+	FVector2D ConvertedVector3 = { ForwardVector.X,ForwardVector.Y };
+	FVector2D tempthingy = ConvertedVector1 - ConvertedVector2;
+	tempthingy.Normalize();
+	ConvertedVector3.Normalize();
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("APickUpComp: " + FString::SanitizeFloat(FVector2D::DotProduct(ConvertedVector1 , ConvertedVector2) / (ConvertedVector1.Size() * ConvertedVector2.Size()))));
+	return UKismetMathLibrary::DegAcos(FVector2D::DotProduct(ConvertedVector3, tempthingy));
+}
 
