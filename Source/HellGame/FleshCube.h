@@ -118,10 +118,6 @@ private:
 	void SetupSides();
 	void SetupStartSides();
 	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
-	void SetupLeftSide();
-	void SetupFrontSide();
-	void SetupRightSide();
-	void SetupBackSide();
 	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
