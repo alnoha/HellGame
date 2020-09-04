@@ -10,7 +10,7 @@ AFleshCube::AFleshCube()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ReadFaceData();
+	// ReadFaceData();
 
 	SetupBaseMesh();
 	SetupSideMeshes();
@@ -27,6 +27,13 @@ void AFleshCube::OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor
 
 void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
+	if (!FaceData->SideData.Contains(ReceivingSide->GetCurrentSideType()))
+	{
+		const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
+		UE_LOG(LogTemp, Warning, TEXT("Can't find receiving side in data asset %s"), *SideTypeEnum->GetEnumName((int32)ReceivingSide->GetCurrentSideType()));
+		return;
+	}
+
 	if (FaceData->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
 	{
 		if (ReceivingSide == LeftSide)
@@ -385,14 +392,20 @@ void AFleshCube::SetupSides()
 	{
 		SetupStartSides();
 	}
-	// SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
-	// SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
-	// SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
-	// SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
-	SetupLeftSide();
-	SetupFrontSide();
-	SetupRightSide();
-	SetupBackSide();
+
+	if (FaceData == nullptr)
+	{
+		return;
+	}
+
+	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
+	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
+	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
+	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
+	// SetupLeftSide();
+	// SetupFrontSide();
+	// SetupRightSide();
+	// SetupBackSide();
 }
 
 void AFleshCube::SetupStartSides()
@@ -412,6 +425,11 @@ void AFleshCube::SetupStartSides()
 	if (BackSideType == ESideType::NoUse)
 	{
 		BackSideType = ESideType::None;
+	}
+
+	if (FaceData == nullptr)
+	{
+		return;
 	}
 
 	// Create a reference to none sidetype
@@ -434,13 +452,27 @@ void AFleshCube::SetupStartSides()
 	bStartSidesGenerated = true;
 }
 
-void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide)
+void AFleshCube::SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide)
 {
 	if (SideType != PreviousType)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = FaceData->SideData[SideType].Blueprint;
+		TSubclassOf<UFleshCubeSideBase> MyObject = nullptr;
+
+		if (!FaceData->SideData.Contains(SideType))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
+			SideType = ESideType::None;
+			SetupSide(SideMeshComponent, SideType, PreviousType, CubeSide);
+			return;
+		}
+		else
+		{
+			MyObject = FaceData->SideData[SideType].Blueprint;
+		}
+
+		// auto MyObject = FaceData->SideData[SideType].Blueprint;
 
 		if (CubeSide != nullptr)
 		{
@@ -459,7 +491,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[SideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -487,6 +519,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 			SideMeshComponent->SetStaticMesh(CubeSide->GetFaceMesh());
 		}
 
+		CubeSide->SetCurrentSideType(SideType);
 		PreviousType = SideType;
 	}
 }

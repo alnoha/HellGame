@@ -117,7 +117,7 @@ private:
 	void SetupSideMeshes();
 	void SetupSides();
 	void SetupStartSides();
-	void SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType SideType, ESideType& PreviousType, UFleshCubeSideBase* CubeSide);
+	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
 	void SetupLeftSide();
 	void SetupFrontSide();
 	void SetupRightSide();
