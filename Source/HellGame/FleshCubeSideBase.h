@@ -30,10 +30,24 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+<<<<<<< HEAD
 	// Called every frame
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Testes")
 	void TextPrinter();
 	void TextPrinter_Implementation();
+=======
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
+	void ReceivedActivationSignal(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
+	virtual void ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
+	void ReceivedStopSignal();
+	virtual void ReceivedStopSignal_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
+	void ReceiveRemoteActivationSignal();
+	virtual void ReceiveRemoteActivationSignal_Implementation();
+>>>>>>> 11309d81c5a51b42a286b528578459c84d47d5c8
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
