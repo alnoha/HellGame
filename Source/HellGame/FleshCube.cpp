@@ -27,7 +27,7 @@ void AFleshCube::OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor
 
 void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
-	if (FaceData.GetDefaultObject()->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
+	if (FaceData->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
 	{
 		if (ReceivingSide == LeftSide)
 		{
@@ -62,11 +62,11 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 
 void AFleshCube::ReadFaceData()
 {
-	ConstructorHelpers::FObjectFinder<UBlueprint> CubeSideBase(TEXT("Blueprint'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/CubeFaceData.CubeFaceData'"));
+	static ConstructorHelpers::FObjectFinder<UDataAsset> CubeSideBase(TEXT("CubeFaceDataold_C'/Game/FirstPersonCPP/Blueprints/CPPFleshCube/CubeFaceData.CubeFaceData'"));
 
 	if (CubeSideBase.Succeeded())
 	{
-		FaceData = CubeSideBase.Object->GeneratedClass;
+		FaceData = Cast<UCubeFaceData>(CubeSideBase.Object);
 	}
 	else
 	{
@@ -78,13 +78,13 @@ void AFleshCube::SetupBaseMesh()
 {
 	// Create base cube mesh
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxBase"));
-	BaseMesh->RegisterComponent();
+	//BaseMesh->RegisterComponent();
 
 	this->SetRootComponent(BaseMesh);
 
 	// Setup Physics
 	BaseMesh->SetSimulatePhysics(true);
-	BaseMesh->SetMassOverrideInKg(FName("None"), 900.0f, true);
+	//BaseMesh->SetMassOverrideInKg(FName("None"), 900.0f, true);
 }
 
 void AFleshCube::SetupSideMeshes()
@@ -94,71 +94,71 @@ void AFleshCube::SetupSideMeshes()
 
 	LeftSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Left Side Mesh");
 	LeftSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	LeftSideMeshComponent->RegisterComponent();
-	LeftSideMeshComponent->bEditableWhenInherited = true;
+	//LeftSideMeshComponent->RegisterComponent();
+	//LeftSideMeshComponent->bEditableWhenInherited = true;
 	LeftSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	LeftSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 
 	LeftSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Left Box collider");
-	LeftSideBoxCollider->bEditableWhenInherited = true;
+	//LeftSideBoxCollider->bEditableWhenInherited = true;
 	LeftSideBoxCollider->AttachToComponent(LeftSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	LeftSideBoxCollider->RegisterComponent();
+	//LeftSideBoxCollider->RegisterComponent();
 	LeftSideBoxCollider->SetBoxExtent(BoxExtent);
 	LeftSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	FrontSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Front Side Mesh");
 	FrontSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	FrontSideMeshComponent->RegisterComponent();
-	FrontSideMeshComponent->bEditableWhenInherited = true;
+	//FrontSideMeshComponent->RegisterComponent();
+	//FrontSideMeshComponent->bEditableWhenInherited = true;
 	FrontSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	FrontSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 
 	FrontSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Front Box collider");
-	FrontSideBoxCollider->bEditableWhenInherited = true;
+	//FrontSideBoxCollider->bEditableWhenInherited = true;
 	FrontSideBoxCollider->AttachToComponent(FrontSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	FrontSideBoxCollider->RegisterComponent();
+	//FrontSideBoxCollider->RegisterComponent();
 	FrontSideBoxCollider->SetBoxExtent(BoxExtent);
 	FrontSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	RightSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Right Side Mesh");
 	RightSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	RightSideMeshComponent->RegisterComponent();
-	RightSideMeshComponent->bEditableWhenInherited = true;
+	//RightSideMeshComponent->RegisterComponent();
+	//RightSideMeshComponent->bEditableWhenInherited = true;
 	RightSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	RightSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 
 	RightSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Right Box collider");
-	RightSideBoxCollider->bEditableWhenInherited = true;
+	//RightSideBoxCollider->bEditableWhenInherited = true;
 	RightSideBoxCollider->AttachToComponent(RightSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	RightSideBoxCollider->RegisterComponent();
+	//RightSideBoxCollider->RegisterComponent();
 	RightSideBoxCollider->SetBoxExtent(BoxExtent);
 	RightSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	BackSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Back Side Mesh");
 	BackSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	BackSideMeshComponent->bEditableWhenInherited = true;
-	BackSideMeshComponent->RegisterComponent();
+	//BackSideMeshComponent->bEditableWhenInherited = true;
+	//BackSideMeshComponent->RegisterComponent();
 	BackSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	BackSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 
 	BackSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Back Box collider");
-	BackSideBoxCollider->bEditableWhenInherited = true;
+	//BackSideBoxCollider->bEditableWhenInherited = true;
 	BackSideBoxCollider->AttachToComponent(BackSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	BackSideBoxCollider->RegisterComponent();
+	//BackSideBoxCollider->RegisterComponent();
 	BackSideBoxCollider->SetBoxExtent(BoxExtent);
 	BackSideBoxCollider->SetRelativeLocation(BoxLocation);
 
 	TopSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Top Side Mesh");
 	TopSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	TopSideMeshComponent->bEditableWhenInherited = true;
-	TopSideMeshComponent->RegisterComponent();
+	//TopSideMeshComponent->bEditableWhenInherited = true;
+	//TopSideMeshComponent->RegisterComponent();
 	TopSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	TopSideMeshComponent->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
 	BottomSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Bottom Side Mesh");
 	BottomSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	BottomSideMeshComponent->bEditableWhenInherited = true;
-	BottomSideMeshComponent->RegisterComponent();
+	//BottomSideMeshComponent->bEditableWhenInherited = true;
+	//BottomSideMeshComponent->RegisterComponent();
 	BottomSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	BottomSideMeshComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
 }
@@ -173,19 +173,35 @@ void AFleshCube::BeginPlay()
 void AFleshCube::OnPickUp_Implementation(AActor* Caller)
 {
 	AInteractableBase::OnPickUp_Implementation(Caller);
+	//AInteractableBase::Execute_OnPickUp(this, Caller);
 	bCurrentlyCarried = true;
 
 	for (UFleshCubeSideBase* Side : ActivatedSides)
 	{
-		Side->ReceivedStopSignal();
+		if (Side != nullptr)
+		{
+			Side->ReceivedStopSignal();
+		}
 	}
 
 	ActivatedSides.Empty();
 
-	LeftSide->ReceivedStopSignal();
-	FrontSide->ReceivedStopSignal();
-	RightSide->ReceivedStopSignal();
-	BackSide->ReceivedStopSignal();
+	if (LeftSide != nullptr)
+	{
+		LeftSide->ReceivedStopSignal();
+	}
+	if (FrontSide != nullptr)
+	{
+		FrontSide->ReceivedStopSignal();
+	}
+	if (RightSide != nullptr)
+	{
+		RightSide->ReceivedStopSignal();
+	}
+	if (BackSide != nullptr)
+	{
+		BackSide->ReceivedStopSignal();
+	}
 }
 
 void AFleshCube::OnDropPickUp_Implementation(AActor* Caller)
@@ -290,9 +306,10 @@ void AFleshCube::Tick(float DeltaTime)
 
 void AFleshCube::OnConstruction(const FTransform& Transform)
 {
+	Super::OnConstruction(Transform);
 	SetupSides();
 
-	LeftSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
+	/*LeftSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
 	FrontSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
 	RightSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
 	BackSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
@@ -301,9 +318,8 @@ void AFleshCube::OnConstruction(const FTransform& Transform)
 	LeftSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
 	FrontSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
 	RightSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
-	BackSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
+	BackSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);*/
 
-	Super::OnConstruction(Transform);
 }
 
 UFleshCubeSideBase* AFleshCube::GetCubeSideByCollider(FString ColliderName)
@@ -387,7 +403,7 @@ void AFleshCube::SetupStartSides()
 	BackSideType = ESideType::None;
 
 	// Create a reference to none sidetype
-	auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[ESideType::None].Blueprint);
+	auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[ESideType::None].Blueprint);
 
 	// Make sure the blueprint for no face can be found
 	if (x == nullptr)
@@ -412,7 +428,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = FaceData.GetDefaultObject()->SideData[SideType].Blueprint;
+		auto MyObject = FaceData->SideData[SideType].Blueprint;
 
 		if (CubeSide != nullptr)
 		{
@@ -431,7 +447,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent* SideMeshComponent, ESideType Si
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[LeftSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -474,7 +490,7 @@ void AFleshCube::SetupLeftSide()
 			UE_LOG(LogTemp, Warning, TEXT("facedata = nullptr"));
 		}
 
-		auto MyObject = FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint;
+		auto MyObject = FaceData->SideData[LeftSideType].Blueprint;
 
 		if (LeftSide != nullptr)
 		{
@@ -493,7 +509,7 @@ void AFleshCube::SetupLeftSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[LeftSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -532,7 +548,7 @@ void AFleshCube::SetupFrontSide()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = FaceData.GetDefaultObject()->SideData[FrontSideType].Blueprint;
+		auto MyObject = FaceData->SideData[FrontSideType].Blueprint;
 
 		if (FrontSide != nullptr)
 		{
@@ -551,7 +567,7 @@ void AFleshCube::SetupFrontSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[FrontSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -590,7 +606,7 @@ void AFleshCube::SetupRightSide()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = FaceData.GetDefaultObject()->SideData[RightSideType].Blueprint;
+		auto MyObject = FaceData->SideData[RightSideType].Blueprint;
 
 		if (RightSide != nullptr)
 		{
@@ -609,7 +625,7 @@ void AFleshCube::SetupRightSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[RightSideType].Blueprint);
 
 			if (x == nullptr)
 			{
@@ -648,7 +664,7 @@ void AFleshCube::SetupBackSide()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Changing side on FleshCube"));
 
-		auto MyObject = FaceData.GetDefaultObject()->SideData[BackSideType].Blueprint;
+		auto MyObject = FaceData->SideData[BackSideType].Blueprint;
 
 		if (BackSide != nullptr)
 		{
@@ -667,7 +683,7 @@ void AFleshCube::SetupBackSide()
 		}
 		else
 		{
-			auto x = NewObject<UFleshCubeSideBase>(this, FaceData.GetDefaultObject()->SideData[LeftSideType].Blueprint);
+			auto x = NewObject<UFleshCubeSideBase>(this, FaceData->SideData[BackSideType].Blueprint);
 
 			if (x == nullptr)
 			{

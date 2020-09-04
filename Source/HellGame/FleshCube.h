@@ -41,10 +41,13 @@ private:
 	bool bCurrentlyCarried = false;
 	bool bCanSendStartSignal = false;
 
-	TSubclassOf<UCubeFaceData> FaceData;
+	//TSubclassOf<UCubeFaceData> FaceData;
 
 
 public:
+
+	UPROPERTY(EditAnywhere)
+	UCubeFaceData* FaceData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
 	AActor* CubeRespawnPoint;
