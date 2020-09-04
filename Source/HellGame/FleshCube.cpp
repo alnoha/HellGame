@@ -12,6 +12,8 @@ AFleshCube::AFleshCube()
 
 	// ReadFaceData();
 
+	UE_LOG(LogTemp, Warning, TEXT("Text for commit test"));
+
 	SetupBaseMesh();
 	SetupSideMeshes();
 }
