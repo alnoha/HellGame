@@ -99,75 +99,20 @@ void AFleshCube::SetupSideMeshes()
 	FVector BoxExtent = FVector(50.0f, 70.0f, 70.0f);
 	FVector BoxLocation = FVector(120.0f, 0.0f, 0.0f);
 
-	LeftSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Left Side Mesh");
-	LeftSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	//LeftSideMeshComponent->RegisterComponent();
-	//LeftSideMeshComponent->bEditableWhenInherited = true;
-	LeftSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	LeftSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	SetupSideMesh(LeftSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 270.f, 0.0f), FName("Left Side Mesh"));
+	SetupSideMesh(FrontSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f), FName("Front Side Mesh"));
+	SetupSideMesh(RightSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 90.f, 0.0f), FName("Right Side Mesh"));
+	SetupSideMesh(BackSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 180.f, 0.0f), FName("Back Side Mesh"));
+	SetupSideMesh(TopSideMeshComponent, BaseMesh, FVector(0.0), FRotator(90.0f, 00.f, 0.0f), FName("Top Side Mesh"));
+	SetupSideMesh(BottomSideMeshComponent, BaseMesh, FVector(0.0), FRotator(-90.0f, 0.f, 0.0f), FName("Bottom Side Mesh"));
+}
 
-	LeftSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Left Box collider");
-	//LeftSideBoxCollider->bEditableWhenInherited = true;
-	LeftSideBoxCollider->AttachToComponent(LeftSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	//LeftSideBoxCollider->RegisterComponent();
-	LeftSideBoxCollider->SetBoxExtent(BoxExtent);
-	LeftSideBoxCollider->SetRelativeLocation(BoxLocation);
-
-	FrontSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Front Side Mesh");
-	FrontSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	//FrontSideMeshComponent->RegisterComponent();
-	//FrontSideMeshComponent->bEditableWhenInherited = true;
-	FrontSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	FrontSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-
-	FrontSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Front Box collider");
-	//FrontSideBoxCollider->bEditableWhenInherited = true;
-	FrontSideBoxCollider->AttachToComponent(FrontSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	//FrontSideBoxCollider->RegisterComponent();
-	FrontSideBoxCollider->SetBoxExtent(BoxExtent);
-	FrontSideBoxCollider->SetRelativeLocation(BoxLocation);
-
-	RightSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Right Side Mesh");
-	RightSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	//RightSideMeshComponent->RegisterComponent();
-	//RightSideMeshComponent->bEditableWhenInherited = true;
-	RightSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	RightSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
-
-	RightSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Right Box collider");
-	//RightSideBoxCollider->bEditableWhenInherited = true;
-	RightSideBoxCollider->AttachToComponent(RightSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	//RightSideBoxCollider->RegisterComponent();
-	RightSideBoxCollider->SetBoxExtent(BoxExtent);
-	RightSideBoxCollider->SetRelativeLocation(BoxLocation);
-
-	BackSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Back Side Mesh");
-	BackSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	//BackSideMeshComponent->bEditableWhenInherited = true;
-	//BackSideMeshComponent->RegisterComponent();
-	BackSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	BackSideMeshComponent->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
-
-	BackSideBoxCollider = CreateDefaultSubobject<UBoxComponent>("Back Box collider");
-	//BackSideBoxCollider->bEditableWhenInherited = true;
-	BackSideBoxCollider->AttachToComponent(BackSideMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	//BackSideBoxCollider->RegisterComponent();
-	BackSideBoxCollider->SetBoxExtent(BoxExtent);
-	BackSideBoxCollider->SetRelativeLocation(BoxLocation);
-
-	TopSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Top Side Mesh");
-	TopSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	//TopSideMeshComponent->bEditableWhenInherited = true;
-	//TopSideMeshComponent->RegisterComponent();
-	TopSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	TopSideMeshComponent->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
-
-	BottomSideMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Bottom Side Mesh");
-	BottomSideMeshComponent->AttachToComponent(BaseMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	//BottomSideMeshComponent->bEditableWhenInherited = true;
-	//BottomSideMeshComponent->RegisterComponent();
-	BottomSideMeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	BottomSideMeshComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+void AFleshCube::SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName)
+{
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(ComponentName);
+	MeshComponent->AttachToComponent(ComponentParent, FAttachmentTransformRules::KeepRelativeTransform);
+	MeshComponent->SetRelativeLocation(ComponentLocation);
+	MeshComponent->SetRelativeRotation(ComponentRotation);
 }
 
 // Called when the game starts or when spawned
@@ -535,5 +480,4 @@ void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
 	FQuat StartQuat = Start.ToOrientationRotator().Quaternion();
 	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
 	this->SetActorRotation(EndQuat * StartQuat);
-
 }

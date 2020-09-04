@@ -115,6 +115,7 @@ private:
 	void ReadFaceData();
 	void SetupBaseMesh();
 	void SetupSideMeshes();
+	void SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
 	void SetupSides();
 	void SetupStartSides();
 	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
