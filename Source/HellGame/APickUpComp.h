@@ -6,30 +6,37 @@
 #include "Components/ActorComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Misc/MessageDialog.h"
+#include "Math/Quat.h"	
+#include < cmath >
+#include "Kismet/KismetMathLibrary.h"
+#include <string> 
+#include "Math/UnrealMathUtility.h"
 #include "APickUpComp.generated.h"
 
 
-UCLASS(Blueprintable,ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class HELLGAME_API UAPickUpComp : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	UAPickUpComp();
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 		void PickUp(AActor* actor);
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 		void Drop();
 
-	UPROPERTY( BlueprintReadWrite)
+
+
+	UPROPERTY(BlueprintReadWrite)
 		USceneComponent* HoldPosition;
-	UPROPERTY( BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 		UPhysicsHandleComponent* PhysicsHandle;
 
 	UFUNCTION(BlueprintCallable, Category = "Move")
@@ -56,7 +63,7 @@ public:
 		void AltRotateLeft();
 	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void AltRotateRight();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = "Rotation")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
 		float RotateAmount = 90;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
 		float AltRotateAmount = 2;
@@ -76,21 +83,30 @@ private:
 
 	AActor* Owner;
 
-	void RotateSetup();
+	void RotateSetup(FRotator DeltaRotation);
 	FRotator AltRotateSetup();
 	void Rotate(float deltaTime);
 	void ResetHoldingPoint();
 	void UpdateHoldItemPosition();
-	
+	float AngelsBetweenVectors(FVector Vector1, FVector Vector2, FRotator Rotation);
 
-	void StartCheck(); 
+	float DotProduct();
+
+	void StartCheck();
 	void WriteErrorMessage(FString message);
 	FRotator OldRotation;
 	FRotator NewRotation;
 	float LerpTimer = 0.0f;
 	bool RotatingObject = false;
 
+
+	FQuat oldRotationTest;
+	FQuat rotationTest;
 	FVector startPosition;
 	FRotator startRotation;
-	
+	FQuat CurrentForward;
+
+
+
+	float AngelsBetween2DVectors(FVector Vector1, FVector Vector2, FVector ForwardVector);
 };
