@@ -16,6 +16,7 @@ AFleshCube::AFleshCube()
 
 void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Activation signal"));
 	if (!FaceData->SideData.Contains(ReceivingSide->GetCurrentSideType()))
 	{
 		const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
