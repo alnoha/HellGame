@@ -26,25 +26,40 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 
 	if (FaceData->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
 	{
+		bool bFoundaSide = false;
+
 		if (ReceivingSide != LeftSide)
 		{
 			LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
+			bFoundaSide = true;
 		}
 
 		if (ReceivingSide != FrontSide)
 		{
 			FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
+			bFoundaSide = true;
 		}
 
 		if (ReceivingSide != RightSide)
 		{
 			RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
+			bFoundaSide = true;
 		}
 
 		if (ReceivingSide != BackSide)
 		{
 			BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
+			bFoundaSide = true;
 		}
+
+		if (!bFoundaSide)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Could not find a side"));
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Face match does not contain type"));
 	}
 }
 
