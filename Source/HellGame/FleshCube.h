@@ -62,20 +62,20 @@ public:
 		ESideType BackSideType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-		UStaticMeshComponent* BaseMesh;
+	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* LeftSideMeshComponent;
+		UStaticMeshComponent* LeftSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* RightSideMeshComponent;
+		UStaticMeshComponent* RightSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* FrontSideMeshComponent;
+		UStaticMeshComponent* FrontSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* BackSideMeshComponent;
+		UStaticMeshComponent* BackSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* TopSideMeshComponent;
+		UStaticMeshComponent* TopSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* BottomSideMeshComponent;
+		UStaticMeshComponent* BottomSideMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 		UBoxComponent* LeftSideBoxCollider;
@@ -115,10 +115,10 @@ private:
 	void ReadFaceData();
 	void SetupBaseMesh();
 	void SetupSideMeshes();
-	void SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
+	void SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
 	void SetupSides();
 	void SetupStartSides();
-	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
+	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
 	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
