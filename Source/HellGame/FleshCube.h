@@ -18,9 +18,9 @@ class UCubeFaseData : public UDataAsset
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-	AFleshCube* ConnectedCube;
+		AFleshCube* ConnectedCube;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-	UFleshCubeSideBase* ConnectedFace;
+		UFleshCubeSideBase* ConnectedFace;
 };
 
 UCLASS()
@@ -31,6 +31,7 @@ class HELLGAME_API AFleshCube : public AInteractableBase
 private:
 	TArray<UFleshCubeSideBase*> ActivatedSides;
 
+
 	ESideType PreviousLeftSide;
 	ESideType PreviousFrontSide;
 	ESideType PreviousRightSide;
@@ -40,67 +41,84 @@ private:
 	bool bCurrentlyCarried = false;
 	bool bCanSendStartSignal = false;
 
+	//TSubclassOf<UCubeFaceData> FaceData;
+
+
 public:
 
 	UPROPERTY(EditAnywhere)
-	UCubeFaceData* FaceData;
+		UCubeFaceData* FaceData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
-	AActor* CubeRespawnPoint;
+		AActor* CubeRespawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-	ESideType LeftSideType;
+		ESideType LeftSideType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-	ESideType FrontSideType;
+		ESideType FrontSideType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-	ESideType RightSideType;
+		ESideType RightSideType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-	ESideType BackSideType;
+		ESideType BackSideType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* BaseMesh;
+		UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* LeftSideMeshComponent;
+	USkeletalMeshComponent* LeftSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* RightSideMeshComponent;
+	USkeletalMeshComponent* RightSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* FrontSideMeshComponent;
+	USkeletalMeshComponent* FrontSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* BackSideMeshComponent;
+	USkeletalMeshComponent* BackSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* TopSideMeshComponent;
+	USkeletalMeshComponent* TopSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* BottomSideMeshComponent;
+	USkeletalMeshComponent* BottomSideMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+		UBoxComponent* LeftSideBoxCollider;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+		UBoxComponent* FrontSideBoxCollider;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+		UBoxComponent* RightSideBoxCollider;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
+		UBoxComponent* BackSideBoxCollider;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	UFleshCubeSideBase* LeftSide;
+		UFleshCubeSideBase* LeftSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	UFleshCubeSideBase* FrontSide;
+		UFleshCubeSideBase* FrontSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	UFleshCubeSideBase* RightSide;
+		UFleshCubeSideBase* RightSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-	UFleshCubeSideBase* BackSide;
+		UFleshCubeSideBase* BackSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
-	float CubeSideTraceDistance = 200.0f;
+		float CubeSideTraceDistance = 200.0f;
 
 	/*How far the cube will snap to the other cube. (Default = 250)*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
-	float CubeSnapDistance = 250.0f;
+		float CubeSnapDistance = 250.0f;
 
 	UFUNCTION()
-	void SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal = false);
+		void OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
+
+	UFUNCTION()
+		void SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal = false);
 
 
 private:
+	void ReadFaceData();
 	void SetupBaseMesh();
 	void SetupSideMeshes();
-	void SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
+	void SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
 	void SetupSides();
 	void SetupStartSides();
-	void TryToFindCubeNeighbour(FHitResult& CubeHitResult, UStaticMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType);
-	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
+	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
 	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
@@ -116,5 +134,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Cube sides")
-	UFleshCubeSideBase* GetCubeSideByComponentName(FString Name);
+	UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
+
+	UFleshCubeSideBase* GetCubeSideByMesh(FString MeshName);
 };
