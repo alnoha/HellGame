@@ -18,9 +18,9 @@ class UCubeFaseData : public UDataAsset
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-		AFleshCube* ConnectedCube;
+	AFleshCube* ConnectedCube;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-		UFleshCubeSideBase* ConnectedFace;
+	UFleshCubeSideBase* ConnectedFace;
 };
 
 UCLASS()
@@ -31,7 +31,6 @@ class HELLGAME_API AFleshCube : public AInteractableBase
 private:
 	TArray<UFleshCubeSideBase*> ActivatedSides;
 
-
 	ESideType PreviousLeftSide;
 	ESideType PreviousFrontSide;
 	ESideType PreviousRightSide;
@@ -40,9 +39,6 @@ private:
 	bool bStartSidesGenerated = false;
 	bool bCurrentlyCarried = false;
 	bool bCanSendStartSignal = false;
-
-	//TSubclassOf<UCubeFaceData> FaceData;
-
 
 public:
 
@@ -65,60 +61,46 @@ public:
 	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* LeftSideMeshComponent;
+	UStaticMeshComponent* LeftSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* RightSideMeshComponent;
+	UStaticMeshComponent* RightSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* FrontSideMeshComponent;
+	UStaticMeshComponent* FrontSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* BackSideMeshComponent;
+	UStaticMeshComponent* BackSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* TopSideMeshComponent;
+	UStaticMeshComponent* TopSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	USkeletalMeshComponent* BottomSideMeshComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
-		UBoxComponent* LeftSideBoxCollider;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
-		UBoxComponent* FrontSideBoxCollider;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
-		UBoxComponent* RightSideBoxCollider;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
-		UBoxComponent* BackSideBoxCollider;
+	UStaticMeshComponent* BottomSideMeshComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-		UFleshCubeSideBase* LeftSide;
+	UFleshCubeSideBase* LeftSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-		UFleshCubeSideBase* FrontSide;
+	UFleshCubeSideBase* FrontSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-		UFleshCubeSideBase* RightSide;
+	UFleshCubeSideBase* RightSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
-		UFleshCubeSideBase* BackSide;
+	UFleshCubeSideBase* BackSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
-		float CubeSideTraceDistance = 200.0f;
+	float CubeSideTraceDistance = 200.0f;
 
 	/*How far the cube will snap to the other cube. (Default = 250)*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
-		float CubeSnapDistance = 250.0f;
+	float CubeSnapDistance = 250.0f;
 
 	UFUNCTION()
-		void OnSideCollisionEnter(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-		void OnSideCollisionExit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
-
-	UFUNCTION()
-		void SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal = false);
+	void SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal = false);
 
 
 private:
-	void ReadFaceData();
 	void SetupBaseMesh();
 	void SetupSideMeshes();
-	void SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
+	void SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
 	void SetupSides();
 	void SetupStartSides();
-	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
+	void TryToFindCubeNeighbour(FHitResult& CubeHitResult, UStaticMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType);
+	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
 	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
@@ -134,7 +116,5 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Cube sides")
-	UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
-
-	UFleshCubeSideBase* GetCubeSideByMesh(FString MeshName);
+	UFleshCubeSideBase* GetCubeSideByComponentName(FString Name);
 };
