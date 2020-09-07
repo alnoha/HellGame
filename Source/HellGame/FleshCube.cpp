@@ -67,9 +67,9 @@ void AFleshCube::SetupSideMeshes()
 	SetupSideMesh(BottomSideMeshComponent, BaseMesh, FVector(0.0), FRotator(-90.0f, 0.f, 0.0f), FName("Bottom Side Mesh"));
 }
 
-void AFleshCube::SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName)
+void AFleshCube::SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName)
 {
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(ComponentName);
+	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
 	MeshComponent->AttachToComponent(ComponentParent, FAttachmentTransformRules::KeepRelativeTransform);
 	MeshComponent->SetRelativeLocation(ComponentLocation);
 	MeshComponent->SetRelativeRotation(ComponentRotation);
@@ -260,8 +260,8 @@ void AFleshCube::SetupStartSides()
 	}
 
 	// Set top and bottom meshes
-	TopSideMeshComponent->SetStaticMesh(TemporaryNoneReference->GetFaceMesh());
-	BottomSideMeshComponent->SetStaticMesh(TemporaryNoneReference->GetFaceMesh());
+	TopSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
+	BottomSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
 
 	// Destroy this now unused component
 	TemporaryNoneReference->DestroyComponent(false);
@@ -269,7 +269,7 @@ void AFleshCube::SetupStartSides()
 	bStartSidesGenerated = true;
 }
 
-void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, UStaticMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType)
+void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType)
 {
 	FVector StartLocation = MeshComponent->GetComponentLocation();
 	FVector EndLocation = StartLocation + (MeshComponent->GetForwardVector() * CubeSideTraceDistance);
@@ -290,7 +290,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, UStaticMeshCo
 	}
 }
 
-void AFleshCube::SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide)
+void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide)
 {
 	if (SideType != PreviousType)
 	{
@@ -311,7 +311,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& 
 		if (CubeSide != nullptr)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Cube side is nullptr"));
-			SideMeshComponent->SetStaticMesh(nullptr);
+			SideMeshComponent->SetSkeletalMesh(nullptr);
 			CubeSide->bEditableWhenInherited = false;
 			CubeSide->UnregisterComponent();
 			CubeSide->DestroyComponent(false);
@@ -320,7 +320,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& 
 		if (CubeObject == nullptr)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("CubeObject is nullptr"));
-			SideMeshComponent->SetStaticMesh(nullptr);
+			SideMeshComponent->SetSkeletalMesh(nullptr);
 			CubeSide = nullptr;
 		}
 		else
@@ -337,7 +337,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& 
 			CubeSide->RegisterComponent();
 			CubeSide->bEditableWhenInherited = false;
 
-			UStaticMesh* MeshToUse = CubeSide->GetFaceMesh();
+			USkeletalMesh* MeshToUse = CubeSide->GetFaceMesh();
 
 			if (MeshToUse == nullptr)
 			{
@@ -350,7 +350,7 @@ void AFleshCube::SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& 
 				return;
 			}
 
-			SideMeshComponent->SetStaticMesh(CubeSide->GetFaceMesh());
+			SideMeshComponent->SetSkeletalMesh(CubeSide->GetFaceMesh());
 		}
 
 		CubeSide->SetCurrentSideType(SideType);
