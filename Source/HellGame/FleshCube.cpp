@@ -113,6 +113,14 @@ void AFleshCube::SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMe
 	MeshComponent->AttachToComponent(ComponentParent, FAttachmentTransformRules::KeepRelativeTransform);
 	MeshComponent->SetRelativeLocation(ComponentLocation);
 	MeshComponent->SetRelativeRotation(ComponentRotation);
+
+	if (LeftSideMeshComponent == nullptr)
+	{
+		LeftSideMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("PEAPEROKA");
+		LeftSideMeshComponent->AttachToComponent(ComponentParent, FAttachmentTransformRules::KeepRelativeTransform);
+		LeftSideMeshComponent->SetRelativeLocation(ComponentLocation);
+		LeftSideMeshComponent->SetRelativeRotation(ComponentRotation);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -260,18 +268,6 @@ void AFleshCube::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	SetupSides();
-
-	/*LeftSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
-	FrontSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
-	RightSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
-	BackSideBoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionEnter);
-
-
-	LeftSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
-	FrontSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
-	RightSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);
-	BackSideBoxCollider->OnComponentEndOverlap.AddDynamic(this, &AFleshCube::OnSideCollisionExit);*/
-
 }
 
 UFleshCubeSideBase* AFleshCube::GetCubeSideByCollider(FString ColliderName)
@@ -352,10 +348,6 @@ void AFleshCube::SetupSides()
 	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
 	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
 	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
-	// SetupLeftSide();
-	// SetupFrontSide();
-	// SetupRightSide();
-	// SetupBackSide();
 }
 
 void AFleshCube::SetupStartSides()
