@@ -47,35 +47,35 @@ private:
 public:
 
 	UPROPERTY(EditAnywhere)
-		UCubeFaceData* FaceData;
+	UCubeFaceData* FaceData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
-		AActor* CubeRespawnPoint;
+	AActor* CubeRespawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-		ESideType LeftSideType;
+	ESideType LeftSideType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-		ESideType FrontSideType;
+	ESideType FrontSideType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-		ESideType RightSideType;
+	ESideType RightSideType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
-		ESideType BackSideType;
+	ESideType BackSideType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* LeftSideMeshComponent;
+	USkeletalMeshComponent* LeftSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* RightSideMeshComponent;
+	USkeletalMeshComponent* RightSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* FrontSideMeshComponent;
+	USkeletalMeshComponent* FrontSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* BackSideMeshComponent;
+	USkeletalMeshComponent* BackSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* TopSideMeshComponent;
+	USkeletalMeshComponent* TopSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* BottomSideMeshComponent;
+	USkeletalMeshComponent* BottomSideMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 		UBoxComponent* LeftSideBoxCollider;
@@ -115,10 +115,10 @@ private:
 	void ReadFaceData();
 	void SetupBaseMesh();
 	void SetupSideMeshes();
-	void SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
+	void SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
 	void SetupSides();
 	void SetupStartSides();
-	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
+	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
 	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
