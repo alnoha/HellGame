@@ -65,17 +65,17 @@ public:
 		UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* LeftSideMeshComponent;
+	USkeletalMeshComponent* LeftSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* RightSideMeshComponent;
+	USkeletalMeshComponent* RightSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* FrontSideMeshComponent;
+	USkeletalMeshComponent* FrontSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* BackSideMeshComponent;
+	USkeletalMeshComponent* BackSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* TopSideMeshComponent;
+	USkeletalMeshComponent* TopSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-		UStaticMeshComponent* BottomSideMeshComponent;
+	USkeletalMeshComponent* BottomSideMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Side Colliders")
 		UBoxComponent* LeftSideBoxCollider;
@@ -115,10 +115,10 @@ private:
 	void ReadFaceData();
 	void SetupBaseMesh();
 	void SetupSideMeshes();
-	void SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
+	void SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
 	void SetupSides();
 	void SetupStartSides();
-	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
+	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
 	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
@@ -134,7 +134,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Cube sides")
-		UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
+	UFleshCubeSideBase* GetCubeSideByCollider(FString Collider);
 
 	UFleshCubeSideBase* GetCubeSideByMesh(FString MeshName);
 };
