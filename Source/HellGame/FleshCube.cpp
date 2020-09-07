@@ -285,7 +285,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 			{
 				OtherCube->SendActivationSignal(this, SendingSide, CurrentSide, SideType);
 				ActivatedSides.Add(CurrentSide);
-				LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+				// LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 			}
 		}
 	}
