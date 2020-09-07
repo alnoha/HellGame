@@ -84,6 +84,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
 	float CubeSideTraceDistance = 200.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
+	float CubeGroundTraceDistance = 80.0f;
 
 	/*How far the cube will snap to the other cube. (Default = 250)*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")

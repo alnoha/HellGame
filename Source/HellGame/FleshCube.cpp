@@ -138,8 +138,9 @@ void AFleshCube::Tick(float DeltaTime)
 	if (GetWorld()->LineTraceSingleByChannel(GroundCheckHitResult, this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), ECC_Visibility, CollisionParams))
 	{
 		DrawDebugLine(GetWorld(), this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), FColor::Magenta);
-		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < 77.0f)
+		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < CubeGroundTraceDistance)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, TEXT("Found ground"));
 			FHitResult CubeHitResult;
 			TryToFindCubeNeighbour(CubeHitResult, LeftSideMeshComponent, CollisionParams, LeftSide, LeftSideType);
 			TryToFindCubeNeighbour(CubeHitResult, FrontSideMeshComponent, CollisionParams, FrontSide, FrontSideType);
