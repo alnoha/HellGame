@@ -5,21 +5,13 @@
 
 UFleshCubeSideBase::UFleshCubeSideBase()
 {
-	PrimaryComponentTick.bCanEverTick = false;
-
-	UE_LOG(LogTemp, Warning, TEXT("Getting spawned! :D"));
-
-	// SetupBaseMesh();
 }
 
 void UFleshCubeSideBase::SetupBaseMesh()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Mesh setup has started"));
 	// Create base cube mesh
-	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Test"));
+	BaseMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Test"));
 	BaseMesh->bEditableWhenInherited = true;
-
-	UE_LOG(LogTemp, Warning, TEXT("Mesh setup finished"));
 }
 
 void UFleshCubeSideBase::BeginPlay()
@@ -29,14 +21,13 @@ void UFleshCubeSideBase::BeginPlay()
 
 void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, TEXT("impl"));
 }
 
 void UFleshCubeSideBase::ReceivedStopSignal_Implementation()
 {
 }
 
-void UFleshCubeSideBase::ReceiveRemoteActivationSignal_Implementation()
+void UFleshCubeSideBase::ReceiveRemoteActivationSignal_Implementation(FTransform SideTransform)
 {
 }
 
@@ -45,7 +36,7 @@ void UFleshCubeSideBase::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UFleshCubeSideBase::SetupMesh(UStaticMeshComponent* parent)
+void UFleshCubeSideBase::SetupMesh(USkeletalMeshComponent* parent)
 {
 	if (BaseMesh == nullptr)
 	{
@@ -62,11 +53,11 @@ void UFleshCubeSideBase::SetupMesh(UStaticMeshComponent* parent)
 	if (BaseMesh != nullptr && FaceMesh != nullptr && parent != nullptr)
 	{
 		BaseMesh->SetupAttachment(parent);
-		BaseMesh->SetStaticMesh(FaceMesh);
+		BaseMesh->SetSkeletalMesh(FaceMesh);
 	}
 }
 
-UStaticMesh* UFleshCubeSideBase::GetFaceMesh()
+USkeletalMesh* UFleshCubeSideBase::GetFaceMesh()
 {
 	return FaceMesh;
 }
