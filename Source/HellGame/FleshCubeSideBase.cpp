@@ -5,21 +5,13 @@
 
 UFleshCubeSideBase::UFleshCubeSideBase()
 {
-	PrimaryComponentTick.bCanEverTick = false;
-
-	UE_LOG(LogTemp, Warning, TEXT("Getting spawned! :D"));
-
-	// SetupBaseMesh();
 }
 
 void UFleshCubeSideBase::SetupBaseMesh()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Mesh setup has started"));
 	// Create base cube mesh
 	BaseMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Test"));
 	BaseMesh->bEditableWhenInherited = true;
-
-	UE_LOG(LogTemp, Warning, TEXT("Mesh setup finished"));
 }
 
 void UFleshCubeSideBase::BeginPlay()
@@ -29,7 +21,6 @@ void UFleshCubeSideBase::BeginPlay()
 
 void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, TEXT("impl"));
 }
 
 void UFleshCubeSideBase::ReceivedStopSignal_Implementation()
