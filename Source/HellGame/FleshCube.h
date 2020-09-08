@@ -119,4 +119,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Cube sides")
 	UFleshCubeSideBase* GetCubeSideByComponentName(FString Name);
+	UFUNCTION(BlueprintCallable, Category = "Cube Activation")
+	void ReceiveRemoteActivationSignal(FString ColliderName);
 };

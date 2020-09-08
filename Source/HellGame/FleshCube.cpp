@@ -202,6 +202,39 @@ UFleshCubeSideBase* AFleshCube::GetCubeSideByComponentName(FString ColliderName)
 	}
 }
 
+void AFleshCube::ReceiveRemoteActivationSignal(FString ColliderName)
+{
+	UFleshCubeSideBase* CurrentSide = GetCubeSideByComponentName(ColliderName);
+
+	if (CurrentSide != nullptr)
+	{
+		if (FaceData->SideData[CurrentSide->GetCurrentSideType()].bCanBeActivatedByPoop)
+		{
+			FCollisionQueryParams CollisionParams;
+			CollisionParams.AddIgnoredActor(this);
+
+			FHitResult CubeHitResult;
+
+			if (CurrentSide != LeftSide)
+			{
+				LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSideMeshComponent->GetComponentToWorld());
+			}
+			if (CurrentSide != FrontSide)
+			{
+				FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSideMeshComponent->GetComponentToWorld());
+			}
+			if (CurrentSide != RightSide)
+			{
+				RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSideMeshComponent->GetComponentToWorld());
+			}
+			if (CurrentSide != BackSide)
+			{
+				BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSideMeshComponent->GetComponentToWorld());
+			}
+		}
+	}
+}
+
 //UFleshCubeSideBase* AFleshCube::GetCubeSideByMesh(FString MeshName)
 //{
 //	if (MeshName.Contains(FString("Left")))
