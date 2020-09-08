@@ -27,37 +27,37 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 	if (FaceData->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
 	{
 	*/
-		bool bFoundaSide = false;
+	bool bFoundaSide = false;
 
-		if (ReceivingSide != LeftSide)
-		{
-			LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
-			bFoundaSide = true;
-		}
+	if (ReceivingSide != LeftSide)
+	{
+		LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
 
-		if (ReceivingSide != FrontSide)
-		{
-			FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
-			bFoundaSide = true;
-		}
+	if (ReceivingSide != FrontSide)
+	{
+		FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
 
-		if (ReceivingSide != RightSide)
-		{
-			RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
-			bFoundaSide = true;
-		}
+	if (ReceivingSide != RightSide)
+	{
+		RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
 
-		if (ReceivingSide != BackSide)
-		{
-			BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
-			bFoundaSide = true;
-		}
+	if (ReceivingSide != BackSide)
+	{
+		BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
 
-		if (!bFoundaSide)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Could not find a side"));
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, ReceivingSide->GetName());
-		}
+	if (!bFoundaSide)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Could not find a side"));
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, ReceivingSide->GetName());
+	}
 	/*}
 	else
 	{
@@ -346,7 +346,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 					UE_LOG(LogTemp, Warning, TEXT("Sending side %s"), *SideTypeEnum->GetEnumName((int32)SendingSide->GetCurrentSideType()));
 					UE_LOG(LogTemp, Warning, TEXT("Recieving side %s"), *SideTypeEnum->GetEnumName((int32)CurrentSide->GetCurrentSideType()));
 				}
-				// LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+				LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 			}
 		}
 	}
@@ -430,5 +430,5 @@ void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
 
 	FQuat StartQuat = Start.ToOrientationRotator().Quaternion();
 	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
-	this->SetActorRotation(EndQuat * StartQuat);
+	//this->SetActorRotation(EndQuat * StartQuat);
 }
