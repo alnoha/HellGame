@@ -313,8 +313,14 @@ void AFleshCube::SetupStartSides()
 	}
 
 	// Set top and bottom meshes
-	TopSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
-	BottomSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
+	if (TopSideMeshComponent != nullptr)
+	{
+		TopSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
+	}
+	if (BottomSideMeshComponent != nullptr)
+	{
+		BottomSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
+	}
 
 	// Destroy this now unused component
 	TemporaryNoneReference->DestroyComponent(false);
