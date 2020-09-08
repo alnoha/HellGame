@@ -140,6 +140,7 @@ void AFleshCube::OnDropPickUp_Implementation(AActor* Caller)
 	bCurrentlyCarried = false;
 
 	bCanSendStartSignal = true;
+	bHasLatched = false;
 	this->SetActorTickEnabled(true);
 }
 
@@ -352,7 +353,10 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 					UE_LOG(LogTemp, Warning, TEXT("Sending side %s"), *SideTypeEnum->GetEnumName((int32)SendingSide->GetCurrentSideType()));
 					UE_LOG(LogTemp, Warning, TEXT("Recieving side %s"), *SideTypeEnum->GetEnumName((int32)CurrentSide->GetCurrentSideType()));
 				}
-				LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+				if (bHasLatched == false)
+				{
+					LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+				}
 			}
 		}
 	}
@@ -437,4 +441,5 @@ void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
 	FQuat StartQuat = Start.ToOrientationRotator().Quaternion();
 	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
 	//this->SetActorRotation(EndQuat * StartQuat);
+	bHasLatched = true;
 }
