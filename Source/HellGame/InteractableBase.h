@@ -8,6 +8,7 @@
 #include "PickupAble.h"
 #include "HellGameHUD.h"
 #include "HellGameCharacter.h"
+#include "GameFramework/Actor.h"
 #include "InteractableBase.generated.h"
 
 UCLASS()

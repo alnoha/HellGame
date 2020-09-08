@@ -16,6 +16,7 @@ void AInteractableBase::BeginPlay()
 {
 	Super::BeginPlay();
 	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
 }
 
 // Called every frame
@@ -36,6 +37,7 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 		}
 		else
 		{
+			Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(true);
 			IPickupAble::Execute_OnPickUp(Actor, Caller);
 		}
 	}
