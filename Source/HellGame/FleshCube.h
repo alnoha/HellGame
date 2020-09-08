@@ -108,7 +108,7 @@ private:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnPickUp_Implementation(AActor* Caller) override;
+	virtual void OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint) override;
 	virtual void OnDropPickUp_Implementation(AActor* Caller) override;
 
 public:
