@@ -169,6 +169,14 @@ void AFleshCube::Tick(float DeltaTime)
 			bCanSendStartSignal = false;
 			this->SetActorTickEnabled(false);
 			//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
+			FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+			Componenet->bLockXTranslation = true;
+			Componenet->bLockYTranslation = true;
+			//Componenet->bLockZTranslation = true;
+			Componenet->bLockXRotation = true;
+			Componenet->bLockYRotation = true;
+			Componenet->bLockZRotation = true;
+			Componenet->SetDOFLock(EDOFMode::SixDOF);
 		}
 	}
 }

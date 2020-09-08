@@ -17,6 +17,14 @@ void AInteractableBase::BeginPlay()
 	Super::BeginPlay();
 	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
+	FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+	Componenet->bLockXTranslation = true;
+	Componenet->bLockYTranslation = true;
+	//Componenet->bLockZTranslation = true;
+	Componenet->bLockXRotation = true;
+	Componenet->bLockYRotation = true;
+	Componenet->bLockZRotation = true;
+	Componenet->SetDOFLock(EDOFMode::SixDOF);
 }
 
 // Called every frame
@@ -38,6 +46,14 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller, FVector Impact
 		else
 		{
 			//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(true);
+			FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+			Componenet->bLockXTranslation = false;
+			Componenet->bLockYTranslation = false;
+			//Componenet->bLockZTranslation = false;
+			Componenet->bLockXRotation = false;
+			Componenet->bLockYRotation = false;
+			Componenet->bLockZRotation = false;
+			Componenet->SetDOFLock(EDOFMode::SixDOF);
 			IPickupAble::Execute_OnPickUp(Actor, Caller, ImpactPoint);
 		}
 	}
