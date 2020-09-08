@@ -16,6 +16,15 @@ void AInteractableBase::BeginPlay()
 {
 	Super::BeginPlay();
 	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
+	FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+	Componenet->bLockXTranslation = true;
+	Componenet->bLockYTranslation = true;
+	//Componenet->bLockZTranslation = true;
+	Componenet->bLockXRotation = true;
+	Componenet->bLockYRotation = true;
+	Componenet->bLockZRotation = true;
+	Componenet->SetDOFLock(EDOFMode::SixDOF);
 }
 
 // Called every frame
@@ -24,7 +33,7 @@ void AInteractableBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInteractableBase::OnInteract_Implementation(AActor* Caller)
+void AInteractableBase::OnInteract_Implementation(AActor* Caller, FVector ImpactPoint)
 {
 	AActor* Actor = Cast<AActor>(this);
 	if (Actor->Implements<UPickupAble>())
@@ -36,7 +45,16 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 		}
 		else
 		{
-			IPickupAble::Execute_OnPickUp(Actor, Caller);
+			//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(true);
+			FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+			Componenet->bLockXTranslation = false;
+			Componenet->bLockYTranslation = false;
+			//Componenet->bLockZTranslation = false;
+			Componenet->bLockXRotation = false;
+			Componenet->bLockYRotation = false;
+			Componenet->bLockZRotation = false;
+			Componenet->SetDOFLock(EDOFMode::SixDOF);
+			IPickupAble::Execute_OnPickUp(Actor, Caller, ImpactPoint);
 		}
 	}
 }
@@ -63,13 +81,13 @@ void AInteractableBase::OnEndFocus_Implementation()
 	}
 }
 
-void AInteractableBase::OnPickUp_Implementation(AActor* Caller)
+void AInteractableBase::OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint)
 {
 	if (bCanPickup)
 	{
 		if (Interactor->PickupComponent)
 		{
-			Interactor->PickupComponent->PickUp(this);
+			Interactor->PickupComponent->PickUp(this, ImpactPoint);
 			Interactor->HidePrompt();
 			Interactor->bIsHoldingObject = true;
 			HUD->UpdateCrosshair(HUD->CrosshairTextureMap[ECrosshairTypes::ROTATE]);
