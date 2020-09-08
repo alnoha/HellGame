@@ -168,7 +168,7 @@ void AFleshCube::Tick(float DeltaTime)
 
 			bCanSendStartSignal = false;
 			this->SetActorTickEnabled(false);
-			Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
+			//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
 		}
 	}
 }
