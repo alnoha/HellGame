@@ -69,7 +69,7 @@ void AInteractableBase::OnPickUp_Implementation(AActor* Caller)
 	{
 		if (Interactor->PickupComponent)
 		{
-			Interactor->PickupComponent->PickUp(this);
+			Interactor->PickupComponent->PickUp(this,this->GetActorLocation());
 			Interactor->HidePrompt();
 			Interactor->bIsHoldingObject = true;
 			HUD->UpdateCrosshair(HUD->CrosshairTextureMap[ECrosshairTypes::ROTATE]);
