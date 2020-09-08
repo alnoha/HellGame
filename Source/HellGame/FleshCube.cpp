@@ -16,7 +16,7 @@ AFleshCube::AFleshCube()
 
 void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Activation signal"));
+	/*GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Activation signal"));
 	if (!FaceData->SideData.Contains(ReceivingSide->GetCurrentSideType()))
 	{
 		const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
@@ -26,6 +26,7 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 
 	if (FaceData->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
 	{
+	*/
 		bool bFoundaSide = false;
 
 		if (ReceivingSide != LeftSide)
@@ -55,12 +56,13 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 		if (!bFoundaSide)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Could not find a side"));
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, ReceivingSide->GetName());
 		}
-	}
+	/*}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Face match does not contain type"));
-	}
+	}*/
 }
 
 void AFleshCube::SetupBaseMesh()
@@ -299,8 +301,17 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 
 			if (CurrentSide != nullptr)
 			{
-				OtherCube->SendActivationSignal(this, SendingSide, CurrentSide, SideType);
-				ActivatedSides.Add(CurrentSide);
+				if (FaceData->SideData[CurrentSide->GetCurrentSideType()].FaceMatches.Contains(SideType))
+				{
+					OtherCube->SendActivationSignal(this, SendingSide, CurrentSide, SideType);
+					ActivatedSides.Add(CurrentSide);
+				}
+				else
+				{
+					const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
+					UE_LOG(LogTemp, Warning, TEXT("Sending side %s"), *SideTypeEnum->GetEnumName((int32)SendingSide->GetCurrentSideType()));
+					UE_LOG(LogTemp, Warning, TEXT("Recieving side %s"), *SideTypeEnum->GetEnumName((int32)CurrentSide->GetCurrentSideType()));
+				}
 				// LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 			}
 		}
