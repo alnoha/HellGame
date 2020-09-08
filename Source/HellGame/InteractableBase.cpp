@@ -25,7 +25,7 @@ void AInteractableBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInteractableBase::OnInteract_Implementation(AActor* Caller)
+void AInteractableBase::OnInteract_Implementation(AActor* Caller, FVector ImpactPoint)
 {
 	AActor* Actor = Cast<AActor>(this);
 	if (Actor->Implements<UPickupAble>())
@@ -38,7 +38,7 @@ void AInteractableBase::OnInteract_Implementation(AActor* Caller)
 		else
 		{
 			Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(true);
-			IPickupAble::Execute_OnPickUp(Actor, Caller);
+			IPickupAble::Execute_OnPickUp(Actor, Caller, ImpactPoint);
 		}
 	}
 }
@@ -65,13 +65,13 @@ void AInteractableBase::OnEndFocus_Implementation()
 	}
 }
 
-void AInteractableBase::OnPickUp_Implementation(AActor* Caller)
+void AInteractableBase::OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint)
 {
 	if (bCanPickup)
 	{
 		if (Interactor->PickupComponent)
 		{
-			Interactor->PickupComponent->PickUp(this);
+			Interactor->PickupComponent->PickUp(this, ImpactPoint);
 			Interactor->HidePrompt();
 			Interactor->bIsHoldingObject = true;
 			HUD->UpdateCrosshair(HUD->CrosshairTextureMap[ECrosshairTypes::ROTATE]);

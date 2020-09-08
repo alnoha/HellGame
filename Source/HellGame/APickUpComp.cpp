@@ -34,7 +34,7 @@ void UAPickUpComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	}
 }
 
-void UAPickUpComp::PickUp(AActor* actor)
+void UAPickUpComp::PickUp(AActor* actor, FVector HitLocation)
 {
 
 	HoldActor = actor;
@@ -44,16 +44,74 @@ void UAPickUpComp::PickUp(AActor* actor)
 	ItemMesh = temp->GetStaticMesh();
 	HoldItem = (UPrimitiveComponent*)temp;
 
-	float hello = AngelsBetween2DVectors(HoldItem->K2_GetComponentLocation(), HoldPosition->K2_GetComponentLocation(), HoldItem->GetForwardVector());
+	float wsadd =FMath::RadiansToDegrees(FMath::Atan2(HitLocation.Y - HoldActor->GetActorLocation().Y, HitLocation.X - HoldActor->GetActorLocation().X));
 
-	HoldPosition->GetForwardVector().Normalize();
+	float radius = (HoldActor->GetActorLocation() - HitLocation).Size();
+	
+	FVector point1 = HoldActor->GetActorLocation() + (HoldActor->GetActorForwardVector() * radius);
+	FVector point2 = HoldActor->GetActorLocation() - HitLocation;
+	float angletest = ((point1.X - HitLocation.Y) * (point1.X - HitLocation.Y)) + ((point1.Y - HitLocation.Y) * (point1.Y - HitLocation.Y));
+	
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("wsadd " + FString::SanitizeFloat(wsadd)));
+	//FVector::DotProduct(point1,HitLocation);
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Hello " + FString::SanitizeFloat(HitLocation.X) + " " + FString::SanitizeFloat(HitLocation.Y) + " "+ FString::SanitizeFloat(HitLocation.Z)));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Hello " + FString::SanitizeFloat(FMath::RadiansToDegrees(acosf(DotProd(HoldPosition->GetForwardVector(), HoldItem->GetForwardVector()))))));
+	
+	//FQuat deltaAngle = FQuat::FindBetweenVectors(HitLocation,point1);
+	
+	int degreestoadd;
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT(" " + FString::SanitizeFloat(testFloat)));
+	if (wsadd >= 0)
+	{	
+		int newfloat = int(wsadd)% 90;
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Positive" + FString::FromInt(newfloat)));
+		if (newfloat >= 45)
+		{
+			degreestoadd = 90 -newfloat;
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Positive" + FString::SanitizeFloat(degreestoadd)));
+		}
+		else
+		{
+			degreestoadd = newfloat * -1;
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Positive" + FString::SanitizeFloat(degreestoadd)));
+		}
+	}
+	else
+	{
+		int newfloat = int(wsadd * -1) % 90;
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Negativ" + FString::FromInt(newfloat)));
+		if (newfloat >= 45)
+		{
+			degreestoadd = 90 + newfloat ;
+			//degreestoadd = degreestoadd * -1;
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Negativ" + FString::SanitizeFloat(degreestoadd)));
+			
+		}
+		else
+		{
+			degreestoadd = newfloat;
+			//degreestoadd = degreestoadd * -1;
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Negativ" + FString::SanitizeFloat(degreestoadd)));
+		}
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT(" DegreesToAdd" + FString::SanitizeFloat(degreestoadd)));
+	
+	FRotator newrotation = {0,(float)degreestoadd,0};
 
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("APickUpComp: " + FString::SanitizeFloat(hello)));
+	
 
-	HoldItem->SetWorldRotation(HoldPosition->GetComponentRotation());
-	CurrentForward = HoldPosition->GetComponentQuat();
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT(" Final" + FString::SanitizeFloat(newrotation.Yaw )));
+
+	FQuat tempQuat = newrotation.Quaternion() * HoldItem->GetComponentQuat();
+	
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT( " " + FString::SanitizeFloat(testFloat)));
+	//HoldItem->AddRelativeRotation(newrotation.Quaternion());
+	//CurrentForward = HoldPosition->GetComponentQuat();
+	//HoldItem->SetWorldRotation(tempQuat);
+	//HoldPosition->SetWorldRotation(newrotation);
+	HoldPosition->SetRelativeRotation(newrotation);
 	PhysicsHandle->GrabComponentAtLocationWithRotation(HoldItem, NAME_None, HoldItem->GetComponentLocation(), HoldItem->GetComponentRotation());
-	//PhysicsHandle->SetAngularStiffness(10000);
+	
 
 	IsHolding = true;
 	this->SetComponentTickEnabled(true);
@@ -202,12 +260,8 @@ void UAPickUpComp::ResetHoldingPoint()
 
 void UAPickUpComp::UpdateHoldItemPosition()
 {
-	FRotator testRot = HoldPosition->K2_GetComponentRotation();
-	UE_LOG(LogTemp, Warning, TEXT("%f . %f . %f"), testRot.Yaw, testRot.Roll, testRot.Pitch);
-	//testRot.Pitch = 0;
-	FQuat TestQuat = testRot.Quaternion();
 
-	PhysicsHandle->SetTargetLocationAndRotation(HoldPosition->GetComponentLocation(), testRot);
+	PhysicsHandle->SetTargetLocationAndRotation(HoldPosition->GetComponentLocation(), HoldPosition->GetComponentRotation());
 	//HoldActor->SetActorRotation(HoldItem->GetRelativeRotation());
 
 }
@@ -248,6 +302,26 @@ void UAPickUpComp::WriteErrorMessage(FString message)
 
 
 
+
+
+
+void UAPickUpComp::ConvertRotation()
+{
+	
+}
+
+float UAPickUpComp::DotProd(FVector vec1, FVector vec2)
+{
+	vec1.Normalize();
+	vec2.Normalize();
+	
+	return FVector::DotProduct(vec1, vec2);
+}
+
+FQuat UAPickUpComp::QuatDifferens(FQuat Quat1, FQuat Quat2)
+{
+	return Quat1.Inverse() * Quat2;
+}
 
 float UAPickUpComp::AngelsBetween2DVectors(FVector Vector1, FVector Vector2, FVector ForwardVector)
 {

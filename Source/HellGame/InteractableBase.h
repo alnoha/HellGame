@@ -30,8 +30,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interactable")
-		void OnInteract(AActor* Caller);
-	virtual void OnInteract_Implementation(AActor* Caller);
+		void OnInteract(AActor* Caller, FVector ImpactPoint);
+	virtual void OnInteract_Implementation(AActor* Caller, FVector ImpactPoint);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interactable")
 		void OnBeginFocus();
@@ -48,8 +48,8 @@ public:
 		TSubclassOf<UUserWidget> PromptWidget;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
-		void OnPickUp(AActor* Caller);
-	virtual void OnPickUp_Implementation(AActor* Caller);
+		void OnPickUp(AActor* Caller, FVector ImpactPoint);
+	virtual void OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
 		void OnDropPickUp(AActor* Caller);
