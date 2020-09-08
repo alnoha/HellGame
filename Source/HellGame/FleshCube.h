@@ -61,17 +61,17 @@ public:
 	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* LeftSideMeshComponent;
+	USkeletalMeshComponent* LeftSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* RightSideMeshComponent;
+	USkeletalMeshComponent* RightSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* FrontSideMeshComponent;
+	USkeletalMeshComponent* FrontSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* BackSideMeshComponent;
+	USkeletalMeshComponent* BackSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* TopSideMeshComponent;
+	USkeletalMeshComponent* TopSideMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SideMeshes")
-	UStaticMeshComponent* BottomSideMeshComponent;
+	USkeletalMeshComponent* BottomSideMeshComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* LeftSide;
@@ -84,6 +84,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
 	float CubeSideTraceDistance = 200.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
+	float CubeGroundTraceDistance = 80.0f;
 
 	/*How far the cube will snap to the other cube. (Default = 250)*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
@@ -96,11 +98,11 @@ public:
 private:
 	void SetupBaseMesh();
 	void SetupSideMeshes();
-	void SetupSideMesh(UStaticMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
+	void SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName);
 	void SetupSides();
 	void SetupStartSides();
-	void TryToFindCubeNeighbour(FHitResult& CubeHitResult, UStaticMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType);
-	void SetupSide(UStaticMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
+	void TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType);
+	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
 	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
 
 protected:
@@ -117,4 +119,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Cube sides")
 	UFleshCubeSideBase* GetCubeSideByComponentName(FString Name);
+	UFUNCTION(BlueprintCallable, Category = "Cube Activation")
+	void ReceiveRemoteActivationSignal(FString ColliderName);
 };

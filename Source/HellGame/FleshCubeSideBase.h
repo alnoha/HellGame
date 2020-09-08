@@ -18,10 +18,10 @@ public:
 	UFleshCubeSideBase();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* BaseMesh;
+	USkeletalMeshComponent* BaseMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh")
-	UStaticMesh* FaceMesh;
+	USkeletalMesh* FaceMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "A <- Sidetype")
 	ESideType CurrentSideType;
@@ -45,12 +45,12 @@ public:
 	virtual void ReceivedStopSignal_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Activation signals")
-	void ReceiveRemoteActivationSignal();
-	virtual void ReceiveRemoteActivationSignal_Implementation();
+	void ReceiveRemoteActivationSignal(FTransform SideTransform);
+	virtual void ReceiveRemoteActivationSignal_Implementation(FTransform SideTransform);
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void SetupMesh(UStaticMeshComponent* parent);
-	UStaticMesh* GetFaceMesh();
+	void SetupMesh(USkeletalMeshComponent* parent);
+	USkeletalMesh* GetFaceMesh();
 
 	void SetCurrentSideType(ESideType NewSideType);
 	ESideType GetCurrentSideType();
