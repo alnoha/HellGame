@@ -371,9 +371,17 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 				}
 				else
 				{
-					const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
-					UE_LOG(LogTemp, Warning, TEXT("Sending side %s"), *SideTypeEnum->GetEnumName((int32)SendingSide->GetCurrentSideType()));
-					UE_LOG(LogTemp, Warning, TEXT("Recieving side %s"), *SideTypeEnum->GetEnumName((int32)CurrentSide->GetCurrentSideType()));
+					if (FaceData->SideData[SendingSide->GetCurrentSideType()].FaceMatches.Contains(CurrentSide->GetCurrentSideType()))
+					{
+						SendActivationSignal(OtherCube, CurrentSide, SendingSide, CurrentSide->GetCurrentSideType());
+						OtherCube->ActivatedSides.Add(SendingSide);
+					}
+					else
+					{
+						const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
+						UE_LOG(LogTemp, Warning, TEXT("Sending side %s"), *SideTypeEnum->GetEnumName((int32)SendingSide->GetCurrentSideType()));
+						UE_LOG(LogTemp, Warning, TEXT("Recieving side %s"), *SideTypeEnum->GetEnumName((int32)CurrentSide->GetCurrentSideType()));
+					}
 				}
 				if (bHasLatched == false)
 				{
