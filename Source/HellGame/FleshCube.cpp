@@ -102,6 +102,10 @@ void AFleshCube::BeginPlay()
 {
 	Super::BeginPlay();
 	this->SetActorTickEnabled(false);
+	LeftSide->Initialize_Side(EyeDataLeftSide, SnotScaleLeftSide);
+	FrontSide->Initialize_Side(EyeDataFrontSide, SnotScaleFrontSide);
+	RightSide->Initialize_Side(EyeDataRightSide, SnotScaleRightSide);
+	BackSide->Initialize_Side(EyeDataBackSide, SnotScaleBackSide);
 }
 
 void AFleshCube::OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint)
@@ -283,10 +287,10 @@ void AFleshCube::SetupSides()
 		return;
 	}
 
-	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
-	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
-	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
-	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
+	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide, EyeDataLeftSide, SnotScaleLeftSide);
+	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide, EyeDataFrontSide, SnotScaleFrontSide);
+	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide, EyeDataRightSide, SnotScaleRightSide);
+	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide, EyeDataBackSide, SnotScaleRightSide);
 }
 
 void AFleshCube::SetupStartSides()
@@ -397,7 +401,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 	}
 }
 
-void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide)
+void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide, FEyeComponentData EyeComponentData, FVector SnotScale)
 {
 	if (SideType != PreviousType)
 	{
@@ -407,7 +411,7 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
 			SideType = ESideType::None;
-			SetupSide(SideMeshComponent, SideType, PreviousType, CubeSide);
+			SetupSide(SideMeshComponent, SideType, PreviousType, CubeSide, EyeComponentData, SnotScale);
 			return;
 		}
 		else
@@ -463,6 +467,7 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 		}
 
 		CubeSide->SetCurrentSideType(SideType);
+		CubeSide->Initialize_Side(EyeComponentData, SnotScale);
 		PreviousType = SideType;
 	}
 }
