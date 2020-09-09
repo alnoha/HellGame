@@ -14,6 +14,10 @@ AFleshCube::AFleshCube()
 	SetupSideMeshes();
 }
 
+void AFleshCube::HitGround_Implementation()
+{
+}
+
 void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
 	/*GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Activation signal"));
@@ -156,6 +160,7 @@ void AFleshCube::Tick(float DeltaTime)
 
 	if (GetWorld()->LineTraceSingleByChannel(GroundCheckHitResult, this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), ECC_Visibility, CollisionParams))
 	{
+		HitGround();
 		DrawDebugLine(GetWorld(), this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), FColor::Magenta);
 		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < CubeGroundTraceDistance)
 		{
@@ -385,7 +390,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 				}
 				if (bHasLatched == false)
 				{
-					LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+					LatchCube(MeshComponent, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 				}
 			}
 		}
@@ -462,25 +467,24 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 	}
 }
 
-void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
+/*Latch a cube to an other cube, LatchingCube = Cube that will get the changes CubeSide = the cube that will give the values to Latch to.*/
+void AFleshCube::LatchCube(USkeletalMeshComponent* LatchingCube, UPrimitiveComponent* CubeSide)
 {
-	FVector StartForward = Start.ForwardVector;
-	FVector CubeSideForward = CubeSide->GetForwardVector();
-
-	FVector NewLocation = CubeSide->GetComponentLocation() + (CubeSideForward * CubeSnapDistance);
-	this->SetActorLocation(NewLocation);
-
-	FQuat StartQuat = Start.ToOrientationRotator().Quaternion();
-	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
-	//this->SetActorRotation(EndQuat * StartQuat);
 	bHasLatched = true;
 
-	/*float Angle = FMath::RadiansToDegrees(FMath::Atan2(Start.Y - (-1.0f * CubeSide->GetComponentLocation().Y), Start.X - (-1.0f * CubeSide->GetComponentLocation().X)));
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f"), Angle));
-	FRotator NewRotation = { 0, Angle, 0 };
-	this->SetActorRotation(this->GetActorRotation() + NewRotation);
-	
-	DrawDebugLine(GetWorld(), Start, CubeSide->GetForwardVector(), FColor::Magenta, false, 10.0f);
-	DrawDebugLine(GetWorld(), CubeSide->GetComponentLocation(), Start, FColor::Blue, false, 10.0f);*/
+	FVector StartLocation = LatchingCube->GetComponentLocation();
+	FVector StartForward = LatchingCube->GetForwardVector();
+	StartForward.Normalize();
 
+	FVector HitLocation = CubeSide->GetComponentLocation();
+	FVector HitForward = CubeSide->GetForwardVector();
+	HitForward.Normalize();
+
+	float Distance = FVector::Distance(StartLocation, HitLocation);
+	FVector NewLocation = HitLocation + (HitForward * Distance);
+	SetActorLocation(NewLocation);
+
+	float Radiants = FMath::Acos(FVector::DotProduct(-StartForward, HitForward));
+	float Degree = FMath::RadiansToDegrees(FVector::DotProduct(LatchingCube->GetRightVector(), HitForward) < 0 ? Radiants : -Radiants);
+	SetActorRotation(GetActorRotation() + FRotator(0.0f, Degree, 0.0f));
 }
