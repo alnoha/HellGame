@@ -52,8 +52,8 @@ public:
 	virtual void ReceiveRemoteActivationSignal_Implementation(FTransform SideTransform);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Init Side")
-	void Initialize_Side(FVector SnotScale = FVector(0.0f), FEyeData* EyeData = nullptr);
-	virtual void Initialize_Side_Implementation(FVector SnotScale = FVector(0.0f), FEyeData* EyeData = nullptr);
+	void Initialize_Side(FVector SnotScale = FVector(0.0f)/*, FEyeData* EyeData = nullptr*/);
+	virtual void Initialize_Side_Implementation(FVector SnotScale = FVector(0.0f)/*, FEyeData* EyeData = nullptr*/);
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SetupMesh(USkeletalMeshComponent* parent);
