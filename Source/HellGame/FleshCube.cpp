@@ -377,7 +377,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 				}
 				if (bHasLatched == false)
 				{
-					LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+					LatchCube(MeshComponent, Cast<UPrimitiveComponent>(CubeHitResult.Component));
 				}
 			}
 		}
@@ -454,25 +454,24 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 	}
 }
 
-void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
+void AFleshCube::LatchCube(USkeletalMeshComponent* Start, UPrimitiveComponent* CubeSide)
 {
-	FVector StartForward = Start.ForwardVector;
-	FVector CubeSideForward = CubeSide->GetForwardVector();
-
-	FVector NewLocation = CubeSide->GetComponentLocation() + (CubeSideForward * CubeSnapDistance);
-	this->SetActorLocation(NewLocation);
-
-	FQuat StartQuat = Start.ToOrientationRotator().Quaternion();
-	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
-	//this->SetActorRotation(EndQuat * StartQuat);
 	bHasLatched = true;
 
-	/*float Angle = FMath::RadiansToDegrees(FMath::Atan2(Start.Y - (-1.0f * CubeSide->GetComponentLocation().Y), Start.X - (-1.0f * CubeSide->GetComponentLocation().X)));
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f"), Angle));
-	FRotator NewRotation = { 0, Angle, 0 };
-	this->SetActorRotation(this->GetActorRotation() + NewRotation);
-	
-	DrawDebugLine(GetWorld(), Start, CubeSide->GetForwardVector(), FColor::Magenta, false, 10.0f);
-	DrawDebugLine(GetWorld(), CubeSide->GetComponentLocation(), Start, FColor::Blue, false, 10.0f);*/
+	FVector StartLocation = Start->GetComponentLocation();
+	FVector StartForward = Start->GetForwardVector();
+	StartForward.Normalize();
 
+	FVector HitLocation = CubeSide->GetComponentLocation();
+	FVector HitForward = CubeSide->GetForwardVector();
+	HitForward.Normalize();
+
+	float Distance = FVector::Distance(StartLocation, HitLocation);
+	FVector NewLocation = HitLocation + (HitForward * Distance);
+	SetActorLocation(NewLocation);
+
+	float Radiants = FMath::Acos(FVector::DotProduct(-StartForward, HitForward));
+	float Angle = FMath::RadiansToDegrees(FVector::DotProduct(Start->GetRightVector(), HitForward) < 0 ? Radiants : -Radiants);
+	FRotator NewRotation = { 0, Angle, 0 };
+	SetActorRotation(GetActorRotation() + NewRotation);
 }
