@@ -31,7 +31,7 @@ void UFleshCubeSideBase::ReceiveRemoteActivationSignal_Implementation(FTransform
 {
 }
 
-void UFleshCubeSideBase::Initialize_Side_Implementation(FVector SnotScale/*, FEyeData* EyeData*/)
+void UFleshCubeSideBase::Initialize_Side_Implementation(FEyeComponentData EyeData, FVector SnotScale)
 {
 }
 
