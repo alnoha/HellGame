@@ -31,6 +31,10 @@ void UFleshCubeSideBase::ReceiveRemoteActivationSignal_Implementation(FTransform
 {
 }
 
+void UFleshCubeSideBase::Initialize_Side_Implementation(FVector SnotScale, FEyeData* EyeData)
+{
+}
+
 void UFleshCubeSideBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

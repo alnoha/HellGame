@@ -12,15 +12,18 @@
 #include "FleshCube.generated.h"
 
 
-UCLASS(BlueprintType)
-class UCubeFaseData : public UDataAsset
+USTRUCT(Blueprintable)
+struct HELLGAME_API FEyeData
 {
 	GENERATED_BODY()
+
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-	AFleshCube* ConnectedCube;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-	UFleshCubeSideBase* ConnectedFace;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector EyeScale;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsPersistent = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Duration = 11.0f;
 };
 
 UCLASS()
@@ -90,6 +93,24 @@ public:
 	UFleshCubeSideBase* RightSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* BackSide;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleLeftSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleFrontSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleRightSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleBackSide;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeData EyeDataLeftSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeData EyeDataFrontSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeData EyeDataRightSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeData EyeDataBackSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
 	float CubeSideTraceDistance = 200.0f;
