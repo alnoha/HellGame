@@ -25,6 +25,16 @@ void AInteractableBase::BeginPlay()
 	Componenet->bLockYRotation = true;
 	Componenet->bLockZRotation = true;
 	Componenet->SetDOFLock(EDOFMode::SixDOF);
+
+}
+
+void AInteractableBase::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	if (bCanPickup == false)
+	{
+		Cast<UPrimitiveComponent>(GetRootComponent())->SetSimulatePhysics(false);
+	}
 }
 
 // Called every frame
