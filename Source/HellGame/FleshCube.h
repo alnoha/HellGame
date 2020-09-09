@@ -42,6 +42,10 @@ private:
 
 public:
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Cube Basic Events")
+	void HitGround();
+	virtual void HitGround_Implementation();
+
 	UPROPERTY(EditAnywhere)
 	UCubeFaceData* FaceData;
 
