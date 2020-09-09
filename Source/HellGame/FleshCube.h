@@ -108,7 +108,7 @@ private:
 	void SetupStartSides();
 	void TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType);
 	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
-	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
+	void LatchCube(USkeletalMeshComponent* Start, UPrimitiveComponent* CubeSide);
 	bool bHasLatched;
 
 protected:
