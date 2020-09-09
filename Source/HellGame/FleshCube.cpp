@@ -467,12 +467,13 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 	}
 }
 
-void AFleshCube::LatchCube(USkeletalMeshComponent* Start, UPrimitiveComponent* CubeSide)
+/*Latch a cube to an other cube, LatchingCube = Cube that will get the changes CubeSide = the cube that will give the values to Latch to.*/
+void AFleshCube::LatchCube(USkeletalMeshComponent* LatchingCube, UPrimitiveComponent* CubeSide)
 {
 	bHasLatched = true;
 
-	FVector StartLocation = Start->GetComponentLocation();
-	FVector StartForward = Start->GetForwardVector();
+	FVector StartLocation = LatchingCube->GetComponentLocation();
+	FVector StartForward = LatchingCube->GetForwardVector();
 	StartForward.Normalize();
 
 	FVector HitLocation = CubeSide->GetComponentLocation();
@@ -484,7 +485,6 @@ void AFleshCube::LatchCube(USkeletalMeshComponent* Start, UPrimitiveComponent* C
 	SetActorLocation(NewLocation);
 
 	float Radiants = FMath::Acos(FVector::DotProduct(-StartForward, HitForward));
-	float Angle = FMath::RadiansToDegrees(FVector::DotProduct(Start->GetRightVector(), HitForward) < 0 ? Radiants : -Radiants);
-	FRotator NewRotation = { 0, Angle, 0 };
-	SetActorRotation(GetActorRotation() + NewRotation);
+	float Degree = FMath::RadiansToDegrees(FVector::DotProduct(LatchingCube->GetRightVector(), HitForward) < 0 ? Radiants : -Radiants);
+	SetActorRotation(GetActorRotation() + FRotator(0.0f, Degree, 0.0f));
 }
