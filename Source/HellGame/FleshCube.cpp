@@ -319,21 +319,29 @@ void AFleshCube::SetupStartSides()
 	}
 
 	USkeletalMesh* TopAndBottomFaceMesh = TemporaryNoneReference->GetFaceMesh();
+	UMaterialInstance* TopAndBottomMaterial = TemporaryNoneReference->GetFaceMaterial();
 
 	// Set top and bottom meshes
 	if (TopSideMeshComponent != nullptr)
 	{
 		TopSideMeshComponent->SetSkeletalMesh(TopAndBottomFaceMesh);
+		TopSideMeshComponent->SetMaterial(0, TopAndBottomMaterial);
 	}
 	if (BottomSideMeshComponent != nullptr)
 	{
 		if (bCanPickup || BoltedMesh == nullptr)
 		{
 			BottomSideMeshComponent->SetSkeletalMesh(TopAndBottomFaceMesh);
+			BottomSideMeshComponent->SetMaterial(0, TopAndBottomMaterial);
 		}
 		else
 		{
 			BottomSideMeshComponent->SetSkeletalMesh(BoltedMesh);
+			if (BoltedMaterial != nullptr)
+			{
+				BottomSideMeshComponent->SetMaterial(0, BoltedMaterial);
+				UE_LOG(LogTemp, Warning, TEXT("Bolted Material is not assigned"));
+			}
 		}
 	}
 
@@ -424,10 +432,11 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 			CubeSide->bEditableWhenInherited = false;
 
 			USkeletalMesh* MeshToUse = CubeSide->GetFaceMesh();
+			UMaterialInstance* MaterialToUse = CubeSide->GetFaceMaterial();
 
 			if (MeshToUse == nullptr)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("No mesh from leftside"));
+				UE_LOG(LogTemp, Warning, TEXT("No mesh from MeshSide"));
 			}
 
 			if (SideMeshComponent == nullptr || CubeSide == nullptr)
@@ -436,7 +445,8 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 				return;
 			}
 
-			SideMeshComponent->SetSkeletalMesh(CubeSide->GetFaceMesh());
+			SideMeshComponent->SetSkeletalMesh(MeshToUse);
+			SideMeshComponent->SetMaterial(0, MaterialToUse);
 		}
 
 		CubeSide->SetCurrentSideType(SideType);

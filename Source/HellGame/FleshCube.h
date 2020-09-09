@@ -76,7 +76,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stationary Mesh")
 	USkeletalMesh* BoltedMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stationary Mesh")
-	UMaterial* BoltedMaterial;
+	UMaterialInstance* BoltedMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* LeftSide;

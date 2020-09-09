@@ -24,7 +24,7 @@ public:
 	USkeletalMesh* FaceMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
-	UMaterial* FaceMaterial;
+	UMaterialInstance* FaceMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "A <- Sidetype")
 	ESideType CurrentSideType;
@@ -54,7 +54,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void SetupMesh(USkeletalMeshComponent* parent);
 	USkeletalMesh* GetFaceMesh();
-	UMaterial* GetFaceMaterial();
+	UMaterialInstance* GetFaceMaterial();
 
 	void SetCurrentSideType(ESideType NewSideType);
 	ESideType GetCurrentSideType();

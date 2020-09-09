@@ -62,6 +62,11 @@ USkeletalMesh* UFleshCubeSideBase::GetFaceMesh()
 	return FaceMesh;
 }
 
+UMaterialInstance* UFleshCubeSideBase::GetFaceMaterial()
+{
+	return FaceMaterial;
+}
+
 void UFleshCubeSideBase::SetCurrentSideType(ESideType NewSideType)
 {
 	CurrentSideType = NewSideType;
