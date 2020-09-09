@@ -168,7 +168,15 @@ void AFleshCube::Tick(float DeltaTime)
 
 			bCanSendStartSignal = false;
 			this->SetActorTickEnabled(false);
-			Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
+			//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
+			FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+			Componenet->bLockXTranslation = true;
+			Componenet->bLockYTranslation = true;
+			//Componenet->bLockZTranslation = true;
+			Componenet->bLockXRotation = true;
+			Componenet->bLockYRotation = true;
+			Componenet->bLockZRotation = true;
+			Componenet->SetDOFLock(EDOFMode::SixDOF);
 		}
 	}
 }
@@ -442,4 +450,13 @@ void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
 	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
 	//this->SetActorRotation(EndQuat * StartQuat);
 	bHasLatched = true;
+
+	/*float Angle = FMath::RadiansToDegrees(FMath::Atan2(Start.Y - (-1.0f * CubeSide->GetComponentLocation().Y), Start.X - (-1.0f * CubeSide->GetComponentLocation().X)));
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f"), Angle));
+	FRotator NewRotation = { 0, Angle, 0 };
+	this->SetActorRotation(this->GetActorRotation() + NewRotation);
+	
+	DrawDebugLine(GetWorld(), Start, CubeSide->GetForwardVector(), FColor::Magenta, false, 10.0f);
+	DrawDebugLine(GetWorld(), CubeSide->GetComponentLocation(), Start, FColor::Blue, false, 10.0f);*/
+
 }
