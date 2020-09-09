@@ -271,10 +271,7 @@ void AFleshCube::ReceiveRemoteActivationSignal(FString ColliderName)
 
 void AFleshCube::SetupSides()
 {
-	if (!bStartSidesGenerated)
-	{
-		SetupStartSides();
-	}
+	SetupStartSides();
 
 	if (FaceData == nullptr)
 	{
@@ -321,14 +318,23 @@ void AFleshCube::SetupStartSides()
 		return;
 	}
 
+	USkeletalMesh* TopAndBottomFaceMesh = TemporaryNoneReference->GetFaceMesh();
+
 	// Set top and bottom meshes
 	if (TopSideMeshComponent != nullptr)
 	{
-		TopSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
+		TopSideMeshComponent->SetSkeletalMesh(TopAndBottomFaceMesh);
 	}
 	if (BottomSideMeshComponent != nullptr)
 	{
-		BottomSideMeshComponent->SetSkeletalMesh(TemporaryNoneReference->GetFaceMesh());
+		if (bCanPickup || BoltedMesh == nullptr)
+		{
+			BottomSideMeshComponent->SetSkeletalMesh(TopAndBottomFaceMesh);
+		}
+		else
+		{
+			BottomSideMeshComponent->SetSkeletalMesh(BoltedMesh);
+		}
 	}
 
 	// Destroy this now unused component
