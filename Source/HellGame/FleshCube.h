@@ -8,23 +8,9 @@
 #include "SideTypes.h"
 #include "InteractableBase.h"
 #include "CubeFaceData.h"
+#include "EyeComponentData.h"
 #include "Components/BoxComponent.h"
 #include "FleshCube.generated.h"
-
-
-USTRUCT(Blueprintable)
-struct HELLGAME_API FEyeData
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector EyeScale;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bIsPersistent = false;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Duration = 11.0f;
-};
 
 UCLASS()
 class HELLGAME_API AFleshCube : public AInteractableBase
@@ -104,13 +90,13 @@ public:
 	FVector SnotScaleBackSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
-	FEyeData EyeDataLeftSide;
+	FEyeComponentData EyeDataLeftSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
-	FEyeData EyeDataFrontSide;
+	FEyeComponentData EyeDataFrontSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
-	FEyeData EyeDataRightSide;
+	FEyeComponentData EyeDataRightSide;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
-	FEyeData EyeDataBackSide;
+	FEyeComponentData EyeDataBackSide;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
 	float CubeSideTraceDistance = 200.0f;
