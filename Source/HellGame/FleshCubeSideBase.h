@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -27,7 +25,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 	UMaterialInstance* FaceMaterial;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "A <- Sidetype")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Side Type")
 	ESideType CurrentSideType;
 private:
 
@@ -57,7 +55,6 @@ public:
 	virtual void Initialize_Side_Implementation(FEyeComponentData EyeData, FVector SnotScale);
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void SetupMesh(USkeletalMeshComponent* parent);
 	USkeletalMesh* GetFaceMesh();
 	UMaterialInstance* GetFaceMaterial();
 
