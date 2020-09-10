@@ -104,9 +104,9 @@ void AFleshCube::BeginPlay()
 	this->SetActorTickEnabled(false);
 }
 
-void AFleshCube::OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint)
+void AFleshCube::OnPickUp_Implementation(AActor* Caller, UPrimitiveComponent* ImpactComponent)
 {
-	AInteractableBase::OnPickUp_Implementation(Caller, ImpactPoint);
+	AInteractableBase::OnPickUp_Implementation(Caller, ImpactComponent);
 	//AInteractableBase::Execute_OnPickUp(this, Caller);
 	bCurrentlyCarried = true;
 
