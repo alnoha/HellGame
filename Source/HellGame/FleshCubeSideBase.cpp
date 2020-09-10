@@ -7,6 +7,7 @@ UFleshCubeSideBase::UFleshCubeSideBase()
 {
 }
 
+#pragma region Unreal Methods
 void UFleshCubeSideBase::SetupBaseMesh()
 {
 	// Create base cube mesh
@@ -19,6 +20,14 @@ void UFleshCubeSideBase::BeginPlay()
 	Super::BeginPlay();
 }
 
+void UFleshCubeSideBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
+#pragma endregion
+
+#pragma region Event Implementations
 void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform)
 {
 }
@@ -35,32 +44,9 @@ void UFleshCubeSideBase::Initialize_Side_Implementation(FEyeComponentData EyeDat
 {
 }
 
-void UFleshCubeSideBase::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}
+#pragma endregion
 
-void UFleshCubeSideBase::SetupMesh(USkeletalMeshComponent* parent)
-{
-	if (BaseMesh == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("BaseMEsh nullptr"));
-	}
-	if (FaceMesh == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("FaceMesh nullptr"));
-	}
-	if (FaceMesh == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("parent nullptr"));
-	}
-	if (BaseMesh != nullptr && FaceMesh != nullptr && parent != nullptr)
-	{
-		BaseMesh->SetupAttachment(parent);
-		BaseMesh->SetSkeletalMesh(FaceMesh);
-	}
-}
-
+#pragma region Getters
 USkeletalMesh* UFleshCubeSideBase::GetFaceMesh()
 {
 	return FaceMesh;
@@ -71,12 +57,15 @@ UMaterialInstance* UFleshCubeSideBase::GetFaceMaterial()
 	return FaceMaterial;
 }
 
-void UFleshCubeSideBase::SetCurrentSideType(ESideType NewSideType)
-{
-	CurrentSideType = NewSideType;
-}
-
 ESideType UFleshCubeSideBase::GetCurrentSideType()
 {
 	return CurrentSideType;
 }
+#pragma endregion
+
+#pragma region Setters
+void UFleshCubeSideBase::SetCurrentSideType(ESideType NewSideType)
+{
+	CurrentSideType = NewSideType;
+}
+#pragma endregion
