@@ -28,7 +28,7 @@ protected:
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
-		void PickUp(AActor* actor, FVector HitLocation);
+		void PickUp(AActor* actor, UPrimitiveComponent* ImpactComponent);
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 		void Drop();
 
@@ -64,7 +64,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Rotation")
 		void AltRotateRight();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
-		float RotateAmount = 90;
+		float RotateAmount = 45;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
 		float AltRotateAmount = 2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
