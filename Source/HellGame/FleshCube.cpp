@@ -50,18 +50,10 @@ void AFleshCube::Tick(float DeltaTime)
 			TryToFindCubeNeighbour(CubeHitResult, FrontSideMeshComponent, CollisionParams, FrontSide, FrontSideType);
 			TryToFindCubeNeighbour(CubeHitResult, RightSideMeshComponent, CollisionParams, RightSide, RightSideType);
 			TryToFindCubeNeighbour(CubeHitResult, BackSideMeshComponent, CollisionParams, BackSide, BackSideType);
+			IPickupAble::Execute_OnGrounded(this, this);
 
 			bCanSendStartSignal = false;
 			this->SetActorTickEnabled(false);
-
-			FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
-			Componenet->bLockXTranslation = true;
-			Componenet->bLockYTranslation = true;
-
-			Componenet->bLockXRotation = true;
-			Componenet->bLockYRotation = true;
-			Componenet->bLockZRotation = true;
-			Componenet->SetDOFLock(EDOFMode::SixDOF);
 		}
 	}
 }
@@ -74,11 +66,13 @@ void AFleshCube::HitGround_Implementation()
 {
 }
 
-void AFleshCube::OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint)
+void AFleshCube::OnPickUp_Implementation(AActor* Caller, UPrimitiveComponent* ImpactPoint)
 {
 	AInteractableBase::OnPickUp_Implementation(Caller, ImpactPoint);
 
 	bCurrentlyCarried = true;
+	bCanSendStartSignal = false;
+	SetActorTickEnabled(false);
 
 	for (UFleshCubeSideBase* Side : ActivatedSides)
 	{
@@ -115,7 +109,7 @@ void AFleshCube::OnDropPickUp_Implementation(AActor* Caller)
 
 	bCanSendStartSignal = true;
 	bHasLatched = false;
-	this->SetActorTickEnabled(true);
+	SetActorTickEnabled(true);
 }
 
 #pragma endregion
@@ -298,6 +292,7 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 
 			SideMeshComponent->SetSkeletalMesh(MeshToUse);
 			SideMeshComponent->SetMaterial(0, MaterialToUse);
+			SideMeshComponent->AnimClass = CubeSide->GetAnimationInstance();
 		}
 
 		CubeSide->SetCurrentSideType(SideType);
@@ -317,25 +312,25 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 
 	if (ReceivingSide != LeftSide)
 	{
-		LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
+		LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent, LeftSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
 	if (ReceivingSide != FrontSide)
 	{
-		FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
+		FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent, FrontSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
 	if (ReceivingSide != RightSide)
 	{
-		RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
+		RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent, RightSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
 	if (ReceivingSide != BackSide)
 	{
-		BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
+		BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent, BackSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
@@ -361,22 +356,22 @@ void AFleshCube::ReceiveRemoteActivationSignal(FString ColliderName)
 
 			if (CurrentSide != LeftSide)
 			{
-				LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSideMeshComponent->GetComponentToWorld());
+				LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSideMeshComponent, LeftSideMeshComponent->GetComponentToWorld());
 			}
 
 			if (CurrentSide != FrontSide)
 			{
-				FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSideMeshComponent->GetComponentToWorld());
+				FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSideMeshComponent, FrontSideMeshComponent->GetComponentToWorld());
 			}
 
 			if (CurrentSide != RightSide)
 			{
-				RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSideMeshComponent->GetComponentToWorld());
+				RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSideMeshComponent, RightSideMeshComponent->GetComponentToWorld());
 			}
 
 			if (CurrentSide != BackSide)
 			{
-				BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSideMeshComponent->GetComponentToWorld());
+				BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSideMeshComponent, BackSideMeshComponent->GetComponentToWorld());
 			}
 		}
 	}
