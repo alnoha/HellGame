@@ -39,7 +39,8 @@ void AHellGameCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-
+	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	HUD->SetCrosshairWidget(CrosshairWidget);
 	PickupComponent = Cast<AActor>(this)->FindComponentByClass<UAPickUpComp>();
 }
 
