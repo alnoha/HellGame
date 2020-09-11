@@ -292,6 +292,7 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 
 			SideMeshComponent->SetSkeletalMesh(MeshToUse);
 			SideMeshComponent->SetMaterial(0, MaterialToUse);
+			SideMeshComponent->AnimClass = CubeSide->GetAnimationInstance();
 		}
 
 		CubeSide->SetCurrentSideType(SideType);
