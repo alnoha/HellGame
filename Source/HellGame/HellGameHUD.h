@@ -32,6 +32,7 @@ public:
 	void ShowWidget(TSubclassOf<UUserWidget> Widget);
 	void HideWidget();
 
+	void SetCrosshairWidget(UUserWidget* Widget);
 	void UpdateCrosshair(UTexture2D* Texture);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

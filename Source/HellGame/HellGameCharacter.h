@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Interact.h"
 #include "APickUpComp.h"
+#include "HellGameHUD.h"
 #include "HellGameCharacter.generated.h"
 
 class UInputComponent;
@@ -63,7 +64,13 @@ public:
 
 	bool bIsDrawingPrompt;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crosshair Widget")
+		UUserWidget* CrosshairWidget;
+
+
 protected:
+
+	AHellGameHUD* HUD;
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
