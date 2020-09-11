@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "SideTypes.h"
+#include "EyeComponentData.h"
 #include "FleshCubeSideBase.generated.h"
 
 
@@ -26,7 +25,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 	UMaterialInstance* FaceMaterial;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "A <- Sidetype")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Side Type")
 	ESideType CurrentSideType;
 private:
 
@@ -51,8 +50,11 @@ public:
 	void ReceiveRemoteActivationSignal(FTransform SideTransform);
 	virtual void ReceiveRemoteActivationSignal_Implementation(FTransform SideTransform);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Init Side")
+	void Initialize_Side(FEyeComponentData EyeData, FVector SnotScale);
+	virtual void Initialize_Side_Implementation(FEyeComponentData EyeData, FVector SnotScale);
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void SetupMesh(USkeletalMeshComponent* parent);
 	USkeletalMesh* GetFaceMesh();
 	UMaterialInstance* GetFaceMaterial();
 

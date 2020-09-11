@@ -4,106 +4,80 @@
 #include "FleshCube.h"
 #include "DrawDebugHelpers.h"
 
-// Sets default values
 AFleshCube::AFleshCube()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SetupBaseMesh();
 	SetupSideMeshes();
 }
 
-void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
+#pragma region Unreal Methods
+
+void AFleshCube::OnConstruction(const FTransform& Transform)
 {
-	/*GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Activation signal"));
-	if (!FaceData->SideData.Contains(ReceivingSide->GetCurrentSideType()))
-	{
-		const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
-		UE_LOG(LogTemp, Warning, TEXT("Can't find receiving side in data asset %s"), *SideTypeEnum->GetEnumName((int32)ReceivingSide->GetCurrentSideType()));
-		return;
-	}
-
-	if (FaceData->SideData[ReceivingSide->GetCurrentSideType()].FaceMatches.Contains(SendingType))
-	{
-	*/
-	bool bFoundaSide = false;
-
-	if (ReceivingSide != LeftSide)
-	{
-		LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
-		bFoundaSide = true;
-	}
-
-	if (ReceivingSide != FrontSide)
-	{
-		FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
-		bFoundaSide = true;
-	}
-
-	if (ReceivingSide != RightSide)
-	{
-		RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
-		bFoundaSide = true;
-	}
-
-	if (ReceivingSide != BackSide)
-	{
-		BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
-		bFoundaSide = true;
-	}
-
-	if (!bFoundaSide)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Could not find a side"));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, ReceivingSide->GetName());
-	}
-	/*}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Face match does not contain type"));
-	}*/
+	Super::OnConstruction(Transform);
+	SetupSides();
 }
 
-void AFleshCube::SetupBaseMesh()
-{
-	// Create base cube mesh
-	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxBase"));
-	this->SetRootComponent(BaseMesh);
-
-	// Setup Physics
-	BaseMesh->SetSimulatePhysics(true);
-}
-
-void AFleshCube::SetupSideMeshes()
-{
-	SetupSideMesh(LeftSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 270.f, 0.0f), FName("Left Side Mesh"));
-	SetupSideMesh(FrontSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f), FName("Front Side Mesh"));
-	SetupSideMesh(RightSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 90.f, 0.0f), FName("Right Side Mesh"));
-	SetupSideMesh(BackSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 180.f, 0.0f), FName("Back Side Mesh"));
-	SetupSideMesh(TopSideMeshComponent, BaseMesh, FVector(0.0), FRotator(90.0f, 00.f, 0.0f), FName("Top Side Mesh"));
-	SetupSideMesh(BottomSideMeshComponent, BaseMesh, FVector(0.0), FRotator(-90.0f, 0.f, 0.0f), FName("Bottom Side Mesh"));
-}
-
-void AFleshCube::SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName)
-{
-	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
-	MeshComponent->AttachToComponent(ComponentParent, FAttachmentTransformRules::KeepRelativeTransform);
-	MeshComponent->SetRelativeLocation(ComponentLocation);
-	MeshComponent->SetRelativeRotation(ComponentRotation);
-}
-
-// Called when the game starts or when spawned
 void AFleshCube::BeginPlay()
 {
 	Super::BeginPlay();
 	this->SetActorTickEnabled(false);
+
+	LeftSide->Initialize_Side(EyeDataLeftSide, SnotScaleLeftSide);
+	FrontSide->Initialize_Side(EyeDataFrontSide, SnotScaleFrontSide);
+	RightSide->Initialize_Side(EyeDataRightSide, SnotScaleRightSide);
+	BackSide->Initialize_Side(EyeDataBackSide, SnotScaleBackSide);
 }
 
-void AFleshCube::OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint)
+void AFleshCube::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	FHitResult GroundCheckHitResult;
+
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(GroundCheckHitResult, this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), ECC_Visibility, CollisionParams))
+	{
+		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < CubeGroundTraceDistance)
+		{
+			HitGround();
+			FHitResult CubeHitResult;
+			TryToFindCubeNeighbour(CubeHitResult, LeftSideMeshComponent, CollisionParams, LeftSide, LeftSideType);
+			TryToFindCubeNeighbour(CubeHitResult, FrontSideMeshComponent, CollisionParams, FrontSide, FrontSideType);
+			TryToFindCubeNeighbour(CubeHitResult, RightSideMeshComponent, CollisionParams, RightSide, RightSideType);
+			TryToFindCubeNeighbour(CubeHitResult, BackSideMeshComponent, CollisionParams, BackSide, BackSideType);
+
+			bCanSendStartSignal = false;
+			this->SetActorTickEnabled(false);
+
+			FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+			Componenet->bLockXTranslation = true;
+			Componenet->bLockYTranslation = true;
+
+			Componenet->bLockXRotation = true;
+			Componenet->bLockYRotation = true;
+			Componenet->bLockZRotation = true;
+			Componenet->SetDOFLock(EDOFMode::SixDOF);
+		}
+	}
+}
+
+#pragma endregion
+
+#pragma region Event Implementations
+
+void AFleshCube::HitGround_Implementation()
+{
+}
+
+void AFleshCube::OnPickUp_Implementation(AActor* Caller, UPrimitiveComponent* ImpactPoint)
 {
 	AInteractableBase::OnPickUp_Implementation(Caller, ImpactPoint);
-	//AInteractableBase::Execute_OnPickUp(this, Caller);
+
 	bCurrentlyCarried = true;
 
 	for (UFleshCubeSideBase* Side : ActivatedSides)
@@ -144,131 +118,41 @@ void AFleshCube::OnDropPickUp_Implementation(AActor* Caller)
 	this->SetActorTickEnabled(true);
 }
 
-// Called every frame
-void AFleshCube::Tick(float DeltaTime)
+#pragma endregion
+
+#pragma region Setup Sides And Base Mesh
+
+#pragma region Meshes
+void AFleshCube::SetupBaseMesh()
 {
-	Super::Tick(DeltaTime);
+	// Create base cube mesh
+	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxBase"));
+	this->SetRootComponent(BaseMesh);
 
-	FHitResult GroundCheckHitResult;
-
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-
-	if (GetWorld()->LineTraceSingleByChannel(GroundCheckHitResult, this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), ECC_Visibility, CollisionParams))
-	{
-		DrawDebugLine(GetWorld(), this->GetActorLocation(), this->GetActorLocation() + (FVector::DownVector * 10000), FColor::Magenta);
-		if (FVector::Distance(this->GetActorLocation(), GroundCheckHitResult.ImpactPoint) < CubeGroundTraceDistance)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Emerald, TEXT("Found ground"));
-			FHitResult CubeHitResult;
-			TryToFindCubeNeighbour(CubeHitResult, LeftSideMeshComponent, CollisionParams, LeftSide, LeftSideType);
-			TryToFindCubeNeighbour(CubeHitResult, FrontSideMeshComponent, CollisionParams, FrontSide, FrontSideType);
-			TryToFindCubeNeighbour(CubeHitResult, RightSideMeshComponent, CollisionParams, RightSide, RightSideType);
-			TryToFindCubeNeighbour(CubeHitResult, BackSideMeshComponent, CollisionParams, BackSide, BackSideType);
-
-			bCanSendStartSignal = false;
-			this->SetActorTickEnabled(false);
-			//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
-			FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
-			Componenet->bLockXTranslation = true;
-			Componenet->bLockYTranslation = true;
-			//Componenet->bLockZTranslation = true;
-			Componenet->bLockXRotation = true;
-			Componenet->bLockYRotation = true;
-			Componenet->bLockZRotation = true;
-			Componenet->SetDOFLock(EDOFMode::SixDOF);
-		}
-	}
+	// Setup Physics
+	BaseMesh->SetSimulatePhysics(true);
 }
 
-void AFleshCube::OnConstruction(const FTransform& Transform)
+void AFleshCube::SetupSideMeshes()
 {
-	Super::OnConstruction(Transform);
-	SetupSides();
+	SetupSideMesh(LeftSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 270.f, 0.0f), FName("Left Side Mesh"));
+	SetupSideMesh(FrontSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f), FName("Front Side Mesh"));
+	SetupSideMesh(RightSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 90.f, 0.0f), FName("Right Side Mesh"));
+	SetupSideMesh(BackSideMeshComponent, BaseMesh, FVector(0.0), FRotator(0.0f, 180.f, 0.0f), FName("Back Side Mesh"));
+	SetupSideMesh(TopSideMeshComponent, BaseMesh, FVector(0.0), FRotator(90.0f, 00.f, 0.0f), FName("Top Side Mesh"));
+	SetupSideMesh(BottomSideMeshComponent, BaseMesh, FVector(0.0), FRotator(-90.0f, 0.f, 0.0f), FName("Bottom Side Mesh"));
 }
 
-UFleshCubeSideBase* AFleshCube::GetCubeSideByComponentName(FString ColliderName)
+void AFleshCube::SetupSideMesh(USkeletalMeshComponent*& MeshComponent, UStaticMeshComponent* ComponentParent, FVector ComponentLocation, FRotator ComponentRotation, FName ComponentName)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, ColliderName);
-	if (ColliderName.Contains(FString("Left")))
-	{
-		return LeftSide;
-	}
-	else if (ColliderName.Contains(FString("Front")))
-	{
-		return FrontSide;
-	}
-	else if (ColliderName.Contains(FString("Right")))
-	{
-		return RightSide;
-	}
-	else if (ColliderName.Contains(FString("Back")))
-	{
-		return BackSide;
-	}
-	else
-	{
-		return nullptr;
-	}
+	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(ComponentName);
+	MeshComponent->AttachToComponent(ComponentParent, FAttachmentTransformRules::KeepRelativeTransform);
+	MeshComponent->SetRelativeLocation(ComponentLocation);
+	MeshComponent->SetRelativeRotation(ComponentRotation);
 }
+#pragma endregion
 
-void AFleshCube::ReceiveRemoteActivationSignal(FString ColliderName)
-{
-	UFleshCubeSideBase* CurrentSide = GetCubeSideByComponentName(ColliderName);
-
-	if (CurrentSide != nullptr)
-	{
-		if (FaceData->SideData[CurrentSide->GetCurrentSideType()].bCanBeActivatedByPoop)
-		{
-			FCollisionQueryParams CollisionParams;
-			CollisionParams.AddIgnoredActor(this);
-
-			FHitResult CubeHitResult;
-
-			if (CurrentSide != LeftSide)
-			{
-				LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSideMeshComponent->GetComponentToWorld());
-			}
-			if (CurrentSide != FrontSide)
-			{
-				FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSideMeshComponent->GetComponentToWorld());
-			}
-			if (CurrentSide != RightSide)
-			{
-				RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSideMeshComponent->GetComponentToWorld());
-			}
-			if (CurrentSide != BackSide)
-			{
-				BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSideMeshComponent->GetComponentToWorld());
-			}
-		}
-	}
-}
-
-//UFleshCubeSideBase* AFleshCube::GetCubeSideByMesh(FString MeshName)
-//{
-//	if (MeshName.Contains(FString("Left")))
-//	{
-//		return LeftSide;
-//	}
-//	else if (MeshName.Contains(FString("Front")))
-//	{
-//		return FrontSide;
-//	}
-//	else if (MeshName.Contains(FString("Right")))
-//	{
-//		return RightSide;
-//	}
-//	else if (MeshName.Contains(FString("Back")))
-//	{
-//		return BackSide;
-//	}
-//	else
-//	{
-//		return nullptr;
-//	}
-//}
-
+#pragma region Sides
 void AFleshCube::SetupSides()
 {
 	SetupStartSides();
@@ -278,10 +162,10 @@ void AFleshCube::SetupSides()
 		return;
 	}
 
-	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide);
-	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide);
-	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide);
-	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide);
+	SetupSide(LeftSideMeshComponent, LeftSideType, PreviousLeftSide, LeftSide, EyeDataLeftSide, SnotScaleLeftSide);
+	SetupSide(FrontSideMeshComponent, FrontSideType, PreviousFrontSide, FrontSide, EyeDataFrontSide, SnotScaleFrontSide);
+	SetupSide(RightSideMeshComponent, RightSideType, PreviousRightSide, RightSide, EyeDataRightSide, SnotScaleRightSide);
+	SetupSide(BackSideMeshComponent, BackSideType, PreviousBackSide, BackSide, EyeDataBackSide, SnotScaleRightSide);
 }
 
 void AFleshCube::SetupStartSides()
@@ -351,48 +235,7 @@ void AFleshCube::SetupStartSides()
 	bStartSidesGenerated = true;
 }
 
-void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType)
-{
-	FVector StartLocation = MeshComponent->GetComponentLocation();
-	FVector EndLocation = StartLocation + (MeshComponent->GetForwardVector() * CubeSideTraceDistance);
-	if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, StartLocation, EndLocation, ECC_Visibility, CollisionParams))
-	{
-		if (CubeHitResult.Actor->IsA<AFleshCube>())
-		{
-			AFleshCube* OtherCube = Cast<AFleshCube>(CubeHitResult.Actor);
-			UFleshCubeSideBase* CurrentSide = OtherCube->GetCubeSideByComponentName(CubeHitResult.Component->GetName());
-
-			if (CurrentSide != nullptr)
-			{
-				if (FaceData->SideData[CurrentSide->GetCurrentSideType()].FaceMatches.Contains(SideType))
-				{
-					OtherCube->SendActivationSignal(this, SendingSide, CurrentSide, SideType);
-					ActivatedSides.Add(CurrentSide);
-				}
-				else
-				{
-					if (FaceData->SideData[SendingSide->GetCurrentSideType()].FaceMatches.Contains(CurrentSide->GetCurrentSideType()))
-					{
-						SendActivationSignal(OtherCube, CurrentSide, SendingSide, CurrentSide->GetCurrentSideType());
-						OtherCube->ActivatedSides.Add(SendingSide);
-					}
-					else
-					{
-						const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
-						UE_LOG(LogTemp, Warning, TEXT("Sending side %s"), *SideTypeEnum->GetEnumName((int32)SendingSide->GetCurrentSideType()));
-						UE_LOG(LogTemp, Warning, TEXT("Recieving side %s"), *SideTypeEnum->GetEnumName((int32)CurrentSide->GetCurrentSideType()));
-					}
-				}
-				if (bHasLatched == false)
-				{
-					LatchCube(CubeHitResult.TraceStart, Cast<UPrimitiveComponent>(CubeHitResult.Component));
-				}
-			}
-		}
-	}
-}
-
-void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide)
+void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide, FEyeComponentData EyeComponentData, FVector SnotScale)
 {
 	if (SideType != PreviousType)
 	{
@@ -402,7 +245,7 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Could not find the type in sidedata"));
 			SideType = ESideType::None;
-			SetupSide(SideMeshComponent, SideType, PreviousType, CubeSide);
+			SetupSide(SideMeshComponent, SideType, PreviousType, CubeSide, EyeComponentData, SnotScale);
 			return;
 		}
 		else
@@ -458,29 +301,176 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 		}
 
 		CubeSide->SetCurrentSideType(SideType);
+		CubeSide->Initialize_Side(EyeComponentData, SnotScale);
 		PreviousType = SideType;
 	}
 }
+#pragma endregion
 
-void AFleshCube::LatchCube(FVector Start, UPrimitiveComponent* CubeSide)
+#pragma endregion
+
+#pragma region Activation Signals
+
+void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal)
 {
-	FVector StartForward = Start.ForwardVector;
-	FVector CubeSideForward = CubeSide->GetForwardVector();
+	bool bFoundaSide = false;
 
-	FVector NewLocation = CubeSide->GetComponentLocation() + (CubeSideForward * CubeSnapDistance);
-	this->SetActorLocation(NewLocation);
+	if (ReceivingSide != LeftSide)
+	{
+		LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
 
-	FQuat StartQuat = Start.ToOrientationRotator().Quaternion();
-	FQuat EndQuat = CubeSide->GetComponentRotation().Quaternion();
-	//this->SetActorRotation(EndQuat * StartQuat);
+	if (ReceivingSide != FrontSide)
+	{
+		FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
+
+	if (ReceivingSide != RightSide)
+	{
+		RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
+
+	if (ReceivingSide != BackSide)
+	{
+		BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->GetComponentToWorld());
+		bFoundaSide = true;
+	}
+
+	if (!bFoundaSide)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("Could not find a side"));
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, ReceivingSide->GetName());
+	}
+}
+
+void AFleshCube::ReceiveRemoteActivationSignal(FString ColliderName)
+{
+	UFleshCubeSideBase* CurrentSide = GetCubeSideByComponentName(ColliderName);
+
+	if (CurrentSide != nullptr)
+	{
+		if (FaceData->SideData[CurrentSide->GetCurrentSideType()].bCanBeActivatedByPoop)
+		{
+			FCollisionQueryParams CollisionParams;
+			CollisionParams.AddIgnoredActor(this);
+
+			FHitResult CubeHitResult;
+
+			if (CurrentSide != LeftSide)
+			{
+				LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSideMeshComponent->GetComponentToWorld());
+			}
+
+			if (CurrentSide != FrontSide)
+			{
+				FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSideMeshComponent->GetComponentToWorld());
+			}
+
+			if (CurrentSide != RightSide)
+			{
+				RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSideMeshComponent->GetComponentToWorld());
+			}
+
+			if (CurrentSide != BackSide)
+			{
+				BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSideMeshComponent->GetComponentToWorld());
+			}
+		}
+	}
+}
+
+#pragma endregion
+
+#pragma region Cube Placement
+
+void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType)
+{
+	FVector StartLocation = MeshComponent->GetComponentLocation();
+	FVector EndLocation = StartLocation + (MeshComponent->GetForwardVector() * CubeSideTraceDistance);
+	if (GetWorld()->LineTraceSingleByChannel(CubeHitResult, StartLocation, EndLocation, ECC_Visibility, CollisionParams))
+	{
+		if (CubeHitResult.Actor->IsA<AFleshCube>())
+		{
+			AFleshCube* OtherCube = Cast<AFleshCube>(CubeHitResult.Actor);
+			UFleshCubeSideBase* CurrentSide = OtherCube->GetCubeSideByComponentName(CubeHitResult.Component->GetName());
+
+			if (CurrentSide != nullptr)
+			{
+				if (FaceData->SideData[CurrentSide->GetCurrentSideType()].FaceMatches.Contains(SideType))
+				{
+					OtherCube->SendActivationSignal(this, SendingSide, CurrentSide, SideType);
+					ActivatedSides.Add(CurrentSide);
+				}
+				else
+				{
+					if (FaceData->SideData[SendingSide->GetCurrentSideType()].FaceMatches.Contains(CurrentSide->GetCurrentSideType()))
+					{
+						SendActivationSignal(OtherCube, CurrentSide, SendingSide, CurrentSide->GetCurrentSideType());
+						OtherCube->ActivatedSides.Add(SendingSide);
+					}
+					else
+					{
+						const UEnum* SideTypeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESideType"));
+						UE_LOG(LogTemp, Warning, TEXT("Sending side %s"), *SideTypeEnum->GetEnumName((int32)SendingSide->GetCurrentSideType()));
+						UE_LOG(LogTemp, Warning, TEXT("Recieving side %s"), *SideTypeEnum->GetEnumName((int32)CurrentSide->GetCurrentSideType()));
+					}
+				}
+				if (bHasLatched == false)
+				{
+					LatchCube(MeshComponent, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+				}
+			}
+		}
+	}
+}
+
+/*Latch a cube to an other cube, LatchingCube = Cube that will get the changes CubeSide = the cube that will give the values to Latch to.*/
+void AFleshCube::LatchCube(USkeletalMeshComponent* LatchingCube, UPrimitiveComponent* CubeSide)
+{
 	bHasLatched = true;
 
-	/*float Angle = FMath::RadiansToDegrees(FMath::Atan2(Start.Y - (-1.0f * CubeSide->GetComponentLocation().Y), Start.X - (-1.0f * CubeSide->GetComponentLocation().X)));
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Magenta, FString::Printf(TEXT("%f"), Angle));
-	FRotator NewRotation = { 0, Angle, 0 };
-	this->SetActorRotation(this->GetActorRotation() + NewRotation);
-	
-	DrawDebugLine(GetWorld(), Start, CubeSide->GetForwardVector(), FColor::Magenta, false, 10.0f);
-	DrawDebugLine(GetWorld(), CubeSide->GetComponentLocation(), Start, FColor::Blue, false, 10.0f);*/
+	FVector StartLocation = LatchingCube->GetComponentLocation();
+	FVector StartForward = LatchingCube->GetForwardVector();
+	StartForward.Normalize();
 
+	FVector HitLocation = CubeSide->GetComponentLocation();
+	FVector HitForward = CubeSide->GetForwardVector();
+	HitForward.Normalize();
+
+	float Distance = FVector::Distance(StartLocation, HitLocation);
+	FVector NewLocation = HitLocation + (HitForward * Distance);
+	SetActorLocation(NewLocation);
+
+	float Radiants = FMath::Acos(FVector::DotProduct(-StartForward, HitForward));
+	float Degree = FMath::RadiansToDegrees(FVector::DotProduct(LatchingCube->GetRightVector(), HitForward) < 0 ? Radiants : -Radiants);
+	SetActorRotation(GetActorRotation() + FRotator(0.0f, Degree, 0.0f));
+}
+
+#pragma endregion
+
+UFleshCubeSideBase* AFleshCube::GetCubeSideByComponentName(FString ColliderName)
+{
+	if (ColliderName.Contains(FString("Left")))
+	{
+		return LeftSide;
+	}
+	else if (ColliderName.Contains(FString("Front")))
+	{
+		return FrontSide;
+	}
+	else if (ColliderName.Contains(FString("Right")))
+	{
+		return RightSide;
+	}
+	else if (ColliderName.Contains(FString("Back")))
+	{
+		return BackSide;
+	}
+	else
+	{
+		return nullptr;
+	}
 }

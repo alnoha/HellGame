@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,20 +6,9 @@
 #include "SideTypes.h"
 #include "InteractableBase.h"
 #include "CubeFaceData.h"
+#include "EyeComponentData.h"
 #include "Components/BoxComponent.h"
 #include "FleshCube.generated.h"
-
-
-UCLASS(BlueprintType)
-class UCubeFaseData : public UDataAsset
-{
-	GENERATED_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-	AFleshCube* ConnectedCube;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-	UFleshCubeSideBase* ConnectedFace;
-};
 
 UCLASS()
 class HELLGAME_API AFleshCube : public AInteractableBase
@@ -42,10 +29,14 @@ private:
 
 public:
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Cube Basic Events")
+	void HitGround();
+	virtual void HitGround_Implementation();
+
 	UPROPERTY(EditAnywhere)
 	UCubeFaceData* FaceData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn", meta = (ToolTip = "Where in world location the cube should respawn"))
 	AActor* CubeRespawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
@@ -87,6 +78,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Side Components")
 	UFleshCubeSideBase* BackSide;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleLeftSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleFrontSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleRightSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Snot")
+	FVector SnotScaleBackSide;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeComponentData EyeDataLeftSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeComponentData EyeDataFrontSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeComponentData EyeDataRightSide;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eye")
+	FEyeComponentData EyeDataBackSide;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
 	float CubeSideTraceDistance = 200.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Side Trace")
@@ -107,14 +116,14 @@ private:
 	void SetupSides();
 	void SetupStartSides();
 	void TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType);
-	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide);
-	void LatchCube(FVector Start, UPrimitiveComponent* CubeSide);
+	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide, FEyeComponentData EyeComponentData, FVector SnotScale);
+	void LatchCube(USkeletalMeshComponent* Start, UPrimitiveComponent* CubeSide);
 	bool bHasLatched;
 
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint) override;
+	virtual void OnPickUp_Implementation(AActor* Caller, UPrimitiveComponent* ImpactComponent) override;
 	virtual void OnDropPickUp_Implementation(AActor* Caller) override;
 
 public:
