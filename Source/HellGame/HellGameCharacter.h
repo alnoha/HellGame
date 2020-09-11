@@ -59,7 +59,7 @@ public:
 	virtual void OnInteract_Implementation(AActor* Actor);
 
 	AActor* Interactable;
-	FVector ImpactPoint;
+	UPrimitiveComponent* ImpactComponent;
 
 	bool bIsDrawingPrompt;
 
