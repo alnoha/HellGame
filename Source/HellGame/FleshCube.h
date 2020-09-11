@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UCubeFaceData* FaceData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn", meta = (ToolTip = "Where in world location the cube should respawn"))
 	AActor* CubeRespawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
