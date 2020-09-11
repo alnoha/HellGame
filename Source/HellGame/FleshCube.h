@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UCubeFaceData* FaceData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn", meta = (ToolTip = "Where in world location the cube should respawn"))
 	AActor* CubeRespawnPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
@@ -123,7 +123,7 @@ private:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnPickUp_Implementation(AActor* Caller, FVector ImpactPoint) override;
+	virtual void OnPickUp_Implementation(AActor* Caller, UPrimitiveComponent* ImpactComponent) override;
 	virtual void OnDropPickUp_Implementation(AActor* Caller) override;
 
 public:
