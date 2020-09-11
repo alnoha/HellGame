@@ -292,6 +292,7 @@ void AFleshCube::SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType
 
 			SideMeshComponent->SetSkeletalMesh(MeshToUse);
 			SideMeshComponent->SetMaterial(0, MaterialToUse);
+			SideMeshComponent->AnimClass = CubeSide->GetAnimationInstance();
 		}
 
 		CubeSide->SetCurrentSideType(SideType);
@@ -311,25 +312,25 @@ void AFleshCube::SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBas
 
 	if (ReceivingSide != LeftSide)
 	{
-		LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent->SkeletalMesh, LeftSideMeshComponent->GetComponentToWorld());
+		LeftSide->ReceivedActivationSignal(SendingSide, SendingType, LeftSideMeshComponent, LeftSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
 	if (ReceivingSide != FrontSide)
 	{
-		FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent->SkeletalMesh, FrontSideMeshComponent->GetComponentToWorld());
+		FrontSide->ReceivedActivationSignal(SendingSide, SendingType, FrontSideMeshComponent, FrontSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
 	if (ReceivingSide != RightSide)
 	{
-		RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent->SkeletalMesh, RightSideMeshComponent->GetComponentToWorld());
+		RightSide->ReceivedActivationSignal(SendingSide, SendingType, RightSideMeshComponent, RightSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
 	if (ReceivingSide != BackSide)
 	{
-		BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent->SkeletalMesh, BackSideMeshComponent->GetComponentToWorld());
+		BackSide->ReceivedActivationSignal(SendingSide, SendingType, BackSideMeshComponent, BackSideMeshComponent->GetComponentToWorld());
 		bFoundaSide = true;
 	}
 
@@ -355,22 +356,22 @@ void AFleshCube::ReceiveRemoteActivationSignal(FString ColliderName)
 
 			if (CurrentSide != LeftSide)
 			{
-				LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSideMeshComponent->SkeletalMesh, LeftSideMeshComponent->GetComponentToWorld());
+				LeftSide->ReceivedActivationSignal(nullptr, ESideType::None, LeftSideMeshComponent, LeftSideMeshComponent->GetComponentToWorld());
 			}
 
 			if (CurrentSide != FrontSide)
 			{
-				FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSideMeshComponent->SkeletalMesh, FrontSideMeshComponent->GetComponentToWorld());
+				FrontSide->ReceivedActivationSignal(nullptr, ESideType::None, FrontSideMeshComponent, FrontSideMeshComponent->GetComponentToWorld());
 			}
 
 			if (CurrentSide != RightSide)
 			{
-				RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSideMeshComponent->SkeletalMesh, RightSideMeshComponent->GetComponentToWorld());
+				RightSide->ReceivedActivationSignal(nullptr, ESideType::None, RightSideMeshComponent, RightSideMeshComponent->GetComponentToWorld());
 			}
 
 			if (CurrentSide != BackSide)
 			{
-				BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSideMeshComponent->SkeletalMesh, BackSideMeshComponent->GetComponentToWorld());
+				BackSide->ReceivedActivationSignal(nullptr, ESideType::None, BackSideMeshComponent, BackSideMeshComponent->GetComponentToWorld());
 			}
 		}
 	}
