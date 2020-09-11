@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 	UMaterialInstance* FaceMaterial;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	TSubclassOf<UAnimInstance> FaceAnimation;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Side Type")
 	ESideType CurrentSideType;
 private:
@@ -57,6 +60,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	USkeletalMesh* GetFaceMesh();
 	UMaterialInstance* GetFaceMaterial();
+	TSubclassOf<UAnimInstance> GetAnimationInstance();
 
 	void SetCurrentSideType(ESideType NewSideType);
 	ESideType GetCurrentSideType();

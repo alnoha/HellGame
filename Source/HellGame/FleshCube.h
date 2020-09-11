@@ -39,13 +39,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Respawn", meta = (ToolTip = "Where in world location the cube should respawn"))
 	AActor* CubeRespawnPoint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides", meta = (ToopTip = "Which cube face should the left side of the cube have."))
 	ESideType LeftSideType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides", meta = (ToolTip = "Which cube face should the front side of the cube have."))
 	ESideType FrontSideType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides", meta = (ToolTip = "Which cube face should the right side of the cube have."))
 	ESideType RightSideType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Sides", meta = (ToolTip = "Which cube face should the back side of the cube have."))
 	ESideType BackSideType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")

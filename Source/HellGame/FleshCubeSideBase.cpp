@@ -57,6 +57,11 @@ UMaterialInstance* UFleshCubeSideBase::GetFaceMaterial()
 	return FaceMaterial;
 }
 
+TSubclassOf<UAnimInstance> UFleshCubeSideBase::GetAnimationInstance()
+{
+	return FaceAnimation;
+}
+
 ESideType UFleshCubeSideBase::GetCurrentSideType()
 {
 	return CurrentSideType;
