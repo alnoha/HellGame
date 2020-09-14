@@ -9,6 +9,8 @@
 #include "Widgets/SWeakWidget.h"
 #include "Engine/Engine.h"
 #include "Blueprint/UserWidget.h"
+#include "HellGameCharacter.h"
+
 
 AHellGameHUD::AHellGameHUD()
 {
@@ -65,14 +67,15 @@ void AHellGameHUD::UpdateCrosshair(UTexture2D* Texture)
 	}
 }
 
-void AHellGameHUD::SetCrosshairWidget(TSubclassOf<UUserWidget> Widget)
+void AHellGameHUD::SetCrosshairWidget(AHellGameCharacter* Character, TSubclassOf<UUserWidget> Widget)
 {
 	if (Widget != nullptr)
 	{
 		if (CrosshairWidget == nullptr)
 		{
-			CrosshairWidget = Cast<UUserWidget>(Widget);
+			CrosshairWidget = CreateWidget(GetWorld(), Widget);
 			CrosshairWidget->AddToViewport();
+			Character->SetWidgetRef(CrosshairWidget);
 		}
 	}
 }

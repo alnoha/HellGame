@@ -9,6 +9,8 @@
 #include "EngineUtils.h"
 #include "HellGameHUD.generated.h"
 
+class AHellGameCharacter;
+
 UENUM()
 enum class ECrosshairTypes
 {
@@ -32,7 +34,7 @@ public:
 	void ShowWidget(TSubclassOf<UUserWidget> Widget);
 	void HideWidget();
 
-	void SetCrosshairWidget(TSubclassOf<UUserWidget> Widget);
+	void SetCrosshairWidget(AHellGameCharacter* Character, TSubclassOf<UUserWidget> Widget);
 	void UpdateCrosshair(UTexture2D* Texture);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
