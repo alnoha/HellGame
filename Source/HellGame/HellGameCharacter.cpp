@@ -39,7 +39,8 @@ void AHellGameCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-
+	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	HUD->SetCrosshairWidget(CrosshairWidget);
 	PickupComponent = Cast<AActor>(this)->FindComponentByClass<UAPickUpComp>();
 }
 
@@ -72,7 +73,11 @@ void AHellGameCharacter::InteractTrace()
 {
 	FVector Pos;
 	FRotator Rot;
-	GetController()->GetPlayerViewPoint(Pos, Rot);
+
+	if (GetController() != nullptr)
+	{
+		GetController()->GetPlayerViewPoint(Pos, Rot);
+	}
 
 	FCollisionQueryParams TraceParams;
 	FHitResult Hit;
