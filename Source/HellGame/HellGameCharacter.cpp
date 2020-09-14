@@ -98,6 +98,7 @@ void AHellGameCharacter::InteractTrace()
 			}
 			Interactable = HitActor;
 			ImpactComponent = Hit.GetComponent();
+			HitLocation = Hit.ImpactPoint;
 			IInteractable::Execute_OnBeginFocus(Interactable);
 			bIsDrawingPrompt = true;
 		}
@@ -144,7 +145,7 @@ void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
 	//Failsafe if an actor from a blueprint doesn't implements the interacteable interface
 	if (Actor->Implements<UInteractable>())
 	{
-		IInteractable::Execute_OnInteract(Actor, this, ImpactComponent);
+		IInteractable::Execute_OnInteract(Actor, this, HitLocation);
 	}
 
 }
