@@ -16,8 +16,8 @@ class AHellGameCharacter : public ACharacter, public IInteract
 {
 	GENERATED_BODY()
 
-	/** Location on gun mesh where projectiles should spawn. */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		/** Location on gun mesh where projectiles should spawn. */
+		UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 		class USceneComponent* FP_MuzzleLocation;
 
 	/** First person camera */
@@ -49,7 +49,7 @@ public:
 
 	/** Is the character holding an object? */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
-	bool bIsHoldingObject;
+		bool bIsHoldingObject;
 
 	void InteractTrace();
 
@@ -65,8 +65,11 @@ public:
 	bool bIsDrawingPrompt;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crosshair Widget")
-		UUserWidget* CrosshairWidget;
+		TSubclassOf<UUserWidget> CrosshairWidget;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Crosshair Widget")
+		void SetWidgetRef(UUserWidget* Widget);
+	void SetWidgetRef_Implementation(UUserWidget* Widget);
 
 protected:
 

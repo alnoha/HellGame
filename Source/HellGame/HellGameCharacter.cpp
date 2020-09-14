@@ -32,7 +32,6 @@ AHellGameCharacter::AHellGameCharacter()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-
 }
 
 void AHellGameCharacter::BeginPlay()
@@ -40,8 +39,8 @@ void AHellGameCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	HUD->SetCrosshairWidget(CrosshairWidget);
-	PickupComponent = Cast<AActor>(this)->FindComponentByClass<UAPickUpComp>();
+	HUD->SetCrosshairWidget(this, CrosshairWidget);
+	PickupComponent = FindComponentByClass<UAPickUpComp>();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -156,6 +155,10 @@ void AHellGameCharacter::Tick(float DeltaTime)
 	{
 		InteractTrace();
 	}
+}
+
+void AHellGameCharacter::SetWidgetRef_Implementation(UUserWidget* Widget)
+{
 }
 
 void AHellGameCharacter::MoveForward(float Value)
