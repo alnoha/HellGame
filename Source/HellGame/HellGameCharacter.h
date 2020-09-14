@@ -61,6 +61,7 @@ public:
 
 	AActor* Interactable;
 	UPrimitiveComponent* ImpactComponent;
+	FVector HitLocation;
 
 	bool bIsDrawingPrompt;
 
