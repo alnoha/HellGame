@@ -65,13 +65,13 @@ void AHellGameHUD::UpdateCrosshair(UTexture2D* Texture)
 	}
 }
 
-void AHellGameHUD::SetCrosshairWidget(UUserWidget* Widget)
+void AHellGameHUD::SetCrosshairWidget(TSubclassOf<UUserWidget> Widget)
 {
 	if (Widget != nullptr)
 	{
 		if (CrosshairWidget == nullptr)
 		{
-			CrosshairWidget = Widget;
+			CrosshairWidget = Cast<UUserWidget>(Widget);
 			CrosshairWidget->AddToViewport();
 		}
 	}

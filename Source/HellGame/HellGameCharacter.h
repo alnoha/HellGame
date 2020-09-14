@@ -65,7 +65,7 @@ public:
 	bool bIsDrawingPrompt;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crosshair Widget")
-		UUserWidget* CrosshairWidget;
+		TSubclassOf<UUserWidget> CrosshairWidget;
 
 
 protected:
