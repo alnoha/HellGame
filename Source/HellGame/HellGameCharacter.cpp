@@ -73,7 +73,11 @@ void AHellGameCharacter::InteractTrace()
 {
 	FVector Pos;
 	FRotator Rot;
-	GetController()->GetPlayerViewPoint(Pos, Rot);
+
+	if (GetController() != nullptr)
+	{
+		GetController()->GetPlayerViewPoint(Pos, Rot);
+	}
 
 	FCollisionQueryParams TraceParams;
 	FHitResult Hit;
