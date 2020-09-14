@@ -28,7 +28,7 @@ protected:
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
-		void PickUp(AActor* actor, FVector HitLocation);
+		void PickUp(AActor* actor, FVector ImpactComponent);
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 		void Drop();
 
@@ -111,5 +111,4 @@ private:
 	float DotProd(FVector vec1, FVector vec2);
 	FQuat QuatDifferens(FQuat Quat1, FQuat Quat2);
 	float AngelsBetween2DVectors(FVector Vector1, FVector Vector2, FVector ForwardVector);
-
 };

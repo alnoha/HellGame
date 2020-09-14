@@ -74,9 +74,9 @@ void AFleshCube::HitGround_Implementation()
 {
 }
 
-void AFleshCube::OnPickUp_Implementation(AActor* Caller, UPrimitiveComponent* ImpactPoint)
+void AFleshCube::OnPickUp_Implementation(AActor* Caller, FVector ImpactComponent)
 {
-	AInteractableBase::OnPickUp_Implementation(Caller, ImpactPoint);
+	AInteractableBase::OnPickUp_Implementation(Caller, ImpactComponent);
 
 	bCurrentlyCarried = true;
 

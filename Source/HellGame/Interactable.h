@@ -24,7 +24,7 @@ class HELLGAME_API IInteractable
 public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interactable")
-		void OnInteract(AActor* Caller, UPrimitiveComponent* ImpactComponent);
+		void OnInteract(AActor* Caller, FVector ImpactComponent);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interactable")
 		void OnBeginFocus();
