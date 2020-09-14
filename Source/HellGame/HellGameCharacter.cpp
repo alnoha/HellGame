@@ -32,15 +32,15 @@ AHellGameCharacter::AHellGameCharacter()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-
 }
 
 void AHellGameCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-
-	PickupComponent = Cast<AActor>(this)->FindComponentByClass<UAPickUpComp>();
+	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	HUD->SetCrosshairWidget(this, CrosshairWidget);
+	PickupComponent = FindComponentByClass<UAPickUpComp>();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,11 @@ void AHellGameCharacter::InteractTrace()
 {
 	FVector Pos;
 	FRotator Rot;
-	GetController()->GetPlayerViewPoint(Pos, Rot);
+
+	if (GetController() != nullptr)
+	{
+		GetController()->GetPlayerViewPoint(Pos, Rot);
+	}
 
 	FCollisionQueryParams TraceParams;
 	FHitResult Hit;
@@ -94,6 +98,7 @@ void AHellGameCharacter::InteractTrace()
 			}
 			Interactable = HitActor;
 			ImpactComponent = Hit.GetComponent();
+			HitLocation = Hit.ImpactPoint;
 			IInteractable::Execute_OnBeginFocus(Interactable);
 			bIsDrawingPrompt = true;
 		}
@@ -140,7 +145,7 @@ void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
 	//Failsafe if an actor from a blueprint doesn't implements the interacteable interface
 	if (Actor->Implements<UInteractable>())
 	{
-		IInteractable::Execute_OnInteract(Actor, this, ImpactComponent);
+		IInteractable::Execute_OnInteract(Actor, this, HitLocation);
 	}
 
 }
@@ -151,6 +156,10 @@ void AHellGameCharacter::Tick(float DeltaTime)
 	{
 		InteractTrace();
 	}
+}
+
+void AHellGameCharacter::SetWidgetRef_Implementation(UUserWidget* Widget)
+{
 }
 
 void AHellGameCharacter::MoveForward(float Value)

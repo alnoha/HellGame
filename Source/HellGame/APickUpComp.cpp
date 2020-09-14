@@ -21,6 +21,9 @@ void UAPickUpComp::BeginPlay()
 {
 	Super::BeginPlay();
 	StartCheck();
+	
+
+
 	this->SetComponentTickEnabled(false);
 }
 
@@ -36,7 +39,7 @@ void UAPickUpComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	}
 }
 
-void UAPickUpComp::PickUp(AActor* Actor, UPrimitiveComponent* ImpactComponent)
+void UAPickUpComp::PickUp(AActor* Actor, FVector HitLocation)
 {
 	HoldActor = Actor;
 	UActorComponent* whatever = HoldActor->GetComponentByClass(UStaticMeshComponent::StaticClass());
@@ -45,91 +48,31 @@ void UAPickUpComp::PickUp(AActor* Actor, UPrimitiveComponent* ImpactComponent)
 	ItemMesh = temp->GetStaticMesh();
 	HoldItem = (UPrimitiveComponent*)temp;
 
-	//float wsadd =FMath::RadiansToDegrees(FMath::Atan2(HitLocation.Y - HoldActor->GetActorLocation().Y, HitLocation.X - HoldActor->GetActorLocation().X));
+	float theta =FMath::RadiansToDegrees(FMath::Atan2(HitLocation.Y - HoldActor->GetActorLocation().Y, HitLocation.X - HoldActor->GetActorLocation().X));
+	theta -= HoldActor->GetActorRotation().Yaw;
+	if (theta < 0)
+	{
+		theta += 360;
+	}
+	int degreestoadd;
+	int newfloat = int(theta)% 90;
+	if (newfloat >= 45)
+	{
+		degreestoadd = (90 -newfloat) + theta;
+	
+	}
+	else
+	{
+		degreestoadd = (newfloat * -1) + theta;	
+	}
 
-	//float radius = (HoldActor->GetActorLocation() - HitLocation).Size();
-	//
-	//FVector point1 = HoldActor->GetActorLocation() + (HoldActor->GetActorForwardVector() * radius);
-	//FVector point2 = HoldActor->GetActorLocation() - HitLocation;
-	//float angletest = ((point1.X - HitLocation.Y) * (point1.X - HitLocation.Y)) + ((point1.Y - HitLocation.Y) * (point1.Y - HitLocation.Y));
-	//
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("wsadd " + FString::SanitizeFloat(wsadd)));
-	////FVector::DotProduct(point1,HitLocation);
-	////GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Hello " + FString::SanitizeFloat(HitLocation.X) + " " + FString::SanitizeFloat(HitLocation.Y) + " "+ FString::SanitizeFloat(HitLocation.Z)));
-	////GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Hello " + FString::SanitizeFloat(FMath::RadiansToDegrees(acosf(DotProd(HoldPosition->GetForwardVector(), HoldItem->GetForwardVector()))))));
-	//
-	////FQuat deltaAngle = FQuat::FindBetweenVectors(HitLocation,point1);
-	//
-	//int degreestoadd;
-	////GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT(" " + FString::SanitizeFloat(testFloat)));
-	//if (wsadd >= 0)
-	//{	
-	//	int newfloat = int(wsadd)% 90;
-	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Positive" + FString::FromInt(newfloat)));
-	//	if (newfloat >= 45)
-	//	{
-	//		degreestoadd = 90 -newfloat;
-	//		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Positive" + FString::SanitizeFloat(degreestoadd)));
-	//	}
-	//	else
-	//	{
-	//		degreestoadd = newfloat * -1;
-	//		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Positive" + FString::SanitizeFloat(degreestoadd)));
-	//	}
-	//}
-	//else
-	//{
-	//	int newfloat = int(wsadd * -1) % 90;
-	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Negativ" + FString::FromInt(newfloat)));
-	//	if (newfloat >= 45)
-	//	{
-	//		degreestoadd = 90 + newfloat ;
-	//		//degreestoadd = degreestoadd * -1;
-	//		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Negativ" + FString::SanitizeFloat(degreestoadd)));
-	//		
-	//	}
-	//	else
-	//	{
-	//		degreestoadd = newfloat;
-	//		//degreestoadd = degreestoadd * -1;
-	//		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT("Negativ" + FString::SanitizeFloat(degreestoadd)));
-	//	}
-	//}
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT(" DegreesToAdd" + FString::SanitizeFloat(degreestoadd)));
-	//
-	//FRotator newrotation = {0,(float)degreestoadd,0};
-
-	//
-
-	////GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT(" Final" + FString::SanitizeFloat(newrotation.Yaw )));
-
-	//FQuat tempQuat = newrotation.Quaternion() * HoldItem->GetComponentQuat();
-	//
-	////GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, TEXT( " " + FString::SanitizeFloat(testFloat)));
-	////HoldItem->AddRelativeRotation(newrotation.Quaternion());
-	////CurrentForward = HoldPosition->GetComponentQuat();
-	////HoldItem->SetWorldRotation(tempQuat);
-	////HoldPosition->SetWorldRotation(newrotation);
-	//HoldPosition->SetRelativeRotation(newrotation);
-
-	//Jocke rotation start
-	AActor* Player = Cast<UActorComponent>(this)->GetOwner();
-
-	FVector PlayerForward = Player->GetActorForwardVector();
-	PlayerForward.Normalize();
-
-	FVector CubeForward = ImpactComponent->GetForwardVector();
-	CubeForward.Normalize();
-
-	float Radiants = FMath::Acos(FVector::DotProduct(PlayerForward, -CubeForward));
-	float Degree = FMath::RadiansToDegrees(FVector::DotProduct(Player->GetActorRightVector(), -CubeForward) < 0 ? Radiants : -Radiants);
-
-	HoldPosition->SetWorldRotation(Actor->GetActorRotation() + FRotator(0.0f, Degree, 0.0f));
-	//Jocke rotation end
-
+	if (degreestoadd  >= 135 && degreestoadd  <=  225 || degreestoadd <= 45 || degreestoadd >= 315)
+	{
+		degreestoadd += 180;
+	}
+	FRotator newrotation = { 0,static_cast<float>(degreestoadd),0 };
+	HoldPosition->SetRelativeRotation(newrotation.Quaternion());
 	PhysicsHandle->GrabComponentAtLocationWithRotation(HoldItem, NAME_None, HoldItem->GetComponentLocation(), HoldItem->GetComponentRotation());
-
-
 	IsHolding = true;
 	this->SetComponentTickEnabled(true);
 }
