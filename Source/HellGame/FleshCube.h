@@ -123,7 +123,7 @@ private:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void OnPickUp_Implementation(AActor* Caller, UPrimitiveComponent* ImpactComponent) override;
+	virtual void OnPickUp_Implementation(AActor* Caller, FVector ImpactComponent ) override;
 	virtual void OnDropPickUp_Implementation(AActor* Caller) override;
 
 public:
