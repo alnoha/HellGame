@@ -13,4 +13,6 @@ public:
 	bool bIsPersistent = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration = 11.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float LaserCarrySpeed = 300.0f;
 };
