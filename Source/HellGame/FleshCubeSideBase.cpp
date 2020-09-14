@@ -8,12 +8,6 @@ UFleshCubeSideBase::UFleshCubeSideBase()
 }
 
 #pragma region Unreal Methods
-void UFleshCubeSideBase::SetupBaseMesh()
-{
-	// Create base cube mesh
-	BaseMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Test"));
-	BaseMesh->bEditableWhenInherited = true;
-}
 
 void UFleshCubeSideBase::BeginPlay()
 {
