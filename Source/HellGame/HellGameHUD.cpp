@@ -9,6 +9,8 @@
 #include "Widgets/SWeakWidget.h"
 #include "Engine/Engine.h"
 #include "Blueprint/UserWidget.h"
+#include "HellGameCharacter.h"
+
 
 AHellGameHUD::AHellGameHUD()
 {
@@ -19,12 +21,6 @@ void AHellGameHUD::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
-	FStringClassReference CrosshairWidgetClassRef(TEXT("/Game/FirstPersonCPP/UserInterface/WBP_HUD.WBP_HUD_C"));
-	if (UClass* Widget = CrosshairWidgetClassRef.TryLoadClass<UUserWidget>())
-	{
-		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), Widget);
-		CrosshairWidget->AddToViewport();
-	}
 	InitCrosshairTextures();
 }
 
@@ -62,8 +58,24 @@ void AHellGameHUD::HideWidget()
 
 void AHellGameHUD::UpdateCrosshair(UTexture2D* Texture)
 {
-	UCanvasPanel* CanvasPanel = Cast<UCanvasPanel>(CrosshairWidget->GetRootWidget());
-	// Crosshair image got index 0
-	UImage* Image = Cast<UImage>(CanvasPanel->GetChildAt(0));
-	Image->SetBrushFromTexture(Texture);
+	if (CrosshairWidget != nullptr)
+	{
+		UCanvasPanel* CanvasPanel = Cast<UCanvasPanel>(CrosshairWidget->GetRootWidget());
+		// Crosshair image got index 0
+		UImage* Image = Cast<UImage>(CanvasPanel->GetChildAt(0));
+		Image->SetBrushFromTexture(Texture);
+	}
+}
+
+void AHellGameHUD::SetCrosshairWidget(AHellGameCharacter* Character, TSubclassOf<UUserWidget> Widget)
+{
+	if (Widget != nullptr)
+	{
+		if (CrosshairWidget == nullptr)
+		{
+			CrosshairWidget = CreateWidget(GetWorld(), Widget);
+			CrosshairWidget->AddToViewport();
+			Character->SetWidgetRef(CrosshairWidget);
+		}
+	}
 }

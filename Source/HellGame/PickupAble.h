@@ -28,4 +28,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
 		void OnDropPickUp(AActor* Caller);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
+		void OnGrounded(AActor* Caller);
 };

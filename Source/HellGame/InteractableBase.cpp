@@ -118,3 +118,15 @@ void AInteractableBase::OnDropPickUp_Implementation(AActor* Caller)
 	}
 }
 
+void AInteractableBase::OnGrounded_Implementation(AActor* Caller)
+{
+	FBodyInstance* Componenet = Cast<UPrimitiveComponent>(Caller->GetRootComponent())->GetBodyInstance();
+	Componenet->bLockXTranslation = true;
+	Componenet->bLockYTranslation = true;
+
+	Componenet->bLockXRotation = true;
+	Componenet->bLockYRotation = true;
+	Componenet->bLockZRotation = true;
+	Componenet->SetDOFLock(EDOFMode::SixDOF);
+}
+

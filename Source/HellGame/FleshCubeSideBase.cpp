@@ -8,12 +8,6 @@ UFleshCubeSideBase::UFleshCubeSideBase()
 }
 
 #pragma region Unreal Methods
-void UFleshCubeSideBase::SetupBaseMesh()
-{
-	// Create base cube mesh
-	BaseMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Test"));
-	BaseMesh->bEditableWhenInherited = true;
-}
 
 void UFleshCubeSideBase::BeginPlay()
 {
@@ -28,7 +22,7 @@ void UFleshCubeSideBase::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 #pragma endregion
 
 #pragma region Event Implementations
-void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, FTransform SideTransform)
+void UFleshCubeSideBase::ReceivedActivationSignal_Implementation(UFleshCubeSideBase* SendingSide, ESideType SendingType, USkeletalMeshComponent* MeshComponent, FTransform SideTransform)
 {
 }
 
@@ -55,6 +49,11 @@ USkeletalMesh* UFleshCubeSideBase::GetFaceMesh()
 UMaterialInstance* UFleshCubeSideBase::GetFaceMaterial()
 {
 	return FaceMaterial;
+}
+
+TSubclassOf<UAnimInstance> UFleshCubeSideBase::GetAnimationInstance()
+{
+	return FaceAnimation;
 }
 
 ESideType UFleshCubeSideBase::GetCurrentSideType()

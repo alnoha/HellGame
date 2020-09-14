@@ -57,6 +57,10 @@ public:
 		void OnDropPickUp(AActor* Caller);
 	virtual void OnDropPickUp_Implementation(AActor* Caller);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Pickup")
+		void OnGrounded(AActor* Caller);
+		void OnGrounded_Implementation(AActor* Caller);
+
 	/*Can the player pickup this object, if false = stationary*/
 	UPROPERTY(EditAnywhere, Category = "Interactable")
 		bool bCanPickup;
