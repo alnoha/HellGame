@@ -18,7 +18,7 @@ void ACubeAreaRestrictor::OnBeginOverlap(class UPrimitiveComponent* OverlappedCo
 {
 	if (!bUseBlueprintToTeleport)
 	{
-		TeleportCube(OverlappedComp, OtherActor, OtherComp)
+		TeleportCube(OtherActor, OtherComp);
 		/*if (OtherActor->IsA<AFleshCube>())
 		{
 			AFleshCube* Cube = Cast<AFleshCube>(OtherActor);
