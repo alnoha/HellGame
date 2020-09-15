@@ -21,8 +21,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		UBoxComponent* CollisionBox;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bUseBlueprintToTeleport = true;
 
 	UFUNCTION()
 		void OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable, Category = "Blueprint Teleportation")
+	void TeleportCube(class AActor* OtherActor, class UPrimitiveComponent* OtherComp);
 };
