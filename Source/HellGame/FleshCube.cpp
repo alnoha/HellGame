@@ -60,6 +60,7 @@ void AFleshCube::Tick(float DeltaTime)
 
 #pragma endregion
 
+
 #pragma region Event Implementations
 
 void AFleshCube::HitGround_Implementation()
@@ -415,7 +416,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 				}
 				if (bHasLatched == false)
 				{
-					LatchCube(MeshComponent, Cast<UPrimitiveComponent>(CubeHitResult.Component));
+					LatchCube(MeshComponent, OtherCube->GetFaceMeshByColliderName(CubeHitResult.Component->GetName()));
 				}
 			}
 		}
@@ -423,7 +424,7 @@ void AFleshCube::TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMesh
 }
 
 /*Latch a cube to an other cube, LatchingCube = Cube that will get the changes CubeSide = the cube that will give the values to Latch to.*/
-void AFleshCube::LatchCube(USkeletalMeshComponent* LatchingCube, UPrimitiveComponent* CubeSide)
+void AFleshCube::LatchCube(USkeletalMeshComponent* LatchingCube, USkeletalMeshComponent* CubeSide)
 {
 	bHasLatched = true;
 
@@ -446,6 +447,30 @@ void AFleshCube::LatchCube(USkeletalMeshComponent* LatchingCube, UPrimitiveCompo
 
 #pragma endregion
 
+//FVector AFleshCube::GetForwardVectorOffSideByCubeSide(UFleshCubeSideBase* CubeSide)
+//{
+//	FVector BaseForward = BaseMesh->GetForwardVector();
+//
+//	if (CubeSide == LeftSide)
+//	{
+//		BaseForward = -BaseMesh->GetRightVector();
+//	}
+//	else if (CubeSide == RightSide)
+//	{
+//		BaseForward = BaseMesh->GetRightVector();
+//	}
+//	else if (CubeSide == BackSide)
+//	{
+//		BaseForward = -BaseForward;
+//	}
+//	else if (CubeSide != FrontSide)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("Cube side not found in cube"));
+//	}
+//
+//	return FVector();
+//}
+
 UFleshCubeSideBase* AFleshCube::GetCubeSideByComponentName(FString ColliderName)
 {
 	if (ColliderName.Contains(FString("Left")))
@@ -463,6 +488,30 @@ UFleshCubeSideBase* AFleshCube::GetCubeSideByComponentName(FString ColliderName)
 	else if (ColliderName.Contains(FString("Back")))
 	{
 		return BackSide;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+USkeletalMeshComponent* AFleshCube::GetFaceMeshByColliderName(FString ColliderName)
+{
+	if (ColliderName.Contains(FString("Left")))
+	{
+		return LeftSideMeshComponent;
+	}
+	else if (ColliderName.Contains(FString("Front")))
+	{
+		return FrontSideMeshComponent;
+	}
+	else if (ColliderName.Contains(FString("Right")))
+	{
+		return RightSideMeshComponent;
+	}
+	else if (ColliderName.Contains(FString("Back")))
+	{
+		return BackSideMeshComponent;
 	}
 	else
 	{
