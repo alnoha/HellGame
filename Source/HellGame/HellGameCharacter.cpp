@@ -145,7 +145,10 @@ void AHellGameCharacter::OnInteract_Implementation(AActor* Actor)
 	//Failsafe if an actor from a blueprint doesn't implements the interacteable interface
 	if (Actor->Implements<UInteractable>())
 	{
-		IInteractable::Execute_OnInteract(Actor, this, HitLocation);
+		if (Actor != nullptr && this != nullptr)
+		{
+			IInteractable::Execute_OnInteract(Actor, this, HitLocation);
+		}
 	}
 
 }
