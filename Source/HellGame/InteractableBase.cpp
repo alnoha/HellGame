@@ -15,17 +15,20 @@ AInteractableBase::AInteractableBase()
 void AInteractableBase::BeginPlay()
 {
 	Super::BeginPlay();
-	HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
-	FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
-	Componenet->bLockXTranslation = true;
-	Componenet->bLockYTranslation = true;
-	//Componenet->bLockZTranslation = true;
-	Componenet->bLockXRotation = true;
-	Componenet->bLockYRotation = true;
-	Componenet->bLockZRotation = true;
-	Componenet->SetDOFLock(EDOFMode::SixDOF);
 
+	if (GetWorld() != nullptr && GetWorld()->GetFirstPlayerController() != nullptr)
+	{
+		HUD = Cast<AHellGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		//Cast<UPrimitiveComponent>(this->GetRootComponent())->SetSimulatePhysics(false);
+		FBodyInstance* Componenet = Cast<UPrimitiveComponent>(this->GetRootComponent())->GetBodyInstance();
+		Componenet->bLockXTranslation = true;
+		Componenet->bLockYTranslation = true;
+		//Componenet->bLockZTranslation = true;
+		Componenet->bLockXRotation = true;
+		Componenet->bLockYRotation = true;
+		Componenet->bLockZRotation = true;
+		Componenet->SetDOFLock(EDOFMode::SixDOF);
+	}
 }
 
 void AInteractableBase::OnConstruction(const FTransform& Transform)
