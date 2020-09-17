@@ -108,6 +108,8 @@ public:
 	UFUNCTION()
 	void SendActivationSignal(AFleshCube* SendingCube, UFleshCubeSideBase* SendingSide, UFleshCubeSideBase* ReceivingSide, ESideType SendingType, bool ReturnSignal = false);
 
+	/*UFUNCTION()
+	FVector GetForwardVectorOffSideByCubeSide(UFleshCubeSideBase* CubeSide);*/
 
 private:
 	void SetupBaseMesh();
@@ -117,7 +119,7 @@ private:
 	void SetupStartSides();
 	void TryToFindCubeNeighbour(FHitResult& CubeHitResult, USkeletalMeshComponent* MeshComponent, FCollisionQueryParams& CollisionParams, UFleshCubeSideBase* SendingSide, ESideType SideType);
 	void SetupSide(USkeletalMeshComponent*& SideMeshComponent, ESideType& SideType, ESideType& PreviousType, UFleshCubeSideBase*& CubeSide, FEyeComponentData EyeComponentData, FVector SnotScale);
-	void LatchCube(USkeletalMeshComponent* Start, UPrimitiveComponent* CubeSide);
+	void LatchCube(USkeletalMeshComponent* Start, USkeletalMeshComponent* CubeSide);
 	bool bHasLatched;
 
 protected:
@@ -136,4 +138,6 @@ public:
 	UFleshCubeSideBase* GetCubeSideByComponentName(FString Name);
 	UFUNCTION(BlueprintCallable, Category = "Cube Activation")
 	void ReceiveRemoteActivationSignal(FString ColliderName);
+
+	USkeletalMeshComponent* GetFaceMeshByColliderName(FString ColliderName);
 };
