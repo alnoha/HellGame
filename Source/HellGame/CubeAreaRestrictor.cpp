@@ -20,6 +20,11 @@ void ACubeAreaRestrictor::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AA
 	{
 		if (OtherActor->IsA<AFleshCube>())
 		{
+			AHellGameCharacter* Player = Cast<AHellGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+			if (Player != nullptr)
+			{
+				Player->HUD->UpdateCrosshair(Player->HUD->CrosshairTextureMap[ECrosshairTypes::DEFAULT]);
+			}
 			Disappear(OtherActor, OtherComp);
 		}
 	}
