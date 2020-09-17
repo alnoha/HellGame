@@ -14,23 +14,27 @@ ACubeAreaRestrictor::ACubeAreaRestrictor()
 
 }
 
-void ACubeAreaRestrictor::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ACubeAreaRestrictor::OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!bIsDissolving)
+	if (!bUseBlueprintToTeleport)
 	{
-		if (OtherActor->IsA<AFleshCube>())
+		TeleportCube(OtherActor, OtherComp);
+		/*if (OtherActor->IsA<AFleshCube>())
 		{
-			AHellGameCharacter* Player = Cast<AHellGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-			if (Player != nullptr)
+			AFleshCube* Cube = Cast<AFleshCube>(OtherActor);
+			IPickupAble::Execute_OnDropPickUp(Cube, this);
+			if (Cube->CubeRespawnPoint != nullptr)
 			{
-				Player->HUD->UpdateCrosshair(Player->HUD->CrosshairTextureMap[ECrosshairTypes::DEFAULT]);
+				OtherComp->SetPhysicsAngularVelocity(FVector(0.0f));
+				OtherComp->SetPhysicsLinearVelocity(FVector(0.0f));
+				Cube->SetActorRotation(Cube->CubeRespawnPoint->GetActorRotation());
+				Cube->SetActorLocation(Cube->CubeRespawnPoint->GetActorLocation());
 			}
-			Disappear(OtherActor, OtherComp);
-		}
+		}*/
 	}
 }
 
-void ACubeAreaRestrictor::TeleportCube(AActor* OtherActor, UPrimitiveComponent* OtherComp)
+void ACubeAreaRestrictor::TeleportCube(class AActor* OtherActor, class UPrimitiveComponent* OtherComp)
 {
 	if (OtherActor->IsA<AFleshCube>())
 	{
@@ -44,12 +48,4 @@ void ACubeAreaRestrictor::TeleportCube(AActor* OtherActor, UPrimitiveComponent* 
 			Cube->SetActorLocation(Cube->CubeRespawnPoint->GetActorLocation());
 		}
 	}
-}
-
-void ACubeAreaRestrictor::Disappear_Implementation(AActor* OtherActor, UPrimitiveComponent* OtherComp)
-{
-}
-
-void ACubeAreaRestrictor::Reappear_Implementation(AActor* OtherActor, UPrimitiveComponent* OtherComp)
-{
 }

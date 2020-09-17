@@ -72,10 +72,9 @@ public:
 		void SetWidgetRef(UUserWidget* Widget);
 	void SetWidgetRef_Implementation(UUserWidget* Widget);
 
-	AHellGameHUD* HUD;
-
 protected:
 
+	AHellGameHUD* HUD;
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
